@@ -26,6 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <cstdlib>
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wcovered-switch-default"
+  #pragma clang diagnostic ignored "-Wswitch-enum"
+#endif
+
+namespace corevm {
+namespace ir {
 
 // -----------------------------------------------------------------------------
 
@@ -191,6 +199,56 @@ string_to_IROpcode(const std::string& val)
 
 // -----------------------------------------------------------------------------
 
+const char* IROpcode_to_string(corevm::IROpcode val)
+{
+  static const char* OPCODE_STRS[] {
+    "alloca",
+    "load",
+    "store",
+    "getattr",
+    "setattr",
+    "delattr",
+    "getelement",
+    "putelement",
+    "len",
+    "ret",
+    "br",
+    "switch2",
+    "pos",
+    "neg",
+    "inc",
+    "dec",
+    "add",
+    "sub",
+    "mul",
+    "div",
+    "mod",
+    "bnot",
+    "band",
+    "bor",
+    "bxor",
+    "bls",
+    "brs",
+    "eq",
+    "neq",
+    "gt",
+    "lt",
+    "gte",
+    "lte",
+    "lnot",
+    "land",
+    "lor",
+    "cmp",
+    "call"
+  };
+
+  assert((sizeof(OPCODE_STRS) / sizeof(const char*)) > val);
+
+  return OPCODE_STRS[val];
+}
+
+// -----------------------------------------------------------------------------
+
 void set_metadata(const MetadataPair& pair, corevm::IRModule& module)
 {
   const auto& key = pair.first;
@@ -235,3 +293,281 @@ set_metadata(const std::vector<MetadataPair>& metadata,
 }
 
 // -----------------------------------------------------------------------------
+
+bool are_compatible_types(const corevm::IRIdentifierType& lhs,
+  const corevm::IRIdentifierType& rhs)
+{
+  if (lhs.type != rhs.type)
+  {
+    return false;
+  }
+
+  switch (lhs.type)
+  {
+  case IdentifierType_Identifier:
+    return lhs.value.get_string() == rhs.value.get_string();
+  case IdentifierType_Array:
+    return lhs.value.get_IRArrayType() == rhs.value.get_IRArrayType();
+  case IdentifierType_ValueType:
+    return (is_ir_value_numeric_or_boolean_type(lhs.value.get_IRValueType()) &&
+            is_ir_value_numeric_or_boolean_type(rhs.value.get_IRValueType()));
+  default:
+    return false;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+bool operator==(const corevm::IRIdentifierType& lhs,
+  const corevm::IRIdentifierType& rhs)
+{
+  if (lhs.type != rhs.type)
+  {
+    return false;
+  }
+
+  switch (lhs.type)
+  {
+  case IdentifierType_Identifier:
+    return lhs.value.get_string() == rhs.value.get_string();
+  case IdentifierType_Array:
+    return lhs.value.get_IRArrayType() == rhs.value.get_IRArrayType();
+  case IdentifierType_ValueType:
+    return lhs.value.get_IRValueType() == rhs.value.get_IRValueType();
+  default:
+    return false;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+bool operator!=(const corevm::IRIdentifierType& lhs,
+  const corevm::IRIdentifierType& rhs)
+{
+  return !operator==(lhs, rhs);
+}
+
+// -----------------------------------------------------------------------------
+
+bool operator==(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs)
+{
+  if (lhs.len != rhs.len)
+  {
+    return false;
+  }
+
+  return operator==(lhs.type, rhs.type);
+}
+
+// -----------------------------------------------------------------------------
+
+bool operator!=(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs)
+{
+  return !operator==(lhs, rhs);
+}
+
+// -----------------------------------------------------------------------------
+
+bool is_ir_value_integer_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::i8:
+  case corevm::ui8:
+  case corevm::i16:
+  case corevm::ui16:
+  case corevm::i32:
+  case corevm::ui32:
+  case corevm::i64:
+  case corevm::ui64:
+    return true;
+  default:
+    return false;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+bool is_ir_value_boolean_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::boolean:
+    return true;
+  default:
+    return false;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+bool is_ir_value_numeric_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::i8:
+  case corevm::ui8:
+  case corevm::i16:
+  case corevm::ui16:
+  case corevm::i32:
+  case corevm::ui32:
+  case corevm::i64:
+  case corevm::ui64:
+  case corevm::spf:
+  case corevm::dpf:
+    return true;
+  default:
+    return false;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+bool is_ir_value_numeric_or_boolean_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::i8:
+  case corevm::ui8:
+  case corevm::i16:
+  case corevm::ui16:
+  case corevm::i32:
+  case corevm::ui32:
+  case corevm::i64:
+  case corevm::ui64:
+  case corevm::spf:
+  case corevm::dpf:
+  case corevm::boolean:
+    return true;
+  default:
+    return false;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+bool is_ir_value_string_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::string:
+    return true;
+  default:
+    return false;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+bool is_ir_value_object_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::object:
+    return true;
+  default:
+    return false;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType get_type_of_instr(const corevm::IRInstruction& instr)
+{
+  if (instr.type.is_null())
+  {
+    switch (instr.opcode)
+    {
+    case corevm::eq:
+    case corevm::neq:
+    case corevm::lt:
+    case corevm::gt:
+    case corevm::lte:
+    case corevm::gte:
+      return create_ir_boolean_value_type();
+    case corevm::cmp:
+      return create_ir_i32_value_type();
+    default:
+      return create_ir_void_value_type();
+    }
+  }
+  else
+  {
+    return instr.type.get_IRIdentifierType();
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType create_ir_value_type(corevm::IRValueType value_type)
+{
+  corevm::IRIdentifierType identifier_type;
+  identifier_type.type = IdentifierType_ValueType;
+  identifier_type.value.set_IRValueType(value_type);
+  return identifier_type;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType create_ir_boolean_value_type()
+{
+  return create_ir_value_type(corevm::boolean);
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType create_ir_i32_value_type()
+{
+  return create_ir_value_type(corevm::i32);
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType create_ir_void_value_type()
+{
+  return create_ir_value_type(corevm::voidtype);
+}
+
+// -----------------------------------------------------------------------------
+
+bool type_decl_has_field(const corevm::IRTypeDecl& type_decl,
+  const std::string& field_name)
+{
+  for (const auto& field : type_decl.fields)
+  {
+    if (field.identifier == field_name)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType
+get_type_decl_field_type(const corevm::IRTypeDecl& type_decl,
+  const std::string& field_name)
+{
+  for (const auto& field : type_decl.fields)
+  {
+    if (field.identifier == field_name)
+    {
+      return field.type;
+    }
+  }
+
+  assert(0);
+
+  return create_ir_void_value_type();
+}
+
+// -----------------------------------------------------------------------------
+
+} /* end namespace ir */
+} /* end namespace corevm */
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif
