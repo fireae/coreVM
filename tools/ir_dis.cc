@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "ir/reader.h"
 #include "ir/format.h"
+#include "ir/verifier.h"
 
 #include <sneaker/utility/cmdline_program.h>
 
@@ -252,12 +253,22 @@ IRDisassembler::do_run()
   corevm::IRModule module;
   std::string err;
 
-  const bool res = corevm::ir::read_module_from_file(
+  bool res = corevm::ir::read_module_from_file(
     m_input.c_str(), module, err);
 
   if (!res)
   {
     printf("Error while reading from %s :\n", m_input.c_str());
+    printf("%s\n", err.c_str());
+    return -1;
+  }
+
+  corevm::ir::Verifier verifier(module);
+  res = verifier.run(err);
+
+  if (!res)
+  {
+    printf("Invalid module read from %s :\n", m_input.c_str());
     printf("%s\n", err.c_str());
     return -1;
   }
@@ -340,8 +351,7 @@ IRDisassembler::disassemble(const corevm::IRTypeField& field,
   std::ostream& stream) const
 {
   disassemble(field.type, stream);
-  stream << ir_value_ref_type_to_string(field.ref_type)
-    << " " << field.identifier << ';' << std::endl;
+  stream << " " << field.identifier << ';' << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -352,8 +362,7 @@ IRDisassembler::disassemble(const corevm::IRClosure& closure,
 {
   stream << "def ";
   disassemble(closure.rettype, stream);
-  stream << ir_value_ref_type_to_string(closure.ret_reftype)
-    << " " << closure.name << "(";
+  stream << " " << closure.name << "(";
 
   size_t len = closure.parameters.size();
   for (const auto& parameter : closure.parameters)
@@ -388,8 +397,7 @@ IRDisassembler::disassemble(const corevm::IRParameter& parameter,
   std::ostream& stream) const
 {
   disassemble(parameter.type, stream);
-  stream << ir_value_ref_type_to_string(parameter.ref_type)
-    << " " << parameter.identifier;
+  stream << " " << parameter.identifier;
 }
 
 // -----------------------------------------------------------------------------
@@ -487,6 +495,8 @@ IRDisassembler::disassemble(const corevm::IRIdentifierType& identifier_type,
     stream << ir_value_type_to_string(identifier_type.value.get_IRValueType());
     break;
   }
+
+  stream << ir_value_ref_type_to_string(identifier_type.ref_type);
 }
 
 // -----------------------------------------------------------------------------

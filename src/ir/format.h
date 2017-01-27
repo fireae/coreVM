@@ -45,15 +45,15 @@ struct IRModuleMeta {
         { }
 };
 
-enum IRValueRefType {
-    value,
-    pointer,
-};
-
 enum IRIdentifierTypeType {
     IdentifierType_Identifier,
     IdentifierType_Array,
     IdentifierType_ValueType,
+};
+
+enum IRValueRefType {
+    value,
+    pointer,
 };
 
 struct IRArrayType;
@@ -92,9 +92,11 @@ public:
 struct IRIdentifierType {
     typedef _corevm_ir_schema_json_Union__0__ value_t;
     IRIdentifierTypeType type;
+    IRValueRefType ref_type;
     value_t value;
     IRIdentifierType() :
         type(IRIdentifierTypeType()),
+        ref_type(IRValueRefType()),
         value(value_t())
         { }
 };
@@ -127,11 +129,9 @@ struct IRArrayType {
 
 struct IRTypeField {
     std::string identifier;
-    IRValueRefType ref_type;
     IRIdentifierType type;
     IRTypeField() :
         identifier(std::string()),
-        ref_type(IRValueRefType()),
         type(IRIdentifierType())
         { }
 };
@@ -165,11 +165,9 @@ public:
 
 struct IRParameter {
     std::string identifier;
-    IRValueRefType ref_type;
     IRIdentifierType type;
     IRParameter() :
         identifier(std::string()),
-        ref_type(IRValueRefType()),
         type(IRIdentifierType())
         { }
 };
@@ -376,14 +374,12 @@ struct IRClosure {
     std::string name;
     parent_t parent;
     IRIdentifierType rettype;
-    IRValueRefType ret_reftype;
     std::vector<IRParameter > parameters;
     std::vector<IRBasicBlock > blocks;
     IRClosure() :
         name(std::string()),
         parent(parent_t()),
         rettype(IRIdentifierType()),
-        ret_reftype(IRValueRefType()),
         parameters(std::vector<IRParameter >()),
         blocks(std::vector<IRBasicBlock >())
         { }
@@ -668,28 +664,6 @@ template<> struct codec_traits<corevm::IRModuleMeta> {
     }
 };
 
-template<> struct codec_traits<corevm::IRValueRefType> {
-    static void encode(Encoder& e, corevm::IRValueRefType v) {
-		if (v < corevm::value || v > corevm::pointer)
-		{
-			std::ostringstream error;
-			error << "enum value " << v << " is out of bound for corevm::IRValueRefType and cannot be encoded";
-			throw avro::Exception(error.str());
-		}
-        e.encodeEnum(v);
-    }
-    static void decode(Decoder& d, corevm::IRValueRefType& v) {
-		size_t index = d.decodeEnum();
-		if (index < corevm::value || index > corevm::pointer)
-		{
-			std::ostringstream error;
-			error << "enum value " << index << " is out of bound for corevm::IRValueRefType and cannot be decoded";
-			throw avro::Exception(error.str());
-		}
-        v = static_cast<corevm::IRValueRefType>(index);
-    }
-};
-
 template<> struct codec_traits<corevm::IRIdentifierTypeType> {
     static void encode(Encoder& e, corevm::IRIdentifierTypeType v) {
 		if (v < corevm::IdentifierType_Identifier || v > corevm::IdentifierType_ValueType)
@@ -709,6 +683,28 @@ template<> struct codec_traits<corevm::IRIdentifierTypeType> {
 			throw avro::Exception(error.str());
 		}
         v = static_cast<corevm::IRIdentifierTypeType>(index);
+    }
+};
+
+template<> struct codec_traits<corevm::IRValueRefType> {
+    static void encode(Encoder& e, corevm::IRValueRefType v) {
+		if (v < corevm::value || v > corevm::pointer)
+		{
+			std::ostringstream error;
+			error << "enum value " << v << " is out of bound for corevm::IRValueRefType and cannot be encoded";
+			throw avro::Exception(error.str());
+		}
+        e.encodeEnum(v);
+    }
+    static void decode(Decoder& d, corevm::IRValueRefType& v) {
+		size_t index = d.decodeEnum();
+		if (index < corevm::value || index > corevm::pointer)
+		{
+			std::ostringstream error;
+			error << "enum value " << index << " is out of bound for corevm::IRValueRefType and cannot be decoded";
+			throw avro::Exception(error.str());
+		}
+        v = static_cast<corevm::IRValueRefType>(index);
     }
 };
 
@@ -810,6 +806,7 @@ template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__0__> {
 template<> struct codec_traits<corevm::IRIdentifierType> {
     static void encode(Encoder& e, const corevm::IRIdentifierType& v) {
         avro::encode(e, v.type);
+        avro::encode(e, v.ref_type);
         avro::encode(e, v.value);
     }
     static void decode(Decoder& d, corevm::IRIdentifierType& v) {
@@ -823,6 +820,9 @@ template<> struct codec_traits<corevm::IRIdentifierType> {
                     avro::decode(d, v.type);
                     break;
                 case 1:
+                    avro::decode(d, v.ref_type);
+                    break;
+                case 2:
                     avro::decode(d, v.value);
                     break;
                 default:
@@ -831,6 +831,7 @@ template<> struct codec_traits<corevm::IRIdentifierType> {
             }
         } else {
             avro::decode(d, v.type);
+            avro::decode(d, v.ref_type);
             avro::decode(d, v.value);
         }
     }
@@ -839,7 +840,6 @@ template<> struct codec_traits<corevm::IRIdentifierType> {
 template<> struct codec_traits<corevm::IRTypeField> {
     static void encode(Encoder& e, const corevm::IRTypeField& v) {
         avro::encode(e, v.identifier);
-        avro::encode(e, v.ref_type);
         avro::encode(e, v.type);
     }
     static void decode(Decoder& d, corevm::IRTypeField& v) {
@@ -853,9 +853,6 @@ template<> struct codec_traits<corevm::IRTypeField> {
                     avro::decode(d, v.identifier);
                     break;
                 case 1:
-                    avro::decode(d, v.ref_type);
-                    break;
-                case 2:
                     avro::decode(d, v.type);
                     break;
                 default:
@@ -864,7 +861,6 @@ template<> struct codec_traits<corevm::IRTypeField> {
             }
         } else {
             avro::decode(d, v.identifier);
-            avro::decode(d, v.ref_type);
             avro::decode(d, v.type);
         }
     }
@@ -933,7 +929,6 @@ template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__1__> {
 template<> struct codec_traits<corevm::IRParameter> {
     static void encode(Encoder& e, const corevm::IRParameter& v) {
         avro::encode(e, v.identifier);
-        avro::encode(e, v.ref_type);
         avro::encode(e, v.type);
     }
     static void decode(Decoder& d, corevm::IRParameter& v) {
@@ -947,9 +942,6 @@ template<> struct codec_traits<corevm::IRParameter> {
                     avro::decode(d, v.identifier);
                     break;
                 case 1:
-                    avro::decode(d, v.ref_type);
-                    break;
-                case 2:
                     avro::decode(d, v.type);
                     break;
                 default:
@@ -958,7 +950,6 @@ template<> struct codec_traits<corevm::IRParameter> {
             }
         } else {
             avro::decode(d, v.identifier);
-            avro::decode(d, v.ref_type);
             avro::decode(d, v.type);
         }
     }
@@ -1381,7 +1372,6 @@ template<> struct codec_traits<corevm::IRClosure> {
         avro::encode(e, v.name);
         avro::encode(e, v.parent);
         avro::encode(e, v.rettype);
-        avro::encode(e, v.ret_reftype);
         avro::encode(e, v.parameters);
         avro::encode(e, v.blocks);
     }
@@ -1402,12 +1392,9 @@ template<> struct codec_traits<corevm::IRClosure> {
                     avro::decode(d, v.rettype);
                     break;
                 case 3:
-                    avro::decode(d, v.ret_reftype);
-                    break;
-                case 4:
                     avro::decode(d, v.parameters);
                     break;
-                case 5:
+                case 4:
                     avro::decode(d, v.blocks);
                     break;
                 default:
@@ -1418,7 +1405,6 @@ template<> struct codec_traits<corevm::IRClosure> {
             avro::decode(d, v.name);
             avro::decode(d, v.parent);
             avro::decode(d, v.rettype);
-            avro::decode(d, v.ret_reftype);
             avro::decode(d, v.parameters);
             avro::decode(d, v.blocks);
         }

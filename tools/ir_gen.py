@@ -81,45 +81,46 @@ class IRGen(object):
             'fields': [
                 {
                     'identifier': 'name',
-                    'ref_type': 'value',
                     'type': {
                         'type': 'IdentifierType_ValueType',
+                        'ref_type': 'value',
                         'value': 'string'
                     }
                 },
                 {
                     'identifier': 'age',
-                    'ref_type': 'value',
                     'type': {
                         'type': 'IdentifierType_ValueType',
+                        'ref_type': 'value',
                         'value': 'ui8'
                     }
                 },
                 {
                     'identifier': 'sibling',
-                    'ref_type': 'pointer',
                     'type': {
                         'type': 'IdentifierType_Identifier',
+                        'ref_type': 'pointer',
                         'value': 'Person'
                     }
                 },
                 {
                     'identifier': 'address',
-                    'ref_type': 'pointer',
                     'type': {
                         'type': 'IdentifierType_Identifier',
+                        'ref_type': 'pointer',
                         'value': 'Location'
                     }
                 },
                 {
                     'identifier': 'friends',
-                    'ref_type': 'value',
                     'type': {
                         'type': 'IdentifierType_Array',
+                        'ref_type': 'value',
                         'value': {
                             'len': 10,
                             'type': {
                                 'type': 'IdentifierType_Identifier',
+                                'ref_type': 'value',
                                 'value': 'Person'
                             }
                         }
@@ -134,25 +135,25 @@ class IRGen(object):
             'fields': [
                 {
                     'identifier': 'street_address',
-                    'ref_type': 'value',
                     'type': {
                         'type': 'IdentifierType_ValueType',
+                        'ref_type': 'value',
                         'value': 'string'
                     }
                 },
                 {
                     'identifier': 'country',
-                    'ref_type': 'pointer',
                     'type': {
                         'type': 'IdentifierType_ValueType',
+                        'ref_type': 'pointer',
                         'value': 'string'
                     }
                 },
                 {
                     'identifier': 'zipcode',
-                    'ref_type': 'value',
                     'type': {
                         'type': 'IdentifierType_ValueType',
+                        'ref_type': 'value',
                         'value': 'string'
                     }
                 }
@@ -170,24 +171,24 @@ class IRGen(object):
             'name': 'createPerson',
             'rettype': {
                 'type': 'IdentifierType_Identifier',
+                'ref_type': 'pointer',
                 'value': 'Person'
             },
-            'ret_reftype': 'pointer',
             'parameters': [
                 {
                     'identifier': 'name',
-                    'ref_type': 'pointer',
                     'type': {
                         'type': 'IdentifierType_ValueType',
+                        'ref_type': 'pointer',
                         'value': 'string'
                     },
                 },
                 {
                     'identifier': 'age',
-                    'ref_type': 'value',
                     'type': {
                         'type': 'IdentifierType_ValueType',
-                        'value': 'ui32'
+                        'ref_type': 'value',
+                        'value': 'ui8'
                     },
                 }
             ],
@@ -199,6 +200,7 @@ class IRGen(object):
                             'target': 'person',
                             'type': {
                                 'type': 'IdentifierType_Identifier',
+                                'ref_type': 'pointer',
                                 'value': 'Person'
                             },
                             'opcode': 'alloca',
@@ -230,12 +232,31 @@ class IRGen(object):
                             'labels': []
                         },
                         {
-                            'opcode': 'br',
+                            'target': 'isOld',
+                            'opcode': 'gte',
                             'options': [],
                             'oprds': [
                                 {
                                     'type': 'ref',
                                     'value': 'age'
+                                },
+                                {
+                                    'type': 'constant',
+                                    'value': {
+                                        'type': 'ui8',
+                                        'value': 100
+                                    }
+                                }
+                            ],
+                            'labels': []
+                        },
+                        {
+                            'opcode': 'br',
+                            'options': [],
+                            'oprds': [
+                                {
+                                    'type': 'ref',
+                                    'value': 'isOld'
                                 },
                             ],
                             'labels': [
@@ -255,6 +276,7 @@ class IRGen(object):
                         {
                             'type': {
                                 'type': 'IdentifierType_Identifier',
+                                'ref_type': 'pointer',
                                 'value': 'Person'
                             },
                             'opcode': 'ret',
@@ -278,35 +300,36 @@ class IRGen(object):
             'parent': 'createPerson',
             'rettype': {
                 'type': 'IdentifierType_ValueType',
-                'value': 'string'
+                'ref_type': 'value',
+                'value': 'voidtype'
             },
-            'ret_reftype': 'value',
             'parameters': [
                 {
                     'identifier': 'lhs_val',
-                    'ref_type': 'value',
                     'type': {
                         'type': 'IdentifierType_ValueType',
+                        'ref_type': 'value',
                         'value': 'ui32'
                     }
                 },
                 {
                     'identifier': 'rhs_val',
-                    'ref_type': 'value',
                     'type': {
                         'type': 'IdentifierType_ValueType',
+                        'ref_type': 'value',
                         'value': 'dpf'
                     }
                 },
                 {
                     'identifier': 'values',
-                    'ref_type': 'pointer',
                     'type': {
                         'type': 'IdentifierType_Array',
+                        'ref_type': 'pointer',
                         'value': {
                             'len': 4,
                             'type': {
                                 'type': 'IdentifierType_ValueType',
+                                'ref_type': 'pointer',
                                 'value': 'dpf'
                             }
                         }
@@ -321,6 +344,7 @@ class IRGen(object):
                             'target': 'sum',
                             'type': {
                                 'type': 'IdentifierType_ValueType',
+                                'ref_type': 'value',
                                 'value': 'ui64'
                             },
                             'opcode': 'add',
@@ -343,8 +367,8 @@ class IRGen(object):
                                 {
                                     'type': 'constant',
                                     'value': {
-                                        'type': 'ui8',
-                                        'value': 16
+                                        'type': 'dpf',
+                                        'value': 3.14
                                     }
                                 },
                                 {
@@ -370,9 +394,9 @@ class IRGen(object):
             'name': 'doNothing',
             'rettype': {
                 'type': 'IdentifierType_ValueType',
+                'ref_type': 'value',
                 'value': 'voidtype'
             },
-            'ret_reftype': 'value',
             'parameters': [],
             'blocks': []
         }

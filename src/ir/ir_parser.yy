@@ -195,15 +195,7 @@ type_field
         {
             $$ = corevm::IRTypeField();
             $$.type = std::move($1);
-            $$.ref_type = corevm::value;
             $$.identifier = std::move($2);
-        }
-    | ir_identifier_type STAR IDENTIFIER SEMICOLON
-        {
-            $$ = corevm::IRTypeField();
-            $$.type = std::move($1);
-            $$.ref_type = corevm::pointer;
-            $$.identifier = std::move($3);
         }
     ;
 
@@ -215,16 +207,6 @@ function_def
             $$.name = std::move($3);
             $$.parameters = std::move($4);
             $$.blocks = std::move($6);
-            $$.ret_reftype = corevm::value;
-        }
-    | DEF ir_identifier_type STAR IDENTIFIER function_arg_list LBRACE basic_block_list RBRACE
-        {
-            $$ = corevm::IRClosure();
-            $$.rettype = $2;
-            $$.name = std::move($4);
-            $$.parameters = std::move($5);
-            $$.blocks = std::move($7);
-            $$.ret_reftype = corevm::pointer;
         }
     | DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE basic_block_list RBRACE
         {
@@ -234,17 +216,6 @@ function_def
             $$.parameters = std::move($4);
             $$.parent.set_string($6);
             $$.blocks = std::move($8);
-            $$.ret_reftype = corevm::value;
-        }
-    | DEF ir_identifier_type STAR IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE basic_block_list RBRACE
-        {
-            $$ = corevm::IRClosure();
-            $$.rettype = $2;
-            $$.name = std::move($4);
-            $$.parameters = std::move($5);
-            $$.parent.set_string($7);
-            $$.blocks = std::move($9);
-            $$.ret_reftype = corevm::pointer;
         }
     ;
 
@@ -278,14 +249,6 @@ function_arg
             $$ = corevm::IRParameter();
             $$.type = std::move($1);
             $$.identifier = std::move($2);
-            $$.ref_type = corevm::value;
-        }
-    | ir_identifier_type STAR IDENTIFIER
-        {
-            $$ = corevm::IRParameter();
-            $$.type = std::move($1);
-            $$.identifier = std::move($3);
-            $$.ref_type = corevm::pointer;
         }
     ;
 
@@ -479,18 +442,42 @@ ir_identifier_type
         {
             $$ = corevm::IRIdentifierType();
             $$.type = corevm::IdentifierType_Identifier;
+            $$.ref_type = corevm::value;
             $$.value.set_string($1);
         }
     | ir_value_type
         {
             $$ = corevm::IRIdentifierType();
             $$.type = corevm::IdentifierType_ValueType;
+            $$.ref_type = corevm::value;
             $$.value.set_IRValueType($1);
         }
     | ir_value_type_array
         {
             $$ = corevm::IRIdentifierType();
             $$.type = corevm::IdentifierType_Array;
+            $$.ref_type = corevm::value;
+            $$.value.set_IRArrayType($1);
+        }
+    | IDENTIFIER STAR
+        {
+            $$ = corevm::IRIdentifierType();
+            $$.type = corevm::IdentifierType_Identifier;
+            $$.ref_type = corevm::pointer;
+            $$.value.set_string($1);
+        }
+    | ir_value_type STAR
+        {
+            $$ = corevm::IRIdentifierType();
+            $$.type = corevm::IdentifierType_ValueType;
+            $$.ref_type = corevm::pointer;
+            $$.value.set_IRValueType($1);
+        }
+    | ir_value_type_array STAR
+        {
+            $$ = corevm::IRIdentifierType();
+            $$.type = corevm::IdentifierType_Array;
+            $$.ref_type = corevm::pointer;
             $$.value.set_IRArrayType($1);
         }
     ;

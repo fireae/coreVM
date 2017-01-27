@@ -777,3 +777,44 @@ TEST_F(VerifierUnitTest, TestStoreInstrWithIncompatibleOperands)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(VerifierUnitTest, TestWholeModuleSuccessfully)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "    ui32 age;"
+    "    Location* location;"
+    "}"
+    ""
+    "type Location {"
+    "    string address;"
+    "    dpf lat;"
+    "    dpf lon;"
+    "    array [ 10 * Address ] addresses;"
+    "}"
+    ""
+    "type Address {"
+    "    string street;"
+    "    string city;"
+    "    string state;"
+    "    string country;"
+    "    array [ 2 * string ]* zipcodes;"
+    "}"
+    ""
+    "def Person* main() {"
+    "entry:"
+    "    %person = call Person* string \"createPerson\" ui32 21;"
+    "    ret Person* %person;"
+    "}"
+    ""
+    "def Person* createPerson(ui32 age) {"
+    "entry:"
+    "    %person = alloca [auto] Person*;"
+    "    setattr string \"age\" %age %person;"
+    "    ret Person* %person;"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------

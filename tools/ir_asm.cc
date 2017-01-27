@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "ir/format.h"
 #include "ir/ir_parser_driver.h"
+#include "ir/verifier.h"
 
 #include <avro/Encoder.hh>
 #include <avro/Decoder.hh>
@@ -106,6 +107,15 @@ IRAssembler::do_run()
   }
 
   const corevm::IRModule& module = driver.module();
+
+  corevm::ir::Verifier verifier(module);
+  std::string err;
+  if (!verifier.run(err))
+  {
+    printf("Invalid module read from %s :\n", m_input.c_str());
+    printf("%s\n", err.c_str());
+    return -1;
+  }
 
   static const char* SCHEMA_FILEPATH = "schemas/corevm_ir_schema.json";
 

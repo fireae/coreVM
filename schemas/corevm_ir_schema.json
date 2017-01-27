@@ -61,17 +61,6 @@
                       "type": "string"
                     },
                     {
-                      "name": "ref_type",
-                      "type": {
-                        "type": "enum",
-                        "name": "IRValueRefType",
-                        "symbols": [
-                          "value",
-                          "pointer"
-                        ]
-                      }
-                    },
-                    {
                       "name": "type",
                       "type": {
                         "type": "record",
@@ -86,6 +75,17 @@
                                 "IdentifierType_Identifier",
                                 "IdentifierType_Array",
                                 "IdentifierType_ValueType"
+                              ]
+                            }
+                          },
+                          {
+                            "name": "ref_type",
+                            "type": {
+                              "type": "enum",
+                              "name": "IRValueRefType",
+                              "symbols": [
+                                "value",
+                                "pointer"
                               ]
                             }
                           },
@@ -161,10 +161,6 @@
               "type": "corevm.ir.IRIdentifierType"
             },
             {
-              "name": "ret_reftype",
-              "type": "corevm.ir.IRValueRefType"
-            },
-            {
               "name": "parameters",
               "type": {
                 "type": "array",
@@ -175,10 +171,6 @@
                     {
                       "name": "identifier",
                       "type": "string"
-                    },
-                    {
-                      "name": "ref_type",
-                      "type": "corevm.ir.IRValueRefType"
                     },
                     {
                       "name": "type",

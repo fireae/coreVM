@@ -118,17 +118,6 @@ Below is the IR schema:
                         "type": "string"
                       },
                       {
-                        "name": "ref_type",
-                        "type": {
-                          "type": "enum",
-                          "name": "IRValueRefType",
-                          "symbols": [
-                            "value",
-                            "pointer"
-                          ]
-                        }
-                      },
-                      {
                         "name": "type",
                         "type": {
                           "type": "record",
@@ -143,6 +132,17 @@ Below is the IR schema:
                                   "IdentifierType_Identifier",
                                   "IdentifierType_Array",
                                   "IdentifierType_ValueType"
+                                ]
+                              }
+                            },
+                            {
+                              "name": "ref_type",
+                              "type": {
+                                "type": "enum",
+                                "name": "IRValueRefType",
+                                "symbols": [
+                                  "value",
+                                  "pointer"
                                 ]
                               }
                             },
@@ -218,10 +218,6 @@ Below is the IR schema:
                 "type": "corevm.ir.IRIdentifierType"
               },
               {
-                "name": "ret_reftype",
-                "type": "corevm.ir.IRValueRefType"
-              },
-              {
                 "name": "parameters",
                 "type": {
                   "type": "array",
@@ -232,10 +228,6 @@ Below is the IR schema:
                       {
                         "name": "identifier",
                         "type": "string"
-                      },
-                      {
-                        "name": "ref_type",
-                        "type": "corevm.ir.IRValueRefType"
                       },
                       {
                         "name": "type",
@@ -493,7 +485,6 @@ Represents a single field in a type definition.
     Field                   Type               Description
   ================  =====================  ================================
     `identifier`      string                 Name of field.
-    `ref_type`        `IRValueRefType`       Reference type of the field.
     `type`            `IRIdentifierType`     Type of the field.
   ================  =====================  ================================
 
@@ -577,12 +568,13 @@ custom type, primitive type, or array type.
 
 .. table::
 
-  ===========  =========================  ================================================================================
-     Field               Type                                              Description
-  ===========  =========================  ================================================================================
-    `type`      `IRIdentifierTypeType`      Type of the type represented (i.e. custom type, primitive type, array type).
-    `value`     Unioned structure.          Representation of the underlying type.
-  ===========  =========================  ================================================================================
+  ==============  ==========================  ================================================================================
+      Field                 Type                                                 Description
+  ==============  ==========================  ================================================================================
+    `type`          `IRIdentifierTypeType`      Type of the type represented (i.e. custom type, primitive type, array type).
+    `ref_type`      `IRValueRefType`            Reference type (e.g. by-value or by-pointer).
+    `value`         Unioned structure.          Representation of the underlying type.
+  ==============  ==========================  ================================================================================
 
 Entity 'IRClosure'
 ------------------
@@ -598,7 +590,6 @@ to be hierarchically scoped.
     `name`             string                   Name of the function.
     `parent`           Unioned structure.       Optional parent closure.
     `rettype`          `IRIdentifierType`       Type of the function return value.
-    `ret_reftype`      `IRValueRefType`         Reference type of the function return value.
     `parameters`       set<`IRParameter`>       A set of parameters of the function.
     `blocks`           set<`IRBasicBlock`>      A set of basic blocks in the function.
   =================  =======================  ================================================
@@ -614,7 +605,6 @@ Represents a function parameter.
        Field                 Type                       Description
   ================  ======================  ====================================
     `identifier`      string                  Name of the parameter.
-    `ref_type`        `IRValueRefType`        Reference type of the parameter.
     `type`            `IRIdentifierType`      Type of the parameter.
   ================  ======================  ====================================
 
@@ -1446,10 +1436,10 @@ For example:
 
 .. code-block:: none
 
-    def string compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf ]* values) : createPerson {
+    def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson {
     entry:
         %sum = add ui64 %lhs_val %rhs_val;
-        putelement ui8 16 %values ui32 2;
+        putelement dpf 3.14 %values ui32 2;
     }
 
 
@@ -1469,7 +1459,7 @@ For example:
 
 .. code-block:: none
 
-    br %age [ label #end, label #end ];
+    br %isOld [ label #end, label #end ];
 
 
 Identifier Syntax
@@ -1529,19 +1519,20 @@ Below is an example of the textual representation of a sample module.
     type NullType {
     }
 
-    def Person* createPerson(string* name, ui32 age) {
+    def Person* createPerson(string* name, ui8 age) {
     entry:
-        %person = alloca [ auto ] Person;
+        %person = alloca [ auto ] Person*;
         setattr string "age" %age %person;
-        br %age [ label #end, label #end ];
+        %isOld = gte %age ui8 100;
+        br %isOld [ label #end, label #end ];
     end:
-        ret Person %person;
+        ret Person* %person;
     }
 
-    def string compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf ]* values) : createPerson {
+    def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson {
     entry:
         %sum = add ui64 %lhs_val %rhs_val;
-        putelement ui8 16 %values ui32 2;
+        putelement dpf 3.14 %values ui32 2;
     }
 
     def void doNothing() {
