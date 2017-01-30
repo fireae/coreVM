@@ -1,0 +1,511 @@
+/*******************************************************************************
+The MIT License (MIT)
+
+Copyright (c) 2017 Yanzheng Li
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*******************************************************************************/
+#include "disassembler.h"
+#include "format.h"
+
+#include <iostream>
+
+
+namespace corevm {
+namespace ir {
+
+namespace {
+
+const char*
+ir_value_type_to_string(IRValueType value)
+{
+  switch (value)
+  {
+  case IRValueType::voidtype:
+    return "void";
+  case IRValueType::boolean:
+    return "bool";
+  case IRValueType::i8:
+    return "i8";
+  case IRValueType::ui8:
+    return "ui8";
+  case IRValueType::i16:
+    return "i16";
+  case IRValueType::ui16:
+    return "ui16";
+  case IRValueType::i32:
+    return "i32";
+  case IRValueType::ui32:
+    return "ui32";
+  case IRValueType::i64:
+    return "i64";
+  case IRValueType::ui64:
+    return "ui64";
+  case IRValueType::spf:
+    return "spf";
+  case IRValueType::dpf:
+    return "dpf";
+  case IRValueType::string:
+    return "string";
+  case IRValueType::object:
+    return "object";
+  }
+}
+
+const char*
+ir_value_ref_type_to_string(IRValueRefType val)
+{
+  switch (val)
+  {
+  case IRValueRefType::pointer:
+    return "*";
+  case IRValueRefType::value:
+    break;
+  }
+
+  return "";
+}
+
+const char*
+ir_opcode_to_string(IROpcode val)
+{
+  switch (val)
+  {
+  case IROpcode::alloca:
+    return "alloca";
+  case IROpcode::load:
+    return "load";
+  case IROpcode::store:
+    return "store";
+  case IROpcode::getattr:
+    return "getattr";
+  case IROpcode::setattr:
+    return "setattr";
+  case IROpcode::delattr:
+    return "delattr";
+  case IROpcode::getelement:
+    return "getelement";
+  case IROpcode::putelement:
+    return "putelement";
+  case IROpcode::len:
+    return "len";
+  case IROpcode::ret:
+    return "ret";
+  case IROpcode::br:
+    return "br";
+  case IROpcode::switch2:
+    return "switch2";
+  case IROpcode::pos:
+    return "pos";
+  case IROpcode::neg:
+    return "neg";
+  case IROpcode::inc:
+    return "inc";
+  case IROpcode::dec:
+    return "dec";
+  case IROpcode::add:
+    return "add";
+  case IROpcode::sub:
+    return "sub";
+  case IROpcode::mul:
+    return "mul";
+  case IROpcode::div:
+    return "div";
+  case IROpcode::mod:
+    return "mod";
+  case IROpcode::bnot:
+    return "bnot";
+  case IROpcode::band:
+    return "band";
+  case IROpcode::bor:
+    return "bor";
+  case IROpcode::bxor:
+    return "bxor";
+  case IROpcode::bls:
+    return "bls";
+  case IROpcode::brs:
+    return "brs";
+  case IROpcode::eq:
+    return "eq";
+  case IROpcode::neq:
+    return "neq";
+  case IROpcode::gt:
+    return "gt";
+  case IROpcode::lt:
+    return "lt";
+  case IROpcode::gte:
+    return "gte";
+  case IROpcode::lte:
+    return "lte";
+  case IROpcode::lnot:
+    return "lnot";
+  case IROpcode::land:
+    return "land";
+  case IROpcode::lor:
+    return "lor";
+  case IROpcode::cmp:
+    return "cmp";
+  case IROpcode::call:
+    return "call";
+  }
+
+  assert(0);
+  return "";
+}
+
+} /* end anonymous namespace */
+
+// -----------------------------------------------------------------------------
+
+Disassembler::Options::Options()
+  :
+  emit_newlines(true)
+{
+}
+
+// -----------------------------------------------------------------------------
+
+Disassembler::Disassembler(Options opts)
+  :
+  m_opts(opts)
+{
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRModule& module, std::ostream& stream) const
+{
+  disassemble(module.meta, stream);
+
+  for (const auto& val : module.types)
+  {
+    disassemble(val, stream);
+  }
+
+  for (const auto& val : module.closures)
+  {
+    disassemble(val, stream);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRModuleMeta& meta,
+  std::ostream& stream) const
+{
+  if (!meta.name.empty())
+  {
+    stream << "\"module name\" : \"" << meta.name << '\"';
+    emit_newline(stream);
+  }
+
+  if (meta.format_version)
+  {
+    stream << "\"format version\" : \"" << meta.format_version << '\"';
+    emit_newline(stream);
+  }
+
+  if (meta.target_version)
+  {
+    stream << "\"target version\" : \"" << meta.target_version << '\"';
+    emit_newline(stream);
+  }
+
+  if (!meta.path.empty())
+  {
+    stream << "\"path\" : \"" << meta.path << '\"';
+    emit_newline(stream);
+  }
+
+  if (!meta.author.empty())
+  {
+    stream << "\"author\" : \"" << meta.author << '\"';
+    emit_newline(stream);
+  }
+
+  if (meta.timestamp)
+  {
+    stream << "\"timestamp\" : \"" << meta.timestamp << '\"';
+    emit_newline(stream);
+  }
+
+  emit_newline(stream);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRTypeDecl& decl, std::ostream& stream) const
+{
+  stream << "type " << decl.name << " {";
+  emit_newline(stream);
+
+  for (const auto& field : decl.fields)
+  {
+    stream << "    ";
+    disassemble(field, stream);
+  }
+  stream << '}';
+
+  emit_newline(stream);
+  emit_newline(stream);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRTypeField& field, std::ostream& stream) const
+{
+  disassemble(field.type, stream);
+  stream << " " << field.identifier << ';';
+  emit_newline(stream);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRClosure& closure, std::ostream& stream) const
+{
+  stream << "def ";
+  disassemble(closure.rettype, stream);
+  stream << " " << closure.name << "(";
+
+  size_t len = closure.parameters.size();
+  for (const auto& parameter : closure.parameters)
+  {
+    disassemble(parameter, stream);
+    if (len-- > 1)
+    {
+      stream << ", ";
+    }
+  }
+  stream << ")";
+
+  if (!closure.parent.is_null())
+  {
+    stream <<  " : " << closure.parent.get_string();
+  }
+
+  stream << " {";
+  emit_newline(stream);
+
+  for (const auto& block : closure.blocks)
+  {
+    disassemble(block, stream);
+  }
+  stream << '}';
+
+  emit_newline(stream);
+  emit_newline(stream);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRParameter& parameter,
+  std::ostream& stream) const
+{
+  disassemble(parameter.type, stream);
+  stream << " " << parameter.identifier;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRBasicBlock& block, std::ostream& stream) const
+{
+  stream << block.label << ":";
+  emit_newline(stream);
+
+  for (const auto& instr : block.body)
+  {
+    stream << "    ";
+    disassemble(instr, stream);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRInstruction& instr,
+  std::ostream& stream) const
+{
+  if (!instr.target.is_null())
+  {
+    stream << "%" << instr.target.get_string() << " = ";
+  }
+  stream << ir_opcode_to_string(instr.opcode);
+
+  if (!instr.options.empty())
+  {
+    stream << " [ ";
+    for (const auto& option : instr.options)
+    {
+      stream << option << ' ';
+    }
+    stream << "]";
+  }
+
+  if (!instr.type.is_null())
+  {
+    stream << " ";
+    disassemble(instr.type.get_IRIdentifierType(), stream);
+  }
+
+  if (!instr.oprds.empty())
+  {
+    stream << " ";
+    for (size_t i = 0; i < instr.oprds.size(); ++i)
+    {
+      disassemble(instr.oprds[i], stream);
+      if (i < instr.oprds.size() - 1)
+      {
+        stream << " ";
+      }
+    }
+  }
+
+  if (!instr.labels.is_null())
+  {
+    const auto& labels = instr.labels.get_array();
+    if (!labels.empty())
+    {
+      size_t len = labels.size();
+      stream << " [ ";
+      for (const auto& label : labels)
+      {
+        disassemble(label, stream);
+        if (len-- > 1)
+        {
+          stream << ", ";
+        }
+      }
+      stream << " ]";
+    }
+  }
+  stream << ';';
+  emit_newline(stream);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRIdentifierType& identifier_type,
+  std::ostream& stream) const
+{
+  switch (identifier_type.type)
+  {
+  case IdentifierType_Identifier:
+    stream << identifier_type.value.get_string();
+    break;
+  case IdentifierType_Array:
+    disassemble(identifier_type.value.get_IRArrayType(), stream);
+    break;
+  case IdentifierType_ValueType:
+    stream << ir_value_type_to_string(identifier_type.value.get_IRValueType());
+    break;
+  }
+
+  stream << ir_value_ref_type_to_string(identifier_type.ref_type);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRArrayType& array_type,
+  std::ostream& stream) const
+{
+  stream << "array ";
+  stream << "[ " << array_type.len << " * ";
+  disassemble(array_type.type, stream);
+  stream << " ]";
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRValue& val, std::ostream& stream) const
+{
+  stream << ir_value_type_to_string(val.type) << " ";
+
+  switch (val.value.idx())
+  {
+  case 0:
+    // do nothing.
+    stream << val.value.get_bool();
+    break;
+  case 1:
+    stream << val.value.get_bool();
+    break;
+  case 2:
+    stream << val.value.get_int();
+    break;
+  case 3:
+    stream << val.value.get_long();
+    break;
+  case 4:
+    stream << val.value.get_float();
+    break;
+  case 5:
+    stream << val.value.get_double();
+    break;
+  case 6:
+    stream << '"' << val.value.get_string() << '"';
+    break;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IROperand& oprd, std::ostream& stream) const
+{
+  if (oprd.type == IROperandType::constant)
+  {
+    disassemble(oprd.value.get_IRValue(), stream);
+  }
+  else
+  {
+    stream << "%" << oprd.value.get_string();
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRLabel& label, std::ostream& stream) const
+{
+  stream << "label #" << label.name;
+}
+
+// -----------------------------------------------------------------------------
+
+void Disassembler::emit_newline(std::ostream& stream) const
+{
+  if (m_opts.emit_newlines)
+  {
+    stream << std::endl;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+} /* end namespace ir */
+} /* end namespace corevm */
