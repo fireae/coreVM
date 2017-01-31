@@ -29,6 +29,7 @@
 
 set(sources
     ir/reader.cc
+    ir/writer.cc
     ir/format_util.cc
     ir/ir_parser.tab.cc
     ir/lex.yy.cc

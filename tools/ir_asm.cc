@@ -23,12 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ir/format.h"
 #include "ir/ir_parser_driver.h"
 #include "ir/verifier.h"
-
-#include <avro/Encoder.hh>
-#include <avro/Decoder.hh>
-#include <avro/ValidSchema.hh>
-#include <avro/Compiler.hh>
-#include <avro/DataFile.hh>
+#include "ir/writer.h"
 
 #include <sneaker/utility/cmdline_program.h>
 
@@ -37,7 +32,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <cstdlib>
 #include <cstdio>
-#include <fstream>
 #include <string>
 #include <vector>
 
@@ -117,17 +111,15 @@ IRAssembler::do_run()
     return -1;
   }
 
+  // TODO: add option to let user specify schema path.
   static const char* SCHEMA_FILEPATH = "schemas/corevm_ir_schema.json";
 
-  std::ifstream schema_ifs(SCHEMA_FILEPATH);
-  avro::ValidSchema schema;
-  avro::compileJsonSchema(schema_ifs, schema);
-
-  avro::DataFileWriter<corevm::IRModule> writer(m_output.c_str(), schema);
-  writer.write(module);
-
-  writer.close();
-  schema_ifs.close();
+  if (!corevm::ir::write_module_to_file(module, SCHEMA_FILEPATH, m_output.c_str(), err))
+  {
+    printf("Error in writing module to file %s\n", err.c_str());
+    printf("%s\n", err.c_str());
+    return -1;
+  }
 
   if (m_debug)
   {
