@@ -27,6 +27,7 @@ add_executable(run_tests
     ir/ir_parser_driver_unittest.cc
     ir/ir_module_index_unittest.cc
     ir/verifier_unittest.cc
+    ir/ir_builder_unittest.cc
     ir/disassembler_unittest.cc
     jit/pass_manager_unittest.cc
     jit/jit_compiler_unittest.cc
