@@ -33,6 +33,7 @@ straightforward as possible. Currently, the build system requires
   * `Flex <https://github.com/westes/flex>`_ version 2.6.2
   * `Bison <https://www.gnu.org/software/bison/>`_ version 3.0.4
   * `benchmark <https://github.com/google/benchmark>`_ version 1.0.0
+  * `Doxygen <http://www.stack.nl/~dimitri/doxygen/index.html>`_ version 1.8.13
 
 2. Build main binaries and run tests
 
@@ -170,6 +171,14 @@ Continuous Integration 2
 
 **Sphinx:**
 `Sphinx (sphinx-build) 1.4.8`
+
+
+*********************
+Annotated Source Code
+*********************
+
+Link `here <http://www.corevm.org/docs/html/index.html>`_ to view the entire
+annotated code base.
 
 
 ****************************

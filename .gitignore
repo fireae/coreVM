@@ -19,6 +19,7 @@
 build/
 build_gcc/
 archives/
+docs/doxygen/
 *.tmp.py
 *.out
 

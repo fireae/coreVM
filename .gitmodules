@@ -10,3 +10,6 @@
 [submodule "libs/avro"]
 	path = libs/avro
 	url = git://github.com/apache/avro
+[submodule "libs/doxygen"]
+	path = libs/doxygen
+	url = https://github.com/doxygen/doxygen.git

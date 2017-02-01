@@ -53,6 +53,7 @@ Here is a list of recommended steps to get started on the project:
   * [Project Documentation](http://corevm.readthedocs.io/en/latest/)
   * [Design and Architecture](https://github.com/yanzhengli/coreVM/wiki/Design-and-Architecture)
   * [Dependencies and Build Environments](https://github.com/yanzhengli/coreVM/wiki/Dependencies-and-Build-Environments)
+  * [Annotated Source Code](http://www.corevm.org/docs/html/index.html)
 
 2. Build from source and have fun:
 

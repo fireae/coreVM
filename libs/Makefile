@@ -36,12 +36,14 @@ TMP_BUILD_DIR=$(TOP_DIR)/tmp
 BISON_DIR=$(TMP_BUILD_DIR)/bison-3.0.4
 FLEX_DIR=$(TMP_BUILD_DIR)/flex-2.6.2
 BENCHMARK_HEADER_INSTALL_PATH=/usr/local/include/benchmark/
+DOXYGEN_DIR=$(TOP_DIR)/doxygen
+DOXYGEN_TMP_DIR=$(DOXYGEN_DIR)/build
 
 ## -----------------------------------------------------------------------------
 
 # NOTE: llvm needs to be installed before sneaker. This is because both targets
 # will install libgtest, but the version we need is the one installed by sneaker.
-BASE_TARGETS=avro llvm sneaker
+BASE_TARGETS=avro llvm sneaker doxygen
 
 ifeq ($(TRAVIS_OS_NAME), linux)
 	BASE_TARGETS:=cmake_target $(BASE_TARGETS)
@@ -140,3 +142,12 @@ flex:
 
 ## -----------------------------------------------------------------------------
 
+.PHONY: doxygen
+doxygen:
+	mkdir -p $(DOXYGEN_TMP_DIR)
+	cd $(DOXYGEN_TMP_DIR) && cmake -G "Unix Makefiles" ..
+	cd $(DOXYGEN_TMP_DIR) && make
+	cd $(DOXYGEN_TMP_DIR) && make install
+	rm -rf $(DOXYGEN_TMP_DIR)
+
+## -----------------------------------------------------------------------------
