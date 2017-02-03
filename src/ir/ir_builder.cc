@@ -232,8 +232,28 @@ struct _TypeDecl
 struct TypeDeclImpl
 {
   std::string name;
-  typedef std::unordered_map<std::string, IdentifierType> FieldSet;
+  struct TypeDeclField
+  {
+    std::string name;
+    IdentifierType type;
+  };
+  typedef std::vector<TypeDeclField> FieldSet;
+  typedef std::unordered_map<std::string, size_t> FieldSetMap;
   FieldSet fields;
+  FieldSetMap fields_map;
+
+  void
+  add_field(const std::string& field_name, const IdentifierType& field_type)
+  {
+    auto itr = fields_map.find(field_name);
+    if (itr != fields_map.end())
+    {
+      return;
+    }
+
+    fields.push_back(TypeDeclField{field_name, field_type});
+    fields_map.insert(std::make_pair(field_name, fields.size() - 1));
+  }
 };
 
 // -----------------------------------------------------------------------------
@@ -249,25 +269,24 @@ struct ArrayTypeImpl
 struct TypeDeclStore
 {
   type_id_t type_id;
-  std::unordered_map<type_id_t, TypeDeclImpl> type_decls_store;
+  std::vector<TypeDeclImpl> storage;
   std::unordered_map<std::string, _TypeDecl> type_decls_map;
 
-  TypeDeclStore() : type_id(0), type_decls_store(), type_decls_map() {}
+  TypeDeclStore() : type_id(0), storage(), type_decls_map() {}
 
   // ---------------------------------------------------------------------------
 
   TypeDecl add_type(const std::string& type_name)
   {
     const auto itr = type_decls_map.find(type_name);
-    if (itr != type_decls_map.end())
+    if (itr != type_decls_map.cend())
     {
       return &itr->second;
     }
 
-    ++type_id;
-    type_decls_store.insert(std::make_pair(type_id,
-      TypeDeclImpl{type_name, TypeDeclImpl::FieldSet()}));
+    storage.push_back(TypeDeclImpl{type_name, TypeDeclImpl::FieldSet()});
     type_decls_map.insert(std::make_pair(type_name, _TypeDecl{type_id}));
+    ++type_id;
 
     return &type_decls_map.at(type_name);
   }
@@ -276,7 +295,7 @@ struct TypeDeclStore
 
   const char* get_type_decl_name(TypeDecl type_decl) const
   {
-    const auto& type_decl_impl = type_decls_store.at(type_decl->id);
+    const auto& type_decl_impl = storage.at(type_decl->id);
     return type_decl_impl.name.c_str();
   }
 
@@ -292,23 +311,22 @@ struct TypeDeclStore
   void add_type_field(TypeDecl type_decl, IdentifierType field_type,
     const std::string& field_name)
   {
-    auto& type_decl_impl = type_decls_store.at(type_decl->id);
-    type_decl_impl.fields.insert(std::make_pair(field_name, field_type));
+    auto& type_decl_impl = storage.at(type_decl->id);
+    type_decl_impl.add_field(field_name, field_type);
   }
 
   // ---------------------------------------------------------------------------
 
   bool has_field(TypeDecl type_decl, const std::string& field_name)
   {
-    auto itr = type_decls_store.find(type_decl->id);
-    if (itr == type_decls_store.end())
+    if (type_decl->id >= storage.size())
     {
       return false;
     }
 
-    auto& type_decl_impl = itr->second; 
-    return type_decl_impl.fields.find(field_name) !=
-      type_decl_impl.fields.end();
+    auto& type_decl_impl = storage.at(type_decl->id);
+    return type_decl_impl.fields_map.find(field_name) !=
+      type_decl_impl.fields_map.end();
   }
 
   // ---------------------------------------------------------------------------
@@ -762,7 +780,7 @@ private:
   void finalize_type_decls(std::unique_ptr<IRModule>&);
   void finalize_func_defns(std::unique_ptr<IRModule>&);
 
-  IRTypeDecl finalize_type_decl(const std::string&, const TypeDeclImpl&);
+  IRTypeDecl finalize_type_decl(const TypeDeclImpl&);
 
   IRClosure finalize_func_defn(const std::string&,
     const FuncDefnStore::FuncDefnImpl&);
@@ -1204,14 +1222,10 @@ IRBuilderImpl::finalize_metadata(std::unique_ptr<IRModule>& module)
 void
 IRBuilderImpl::finalize_type_decls(std::unique_ptr<IRModule>& module)
 {
-  module->types.reserve(type_decl_store.type_decls_map.size());
-  for (const auto & pair : type_decl_store.type_decls_map)
+  module->types.reserve(type_decl_store.storage.size());
+  for (const auto& type_decl_impl : type_decl_store.storage)
   {
-    const auto& type_name = pair.first;
-    const auto& type_decl_impl =
-      type_decl_store.type_decls_store.at(pair.second.id);
-
-    module->types.push_back(finalize_type_decl(type_name, type_decl_impl));
+    module->types.push_back(finalize_type_decl(type_decl_impl));
   }
 }
 
@@ -1287,25 +1301,24 @@ IRBuilderImpl::finalize_func_defn(const std::string& func_name,
 // -----------------------------------------------------------------------------
 
 IRTypeDecl
-IRBuilderImpl::finalize_type_decl(const std::string& type_name,
-  const TypeDeclImpl& type_decl_impl)
+IRBuilderImpl::finalize_type_decl(const TypeDeclImpl& type_decl_impl)
 {
   IRTypeDecl ir_type_decl;
 
   // Type name.
-  ir_type_decl.name = type_name;
+  ir_type_decl.name = type_decl_impl.name;
 
   // Fields.
   ir_type_decl.fields.reserve(type_decl_impl.fields.size());
-  for (const auto& pair : type_decl_impl.fields)
+  for (const auto& field : type_decl_impl.fields)
   {
     IRTypeField ir_type_field;
 
     // Field name.
-    ir_type_field.identifier = pair.first;
+    ir_type_field.identifier = field.name;
 
     // Field type.
-    translate_IdentifierType(pair.second, ir_type_field.type);
+    translate_IdentifierType(field.type, ir_type_field.type);
 
     ir_type_decl.fields.push_back(ir_type_field);
   }
@@ -1343,7 +1356,7 @@ IRBuilderImpl::translate_IdentifierType(const IdentifierType& src,
   {
     TypeDecl type_decl = src.value.get<TypeDecl>();
     const TypeDeclImpl& type_decl_impl =
-      type_decl_store.type_decls_store.at(type_decl->id);
+      type_decl_store.storage.at(type_decl->id);
 
     dst.type = IdentifierType_Identifier;
     dst.value.set_string(type_decl_impl.name);

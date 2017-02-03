@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_IR_MODULE_INDEX_H_
 #define COREVM_IR_MODULE_INDEX_H_
 
-#include "fwd.h"
+#include "format.h"
 #include <string>
 #include <unordered_map>
 

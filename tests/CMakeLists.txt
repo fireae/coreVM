@@ -79,4 +79,4 @@ target_link_libraries(run_tests
 
 # Run tests.
 add_custom_command(TARGET run_tests POST_BUILD COMMAND
-    $<TARGET_FILE:run_tests> --gtest_color=yes --gtest_shuffle --gtest_repeat=1)
+    $<TARGET_FILE:run_tests> --gtest_color=yes --gtest_shuffle --gtest_repeat=3)

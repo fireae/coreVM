@@ -128,27 +128,6 @@ TEST_F(IRBuilderUnitTest, TestAddTypeField)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(IRBuilderUnitTest, TestAddTypeFieldOnInvalidTypeDecl)
-{
-  ir::IRBuilder builder;
-
-  ir::TypeDecl type_decl(NULL);
-
-  std::string field_name("foo");
-
-  ASSERT_THROW(
-    {
-      builder.add_type_field(type_decl, ir::ValueTypeInt8,
-        ir::ValueRefTypeByValue, field_name);
-    },
-    std::out_of_range
-  );
-
-  ASSERT_EQ(false, builder.has_field(type_decl, field_name));
-}
-
-// -----------------------------------------------------------------------------
-
 TEST_F(IRBuilderUnitTest, TestAddArrayType)
 {
   ir::IRBuilder builder;
@@ -256,13 +235,15 @@ TEST_F(IRBuilderUnitTest, TestAddTypeAndAssert)
     "target version : 100"
     "author : Yanzheng Li"
     "timestamp : 100"
+    ""
+    "type Car {}"
+    ""
     "type Person {"
-    "    Car* car;"
-    "    Person* friend;"
-    "    array [ 10 * Person ] relatives;"
     "    i8 age;"
-    "}"
-    "type Car {}";
+    "    Person* friend;"
+    "    Car* car;"
+    "    array [ 10 * Person ] relatives;"
+    "}";
 
   assert_construction_successful(builder, expected_IR_string); 
 }
