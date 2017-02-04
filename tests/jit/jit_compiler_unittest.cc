@@ -44,8 +44,10 @@ TEST_F(JITCompilerUnitTest, TestCompilation)
   ASSERT_EQ(false, compiler.compiled());
 
   std::vector<corevm::jit::RuntimeValue> args;
-  corevm::jit::RuntimeValue return_val;
-  ASSERT_EQ(false, compiler.eval_func(args, return_val));
+  std::vector<corevm::jit::RuntimeValueType> arg_types;
+  corevm::jit::RuntimeValueType result_type;
+  corevm::jit::RuntimeValue result_val;
+  ASSERT_EQ(false, compiler.eval_func(args, arg_types, result_type, result_val));
 }
 
 // -----------------------------------------------------------------------------

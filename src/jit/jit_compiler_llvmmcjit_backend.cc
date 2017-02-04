@@ -21,17 +21,26 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "jit_compiler_llvmmcjit_backend.h"
+#include "util.h"
+
+#include <llvm/IR/Module.h>
+#include <llvm/Support/ManagedStatic.h>
+#include <llvm/ExecutionEngine/GenericValue.h>
+#include <llvm/ExecutionEngine/MCJIT.h>
+
 
 namespace corevm {
 namespace jit {
 
 // -----------------------------------------------------------------------------
 
-JITCompilerLLVMMCJITBackend::JITCompilerLLVMMCJITBackend(
-  const ModuleType& module)
+JITCompilerLLVMMCJITBackend::JITCompilerLLVMMCJITBackend(ModuleType& module)
   :
   JITCompilerBackend(),
-  m_module(module)
+  m_module(module),
+  m_func(nullptr),
+  m_engine(llvm::EngineBuilder(&module).setUseMCJIT(true).setEngineKind(
+    llvm::EngineKind::JIT).create())
 {
 }
 
@@ -46,26 +55,39 @@ JITCompilerLLVMMCJITBackend::~JITCompilerLLVMMCJITBackend()
 /* virtual */
 bool JITCompilerLLVMMCJITBackend::init()
 {
-  // TODO: [COREVM-583] Implement JIT compiler backend based on LLVM's llvm::MCJIT framework
-  return true;
+  return (m_engine.get() != nullptr);
 }
 
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool JITCompilerLLVMMCJITBackend::run(const std::string& /* func_name */)
+bool JITCompilerLLVMMCJITBackend::run(const std::string& func_name)
 {
-  // TODO: [COREVM-583] Implement JIT compiler backend based on LLVM's llvm::MCJIT framework
-  return true;
+  m_func = m_engine->FindFunctionNamed(func_name.c_str());
+  m_engine->finalizeObject();
+  return m_func != nullptr;
 }
 
 // -----------------------------------------------------------------------------
 
 /* virtual */
 bool JITCompilerLLVMMCJITBackend::eval_func(
-  const std::vector<RuntimeValue>& /* args */, RuntimeValue& /* result */)
+  const std::vector<RuntimeValue>& args,
+  const std::vector<RuntimeValueType>& arg_types,
+  const RuntimeValueType& result_type, RuntimeValue& result_value)
 {
-  // TODO: [COREVM-583] Implement JIT compiler backend based on LLVM's llvm::MCJIT framework
+  assert(m_func && "Function should be initialized");
+
+  std::vector<llvm::GenericValue> llvm_args(args.size());
+  for (size_t i = 0; i < args.size(); ++i)
+  {
+    llvm_args[i] = convert_to_llvm_generic_value(args[i], arg_types.at(i));
+  }
+
+  llvm::GenericValue llvm_result = m_engine->runFunction(m_func, llvm_args);
+
+  result_value = convert_to_runtime_value(llvm_result, result_type);
+
   return true;
 }
 
@@ -74,7 +96,8 @@ bool JITCompilerLLVMMCJITBackend::eval_func(
 /* virtual */
 bool JITCompilerLLVMMCJITBackend::finalize()
 {
-  // TODO: [COREVM-583] Implement JIT compiler backend based on LLVM's llvm::MCJIT framework
+  // NOTE: This step is important. Without it segfault will occur.
+  m_engine->removeModule(&m_module);
   return true;
 }
 

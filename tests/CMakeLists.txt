@@ -30,7 +30,10 @@ add_executable(run_tests
     ir/ir_builder_unittest.cc
     ir/disassembler_unittest.cc
     jit/pass_manager_unittest.cc
+    jit/runtime_value_unittest.cc
+    jit/util_unittest.cc
     jit/jit_compiler_unittest.cc
+    jit/llvmmcjit_backend_unittest.cc
     memory/allocation_policy_unittest.cc
     memory/allocator_unittest.cc
     memory/block_allocator_unittest.cc

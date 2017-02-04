@@ -20,62 +20,26 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_
-#define COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_
-
-#include "jit_compiler_backend.h"
-#include <llvm/ADT/OwningPtr.h>
-
-namespace llvm {
-class Module;
-class ExecutionEngine;
-class Function;
-}
+#include "runtime_value_type.h"
 
 namespace corevm {
 namespace jit {
 
-/**
- * JIT backend based on LLVM's MCJIT framework.
- */
-class JITCompilerLLVMMCJITBackend : public JITCompilerBackend
+// -----------------------------------------------------------------------------
+
+bool operator==(const AggregateType& lhs, const AggregateType& rhs)
 {
-public:
-  typedef llvm::Module ModuleType;
+  return lhs.types == rhs.types;
+}
 
-  explicit JITCompilerLLVMMCJITBackend(ModuleType&);
+// -----------------------------------------------------------------------------
 
-  virtual ~JITCompilerLLVMMCJITBackend();
+bool operator!=(const AggregateType& lhs, const AggregateType& rhs)
+{
+  return !operator==(lhs, rhs);
+}
 
-  /**
-   * Implements `JITCompilerBackend::init()`.
-   */
-  virtual bool init();
-
-  /**
-   * Implements `JITCompilerBackend::run()`.
-   */
-  virtual bool run(const std::string& func_name);
-
-  /**
-   * Implements `JITCompilerBackend::eval_func()`.
-   */
-  virtual bool eval_func(const std::vector<RuntimeValue>& args,
-    const std::vector<RuntimeValueType>& arg_types,
-    const RuntimeValueType& result_type, RuntimeValue& result_value);
-
-  /**
-   * Implements `JITCompilerBackend::finalize()`.
-   */
-  virtual bool finalize();
-
-private:
-  ModuleType& m_module;
-  llvm::Function* m_func;
-  llvm::OwningPtr<llvm::ExecutionEngine> m_engine;
-};
+// -----------------------------------------------------------------------------
 
 } /* end namespace jit */
 } /* end namespace corevm */
-
-#endif /* COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_ */

@@ -20,62 +20,34 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_
-#define COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_
+#ifndef COREVM_JIT_UTIL_H_
+#define COREVM_JIT_UTIL_H_
 
-#include "jit_compiler_backend.h"
-#include <llvm/ADT/OwningPtr.h>
+#include "runtime_value.h"
+#include "runtime_value_type.h"
 
-namespace llvm {
-class Module;
-class ExecutionEngine;
-class Function;
-}
+#include <llvm/ExecutionEngine/GenericValue.h>
+
 
 namespace corevm {
 namespace jit {
 
 /**
- * JIT backend based on LLVM's MCJIT framework.
+ * Convert an instance of `RuntimeValue` to the `llvm::GenericValue` equivalent,
+ * given its type specification.
  */
-class JITCompilerLLVMMCJITBackend : public JITCompilerBackend
-{
-public:
-  typedef llvm::Module ModuleType;
+llvm::GenericValue convert_to_llvm_generic_value(
+  const RuntimeValue&, const RuntimeValueType&);
 
-  explicit JITCompilerLLVMMCJITBackend(ModuleType&);
 
-  virtual ~JITCompilerLLVMMCJITBackend();
-
-  /**
-   * Implements `JITCompilerBackend::init()`.
-   */
-  virtual bool init();
-
-  /**
-   * Implements `JITCompilerBackend::run()`.
-   */
-  virtual bool run(const std::string& func_name);
-
-  /**
-   * Implements `JITCompilerBackend::eval_func()`.
-   */
-  virtual bool eval_func(const std::vector<RuntimeValue>& args,
-    const std::vector<RuntimeValueType>& arg_types,
-    const RuntimeValueType& result_type, RuntimeValue& result_value);
-
-  /**
-   * Implements `JITCompilerBackend::finalize()`.
-   */
-  virtual bool finalize();
-
-private:
-  ModuleType& m_module;
-  llvm::Function* m_func;
-  llvm::OwningPtr<llvm::ExecutionEngine> m_engine;
-};
+/**
+ * Convert an instance of `llvm::GenericValue` to the `RuntimeValue` equivalent,
+ * given its type specification.
+ */
+RuntimeValue convert_to_runtime_value(
+  const llvm::GenericValue&, const RuntimeValueType&);
 
 } /* end namespace jit */
 } /* end namespace corevm */
 
-#endif /* COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_ */
+#endif /* COREVM_JIT_UTIL_H_ */

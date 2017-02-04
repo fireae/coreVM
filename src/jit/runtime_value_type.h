@@ -20,62 +20,53 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_
-#define COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_
+#ifndef COREVM_RUNTIME_VALUE_TYPE_H_
+#define COREVM_RUNTIME_VALUE_TYPE_H_
 
-#include "jit_compiler_backend.h"
-#include <llvm/ADT/OwningPtr.h>
+#include "types/variant/variant.h"
+#include <cstdint>
+#include <vector>
 
-namespace llvm {
-class Module;
-class ExecutionEngine;
-class Function;
-}
 
 namespace corevm {
 namespace jit {
 
 /**
- * JIT backend based on LLVM's MCJIT framework.
+ * Represents type of primitive runtime values.
  */
-class JITCompilerLLVMMCJITBackend : public JITCompilerBackend
+enum class ValueType : uint8_t
 {
-public:
-  typedef llvm::Module ModuleType;
-
-  explicit JITCompilerLLVMMCJITBackend(ModuleType&);
-
-  virtual ~JITCompilerLLVMMCJITBackend();
-
-  /**
-   * Implements `JITCompilerBackend::init()`.
-   */
-  virtual bool init();
-
-  /**
-   * Implements `JITCompilerBackend::run()`.
-   */
-  virtual bool run(const std::string& func_name);
-
-  /**
-   * Implements `JITCompilerBackend::eval_func()`.
-   */
-  virtual bool eval_func(const std::vector<RuntimeValue>& args,
-    const std::vector<RuntimeValueType>& arg_types,
-    const RuntimeValueType& result_type, RuntimeValue& result_value);
-
-  /**
-   * Implements `JITCompilerBackend::finalize()`.
-   */
-  virtual bool finalize();
-
-private:
-  ModuleType& m_module;
-  llvm::Function* m_func;
-  llvm::OwningPtr<llvm::ExecutionEngine> m_engine;
+  ValueTypePtr = 0x01,
+  ValueTypeInt8,
+  ValueTypeInt16,
+  ValueTypeInt32,
+  ValueTypeInt64,
+  ValueTypeUInt8,
+  ValueTypeUInt16,
+  ValueTypeUInt32,
+  ValueTypeUInt64,
+  ValueTypeSPF,
+  ValueTypeDPF
 };
+
+struct AggregateType;
+
+typedef corevm::types::variant::variant<ValueType, AggregateType> RuntimeValueType;
+
+/**
+ * Represents type of aggregate runtime values.
+ */
+struct AggregateType
+{
+  // TODO: consider using `llvm::SmallVector<>` here.
+  std::vector<RuntimeValueType> types;
+};
+
+bool operator==(const AggregateType& lhs, const AggregateType& rhs);
+
+bool operator!=(const AggregateType& lhs, const AggregateType& rhs);
 
 } /* end namespace jit */
 } /* end namespace corevm */
 
-#endif /* COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_ */
+#endif /* COREVM_RUNTIME_VALUE_TYPE_H_ */

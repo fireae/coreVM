@@ -40,6 +40,8 @@ struct RuntimeValue
     void* PointerVal;
   };
   llvm::APInt IntVal;
+
+  // TODO: consider using `llvm::SmallVector<>` here.
   std::vector<RuntimeValue> AggregateVal;
 };
 

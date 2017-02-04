@@ -46,6 +46,8 @@ set(sources
     jit/constant_folding_pass.cc
     jit/cse_pass.cc
     jit/pass_manager.cc
+    jit/runtime_value_type.cc
+    jit/util.cc
     jit/jit_compiler_backend.cc
     jit/jit_compiler_llvmmcjit_backend.cc
     jit/lowering_pass_target_llvm_ir.cc

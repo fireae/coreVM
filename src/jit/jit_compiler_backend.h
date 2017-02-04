@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_JIT_COMPILER_BACKEND_H_
 
 #include "runtime_value.h"
+#include "runtime_value_type.h"
 
 #include <string>
 #include <vector>
@@ -55,14 +56,15 @@ public:
   virtual bool run(const std::string& func_name) = 0;
 
   /**
-   * Evaluates a compiled function by specifying a set of arguments, as well as
-   * pointer to the value that is to be returned from the function call,
-   * if one exists.
+   * Evaluates a compiled function by specifying a set of arguments and their
+   * respective types, as well as a reference to the value that is to be
+   * returned from the function call, if one exists, and its type.
    *
    * Returns a boolean value indicating whether the evaluation is successful.
    */
   virtual bool eval_func(const std::vector<RuntimeValue>& args,
-    RuntimeValue& result) = 0;
+    const std::vector<RuntimeValueType>& arg_types,
+    const RuntimeValueType& result_type, RuntimeValue& result_value) = 0;
 
   /**
    * Performs the necessary clean-up work after compilation.
