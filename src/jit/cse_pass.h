@@ -29,17 +29,56 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace jit {
 
+/**
+ * Class encapsulates the logic for running "Common Subexpression Elimination"
+ * optimization on an input IR module.
+ */
 class CSEPass : public TransformPass
 {
 public:
+  /**
+   * Name of the pass.
+   */
   static const char* Name;
 
+  /**
+   * Type of the pass.
+   */
   static const Pass::PassType Type;
 
+  /**
+   * Performs analysis operation on the specified IR module.
+   *
+   * Returns a boolean indicating whether the operation is successful.
+   */
   virtual bool run(IRModule&, const AnalysisResult* = nullptr);
+
+  /**
+   * Performs analysis operation on the specified IR type definition.
+   *
+   * Returns a boolean indicating whether the operation is successful.
+   */
   virtual bool run(IRTypeDecl&, const AnalysisResult* = nullptr);
+
+  /**
+   * Performs analysis operation on the specified IR function.
+   *
+   * Returns a boolean indicating whether the operation is successful.
+   */
   virtual bool run(IRClosure&, const AnalysisResult* = nullptr);
+
+  /**
+   * Performs analysis operation on the specified IR basic block.
+   *
+   * Returns a boolean indicating whether the operation is successful.
+   */
   virtual bool run(IRBasicBlock&, const AnalysisResult* = nullptr);
+
+  /**
+   * Performs analysis operation on the specified IR instruction.
+   *
+   * Returns a boolean indicating whether the operation is successful.
+   */
   virtual bool run(IRInstruction&, const AnalysisResult* = nullptr);
 };
 

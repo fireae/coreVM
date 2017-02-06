@@ -30,6 +30,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace ir {
 
+/**
+ * Class encapsulates the index storage of an IR module's entities.
+ *
+ * The primary purpose of this class is to facilitate IR module verification
+ * through the interfaces of the `Verifier` class, as well as other IR
+ * optimization operations.
+ */
 struct IRModuleIndex
 {
   typedef std::unordered_map<std::string, const IRTypeDecl* const> TypeIndex;
@@ -48,12 +55,30 @@ struct IRModuleIndex
 
   typedef std::unordered_map<std::string, FunctionDefIndex> FunctionIndex;
 
+  /**
+   * Determines whether a function definition with the specified name exists
+   * in the module.
+   */
   bool has_func_def(const std::string&) const;
 
+  /**
+   * Constructor. Takes an instance of the module to be indexed.
+   */
   explicit IRModuleIndex(const IRModule&);
 
+  /**
+   * Pointer to the indexed module.
+   */
   const IRModule* const module_indexed;
+
+  /**
+   * Index of the set of type definitions defined in the module.
+   */
   TypeIndex type_index;
+
+  /**
+   * Index of the set of function definitions defined in the module.
+   */
   FunctionIndex function_index;
 
 private:

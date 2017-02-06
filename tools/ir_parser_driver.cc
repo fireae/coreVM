@@ -30,10 +30,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Command-line tool that facilitates debugging of the coreVM IR parser.
+ */
 class ir_parser_driver : public sneaker::utility::cmdline_program
 {
 public:
+  /**
+   * Default constructor.
+   */
   ir_parser_driver();
+
+  /**
+   * Default destructor.
+   */
   virtual ~ir_parser_driver() = default;
 
 protected:

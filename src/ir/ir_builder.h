@@ -48,12 +48,18 @@ typedef uint64_t BasicBlock;
 typedef uint64_t SSAVariableImpl;
 struct IRBuilderImpl;
 
+/**
+ * Type deonoting the reference type of an IR value.
+ */
 enum ValueRefType
 {
   ValueRefTypeByValue = 0x01,
   ValueRefTypeByReference
 };
 
+/**
+ * Type denoting the value type of an IR value.
+ */
 enum ValueType
 {
   ValueTypeVoid = 0x01,
@@ -72,12 +78,18 @@ enum ValueType
   ValueTypeObject
 };
 
+/**
+ * Type denoting the options for the `alloca` IR instruction.
+ */
 enum AllocaType
 {
   AllocaTypeStatic = 0x00,
   AllocaTypeAuto
 };
 
+/**
+ * Type denoting the IR instruction opcodes.
+ */
 enum InstrOpcode
 {
   InstrOpcodeALLOCA = 0x01,
@@ -120,6 +132,10 @@ enum InstrOpcode
   InstrOpcodeCALL
 };
 
+/**
+ * Abstraction for representing function parameters used in
+ * IR construction.
+ */
 struct FuncParam
 {
   FuncParamType value;
@@ -127,6 +143,9 @@ struct FuncParam
   FuncParam(FuncParamType);
 };
 
+/**
+ * Abstraction for representing a SSA variable in a basic block.
+ */
 struct SSAVariable
 {
   SSAVariableImpl value;
@@ -134,6 +153,9 @@ struct SSAVariable
   SSAVariable(SSAVariableImpl);
 };
 
+/**
+ * Abstraction of an IR operand value.
+ */
 typedef corevm::types::variant::variant<
   bool,
   uint8_t,

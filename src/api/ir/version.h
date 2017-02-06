@@ -29,9 +29,15 @@ namespace corevm {
 namespace api {
 namespace ir {
 
-// IR_VERSION % 100 is the patch level.
-// IR_VERSION / 100 % 1000 is the minor version.
-// IR_VERSION / 100000 is the major version.
+/**
+ * Denotes the current version of coreVM IR format.
+ *
+ * The integral value should be interpreted as follows:
+ *
+ *   * IR_VERSION % 100 is the patch level.
+ *   * IR_VERSION / 100 % 1000 is the minor version.
+ *   * IR_VERSION / 100000 is the major version.
+ */
 enum : uint32_t
 {
   IR_VERSION = 100

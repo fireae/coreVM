@@ -37,11 +37,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+/**
+ * coreVM Intermediate Representation disassembler.
+ *
+ * Command-line tool that transforms an input IR module in binary format
+ * into its textual representation.
+ *
+ * Example:
+ *   ./build/tools/ir_dis --input sample.ir --output sample.ir.txt
+ */
 class IRDisassembler : public sneaker::utility::cmdline_program
 {
 public:
+  /**
+   * Default constructor.
+   */
   IRDisassembler();
 
+  /**
+   * Default destructor.
+   */
   virtual ~IRDisassembler() {}
 
 protected:

@@ -35,23 +35,47 @@ struct IRModuleIndex;
 
 namespace jit {
 
+/**
+ * A specialized type of `AnalysisResult` that holds the index of an IR module
+ * as the result from running `VerificationPass`.
+ */
 struct IRModuleIndexAnalysisResult : public AnalysisResult
 {
 virtual ~IRModuleIndexAnalysisResult();
 mutable std::unique_ptr<ir::IRModuleIndex> module_index;
 };
 
+/**
+ * Class encapsulates the logic for running verification on an input IR module.
+ */
 class VerificationPass : public AnalysisPass
 {
 public:
+  /**
+   * Name of the pass.
+   */
   static const char* Name;
 
+  /**
+   * Type of the pass.
+   */
   static const Pass::PassType Type;
 
+  /**
+   * Default constructor.
+   */
   VerificationPass();
 
+  /**
+   * Returns the analysis result of this pass, of type `AnalysisResult`.
+   */
   virtual std::shared_ptr<const AnalysisResult> get_analysis_result() const;
 
+  /**
+   * Performs analysis operation on the specified IR module.
+   *
+   * Returns a boolean indicating whether the operation is successful.
+   */
   virtual bool run(const IRModule&, const AnalysisResult* = nullptr);
 
 private:

@@ -29,9 +29,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace ir {
 
+/**
+ * coreVM Intermediate Representation disassembler.
+ *
+ * Encapsulates the logic for transforming an IR module from its in-memory
+ * format to the equivalent textual representation.
+ */
 class Disassembler
 {
 public:
+  /**
+   * A set of options for `Disassembler`.
+   */
   struct Options
   {
     bool emit_newlines;
@@ -39,8 +48,15 @@ public:
     Options();
   };
 
+  /**
+   * Constructor. Takes a set of options for the instance.
+   */
   explicit Disassembler(Options);
 
+  /**
+   * Runs the disassembly operation on the specified module instance.
+   * Outputs the result to the specified output stream.
+   */
   void disassemble(const IRModule&, std::ostream&) const;
 
 private:

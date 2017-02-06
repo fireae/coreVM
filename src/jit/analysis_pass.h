@@ -32,9 +32,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace jit {
 
+/**
+ * Abstraction representing a generic analysis pass in the JIT pipeline.
+ */
 class AnalysisPass : public Pass
 {
 public:
+  /**
+   * Default destructor.
+   */
   virtual ~AnalysisPass() {}
 
   /**

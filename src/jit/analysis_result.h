@@ -26,8 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace jit {
 
+/**
+ * Abstraction represents the result from the operation of an `AnalysisPass`.
+ */
 struct AnalysisResult
 {
+/**
+ * Default destructor.
+ */
 virtual ~AnalysisResult();
 };
 

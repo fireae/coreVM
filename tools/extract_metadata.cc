@@ -33,11 +33,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
+/**
+ * Command-line tool that extracts the metadata of coreVM runtime into
+ * a file. Runtime metadata may include the opcode values of the coreVM
+ * instruction set, and the flag values for managing dynamic objects.
+ */
 class ExtractMetadata : public sneaker::utility::cmdline_program
 {
 public:
+  /**
+   * Default constructor.
+   */
   ExtractMetadata();
 
+  /**
+   * Default destructor.
+   */
   virtual ~ExtractMetadata();
 
 protected:

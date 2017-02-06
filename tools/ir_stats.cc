@@ -28,12 +28,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdio>
 #include <string>
 
-
+/**
+ * Command-line tool that generates statistics from an input IR module in
+ * binary format.
+ */
 class IRStats : public sneaker::utility::cmdline_program
 {
 public:
+  /**
+   * Default constructor.
+   */  
   IRStats();
 
+  /**
+   * Default destructor.
+   */
   virtual ~IRStats() {}
 
 protected:

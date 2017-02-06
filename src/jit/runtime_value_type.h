@@ -51,6 +51,9 @@ enum class ValueType : uint8_t
 
 struct AggregateType;
 
+/**
+ * Represents type of generic runtime values.
+ */
 typedef corevm::types::variant::variant<ValueType, AggregateType> RuntimeValueType;
 
 /**
@@ -62,8 +65,14 @@ struct AggregateType
   std::vector<RuntimeValueType> types;
 };
 
+/**
+ * Evaluates the equality between two instances of `AggregateType`.
+ */
 bool operator==(const AggregateType& lhs, const AggregateType& rhs);
 
+/**
+ * Evaluates the inequality between two instances of `AggregateType`.
+ */
 bool operator!=(const AggregateType& lhs, const AggregateType& rhs);
 
 } /* end namespace jit */

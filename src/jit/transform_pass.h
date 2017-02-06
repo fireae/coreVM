@@ -31,6 +31,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace jit {
 
+/**
+ * Abstraction representing a generic transformation pass in the JIT pipeline.
+ */
 class TransformPass : public Pass
 {
 public:

@@ -43,8 +43,14 @@ class JITCompilerLLVMMCJITBackend : public JITCompilerBackend
 public:
   typedef llvm::Module ModuleType;
 
+  /**
+   * Default constructor.
+   */
   explicit JITCompilerLLVMMCJITBackend(ModuleType&);
 
+  /**
+   * Default destructor.
+   */
   virtual ~JITCompilerLLVMMCJITBackend();
 
   /**

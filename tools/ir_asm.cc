@@ -38,11 +38,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+/**
+ * coreVM Intermediate Representation assembler.
+ *
+ * Command-line tool that transforms an input IR module in textual format
+ * into its binary representation.
+ *
+ * Example:
+ *   ./build/tools/ir_asm --input sample.ir.txt --output sample.ir
+ */
 class IRAssembler : public sneaker::utility::cmdline_program
 {
 public:
+  /**
+   * Default constructor.
+   */
   IRAssembler();
 
+  /**
+   * Default destructor.
+   */
   virtual ~IRAssembler() = default;
 
 protected:

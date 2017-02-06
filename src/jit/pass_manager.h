@@ -40,8 +40,14 @@ namespace jit {
 class PassManager
 {
 public:
+  /**
+   * Default constructor.
+   */
   PassManager();
 
+  /**
+   * Copy constructor. Unsupported.
+   */
   PassManager(const PassManager&) = delete;
 
   /**

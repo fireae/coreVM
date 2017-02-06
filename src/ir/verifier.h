@@ -39,8 +39,14 @@ namespace ir {
 class Verifier
 {
 public:
+  /**
+   * Constructor. Takes reference of an instance of the module to be verified.
+   */
   explicit Verifier(const IRModule&);
 
+  /**
+   * Copy constructor (unsupported).
+   */
   Verifier(const Verifier&) = delete;
 
   /**

@@ -30,16 +30,30 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace jit {
 
+/**
+ * Abstraction that encapsulates the lowered LLVM IR as the result of
+ * `LoweringPassTargetLLVMIR`.
+ */
 struct LLVMModuleAnalysisResult : public AnalysisResult
 {
   mutable std::unique_ptr<llvm::Module> target_module;
 };
 
+/**
+ * An analysis pass in the JIT pipeline that performs lowering process on
+ * input IR module and transforms to the equivalent LLVM IR.
+ */
 class LoweringPassTargetLLVMIR : public AnalysisPass
 {
 public:
+  /**
+   * Name of pass.
+   */
   static const char* Name;
 
+  /**
+   * Default destructor.
+   */
   virtual ~LoweringPassTargetLLVMIR();
 
   /**

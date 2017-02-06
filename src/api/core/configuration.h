@@ -34,37 +34,78 @@ namespace api {
 namespace core {
 
 /**
- * An encapsulation of a set of configuration parameters for bytecode execution.
+ * An encapsulation of a set of configuration parameters for coreVM's operations.
  */
 class Configuration
 {
 public:
+  /**
+   * Default constructor.
+   */
   Configuration();
 
+  /**
+   * Helper member function that loads from a configuration file.
+   */
   static bool load_config(const char*, Configuration&);
 
   /* Value accessors. */
+
+  /**
+   * Gets the amount of allocated storage for the heap, in bytes.
+   */
   uint64_t heap_alloc_size() const;
 
+  /**
+   * Gets the amount of allocated storage for the native type pool, in bytes.
+   */
   uint64_t pool_alloc_size() const;
 
+  /**
+   * Gets the number of milliseconds for GC interrupts.
+   */
   uint32_t gc_interval() const;
 
+  /**
+   * Gets whether a flag value has been set for garbage collection.
+   */
   bool has_gc_flag() const;
 
+  /**
+   * Gets the flag value for garbage collection, if it has been set.
+   */
   uint8_t gc_flag() const;
 
+  /**
+   * Gets the log mode speficied.
+   */
   const std::string& log_mode() const;
 
   /* Value setters. */
+
+  /**
+   * Sets the amount of allocated storage for the heap, in bytes.
+   */
   void set_heap_alloc_size(uint64_t);
 
+  /**
+   * Sets the amount of allocated storage for the native type pool, in bytes.
+   */
   void set_pool_alloc_size(uint64_t);
 
+  /**
+   * Sets the number of milliseconds for GC interrupts.
+   */
   void set_gc_interval(uint32_t);
 
+  /**
+   * Sets the flag value for garbage collection.
+   */
   void set_gc_flag(uint8_t);
 
+  /**
+   * Gets the log mode for the application.
+   */
   void set_log_mode(const char*);
 
 private:

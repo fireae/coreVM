@@ -62,6 +62,9 @@ typedef uint64_t type_id_t;
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Abstraction representing an identifiable type in an IR module.
+ */
 struct IdentifierType
 {
   typedef corevm::types::variant::variant<ValueType, ArrayType, TypeDecl> Value;
@@ -229,6 +232,10 @@ struct _TypeDecl
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Class that encapsulates the logic and data needed for a single aggregate
+ * type declaration used during IR construction.
+ */
 struct TypeDeclImpl
 {
   std::string name;
@@ -258,6 +265,10 @@ struct TypeDeclImpl
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Class that encapsulates the logic and data needed for a single array
+ * type declaration used during IR construction.
+ */
 struct ArrayTypeImpl
 {
   size_t len;
@@ -266,6 +277,10 @@ struct ArrayTypeImpl
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Encapsulation that implements the storage mechanisms of aggregate
+ * type declarations used during IR construction.
+ */
 struct TypeDeclStore
 {
   type_id_t type_id;
@@ -335,6 +350,10 @@ struct TypeDeclStore
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Encapsulation that implements the storage mechanisms of array type
+ * declarations used during IR construction.
+ */
 struct ArrayTypeStore
 {
   type_id_t type_id;
@@ -365,8 +384,16 @@ struct ArrayTypeStore
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Encapsulation that implements the storage mechanisms of function
+ * parameters of a single function definition used during IR construction.
+ */
 struct FuncParamStore
 {
+  /**
+   * Class that encapsulates the logic and data needed for a function parameter
+   * used during IR construction.
+   */
   struct FuncParamImpl
   {
     std::string name;
@@ -405,6 +432,10 @@ struct FuncParamStore
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Class that encapsulates the logic and data needed for an instruction
+ * used during IR construction.
+ */
 struct InstructionImpl
 {
   SSAVariableImpl target;
@@ -511,6 +542,10 @@ struct InstructionImpl
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Encapsulation that implements the storage mechanisms of basic blocks
+ * of a single function definition used during IR construction.
+ */
 struct BasicBlockStore
 {
   struct BasicBlockImpl
@@ -621,8 +656,16 @@ struct BasicBlockStore
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Encapsulation that implements the storage mechanisms of function definitions
+ * in an IR module used during IR construction.
+ */
 struct FuncDefnStore
 {
+  /**
+   * Class encapsulating the logic and data needed to represent and store
+   * a single function definition in an IR module used during IR construction.
+   */
   struct FuncDefnImpl
   {
     IdentifierType ret_type;
@@ -691,88 +734,212 @@ struct FuncDefnStore
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Class encapsulating the logic and data needed to implement whole-module
+ * IR construction.
+ */
 struct IRBuilderImpl
 {
   IRBuilderImpl();
 
+  /**
+   * Add the module name to the module metadata.
+   */
   void add_module_name(const char*);
 
+  /**
+   * Add the module author name to the module metadata.
+   */
   void add_author(const char*);
 
+  /**
+   * Add the coreVM target version to the module metadata.
+   * If not specified, the target version to be used is the current version
+   * of coreVM.
+   */
   void add_target_version(uint64_t);
 
+  /**
+   * Add the timestamp of module creation to the module metadata.
+   * If not specified, the current UNIX timestamp is to be used.
+   */
   void add_timestamp(uint64_t);
 
+  /**
+   * Add a type definition to the module.
+   * This method is idempotent. Calling it with the same argument more
+   * than once will return the same type declaration.
+   */
   TypeDecl add_type(const std::string&);
 
+  /**
+   * Get the name of a previously added type definition.
+   * Returns an empty string if the specified type has not been previously
+   * added.
+   */
   const char* get_type_decl_name(TypeDecl) const;
 
+  /**
+   * Add a value type field to a type definition.
+   */
   void add_type_field(TypeDecl, IdentifierType, const std::string&);
 
+  /**
+   * Determines if a field with the specified name exists in a given
+   * type definition.
+   */
   bool has_field(TypeDecl, const std::string&);
 
+  /**
+   * Create a fixed-size array type.
+   */
   ArrayType add_array_type(const ArrayTypeImpl&);
 
+  /**
+   * Determines if the specified array type has been created.
+   */
   bool has_array_type(ArrayType);
 
+  /**
+   * Create a function definition with the specified name, return type,
+   * and return value reference type, and an optional parent name.
+   *
+   * NOTE: currently function definitions with the same name are not allowed.
+   */
   FuncDefn create_func_defn(const std::string&, IdentifierType,
     const char* parent);
 
+  /**
+   * Add a function parameter with the specified parameter name, type and value
+   * reference type.
+   *
+   * Returns a reference to the added parameter.
+   */
   FuncParam add_func_parameter(FuncDefn, const std::string&, IdentifierType);
 
+  /**
+   * Creates a basic block in the specified function definition.
+   */
   BasicBlock create_basic_block(FuncDefn);
 
+  /**
+   * Insert variable initialization instruction, a.k.a. 'alloca', for
+   * initialization of a value type.
+   */
   SSAVariable add_alloca(FuncDefn, BasicBlock, AllocaType, IdentifierType);
 
+  /**
+   * Insert variable initialization instruction, a.k.a. 'alloca', for
+   * initialization of an aggregate type.
+   */
   SSAVariable add_alloca(FuncDefn, BasicBlock, AllocaType, const std::string&,
     ValueRefType);
 
+  /**
+   * Insert 'load' instruction.
+   */
   SSAVariable add_load(FuncDefn, BasicBlock, IdentifierType,
     OperandValue);
 
+  /**
+   * Insert 'store' instruction.
+   */
   void add_store(FuncDefn, BasicBlock, IdentifierType,
     OperandValue, OperandValue);
 
+  /**
+   * Insert "attribute getting" instruction, a.k.a. 'getattr'.
+   */
   SSAVariable add_get_attribute(FuncDefn, BasicBlock, OperandValue,
     const std::string&);
 
+  /**
+   * Insert "attribute setting" instruction, a.k.a. 'setattr'.
+   */
   void add_set_attribute(FuncDefn, BasicBlock, OperandValue, OperandValue,
     const std::string&);
 
+  /**
+   * Insert "attribute deletion" instruction, a.k.a. 'delattr'.
+   */
   void add_delete_attribute(FuncDefn, BasicBlock, OperandValue,
     const std::string&);
 
+  /**
+   * Insert "get element" instruction, a.k.a. 'getelement'.
+   */
   SSAVariable add_get_element(FuncDefn, BasicBlock, IdentifierType,
     OperandValue, OperandValue);
 
+  /**
+   * Insert 'putelement' instruction.
+   */
   void add_put_element(FuncDefn, BasicBlock, OperandValue, OperandValue,
     OperandValue);
 
+  /**
+   * Insert 'len' instruction.
+   */
   SSAVariable add_len(FuncDefn, BasicBlock, OperandValue);
 
+  /**
+   * Insert 'ret' instruction.
+   */
   SSAVariable add_ret(FuncDefn, BasicBlock, IdentifierType, OperandValue);
 
+  /**
+   * Insert an instruction for unary expressions.
+   */
   SSAVariable add_unary_instr(FuncDefn, BasicBlock, InstrOpcode,
     ValueType, OperandValue);
 
+  /**
+   * Insert an instruction for binary expressions.
+   */
   SSAVariable add_binary_instr(FuncDefn, BasicBlock, InstrOpcode,
     ValueType, OperandValue, OperandValue);
 
+  /**
+   * Insert an instruction for equality comparison expression.
+   */
   SSAVariable add_equality_instr(FuncDefn, BasicBlock, InstrOpcode,
     OperandValue, OperandValue);
 
+  /**
+   * Insert equality comparison instruction 'cmp', for
+   * value comparisons of two values.
+   */
   SSAVariable add_cmp(FuncDefn, BasicBlock, OperandValue, OperandValue);
 
+  /**
+   * Insert 'call' instruction.
+   */
   SSAVariable add_call(FuncDefn, BasicBlock, IdentifierType,
     const std::string&, const std::vector<OperandValue>&);
 
+  /**
+   * Add a conditional statement inside the current basic block.
+   */
   void add_conditional_branch(FuncDefn, BasicBlock, OperandValue, BasicBlock,
     BasicBlock);
 
+  /**
+   * Add a switch statement construct.
+   *
+   * Note that the number of cases and target blocks must equal.
+   */
   void add_switch(FuncDefn, BasicBlock, OperandValue predicate,
     const std::vector<OperandValue>& cases,
     const std::vector<BasicBlock>& target_blocks);
 
+  /**
+   * Finalizes module construction.
+   * Relinquishes the constructed module to caller. Module verification is
+   * performed to check for well-formedness and correctness.
+   * Returns a boolean value indicating whether the constructed module passes
+   * verification, and updates the caller the reason of failure through the
+   * specified string.
+   */
   bool finalize(std::unique_ptr<IRModule>&, std::string&, bool verify);
 
 private:

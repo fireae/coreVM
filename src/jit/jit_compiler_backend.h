@@ -39,8 +39,14 @@ namespace jit {
 class JITCompilerBackend
 {
 public:
+  /**
+   * Default constructor.
+   */
   JITCompilerBackend();
   
+  /**
+   * Default destructor.
+   */
   virtual ~JITCompilerBackend();
 
   /**

@@ -51,6 +51,9 @@ template <typename JITScheme>
 class JITCompiler
 {
 public:
+  /**
+   * Default constructor.
+   */
   JITCompiler()
     :
     m_target_backend(),
@@ -58,6 +61,9 @@ public:
   {
   }
 
+  /**
+   * Default destructor.
+   */
   ~JITCompiler()
   {
     release();
