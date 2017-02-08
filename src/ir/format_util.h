@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_FORMAT_UTIL_H_
 
 #include "format.h"
+#include "types/variant/variant.h"
 #include <string>
 #include <utility>
 #include <vector>
@@ -46,9 +47,21 @@ string_to_IROpcode(const std::string& val);
 const char* IROpcode_to_string(corevm::IROpcode);
 
 /**
+ * Generic type representing an IR definition, it can be either a type
+ * or function definition.
+ */
+using IRDefn = types::variant::variant<corevm::IRClosure, corevm::IRTypeDecl>;
+
+/**
  * IR module metadata key-value pair.
  */
 typedef std::pair<std::string, std::string> MetadataPair;
+
+/**
+ * Set metadata and definitions to an IR module.
+ */
+void set_metadata_and_definitions(const std::vector<MetadataPair>&,
+  const std::vector<IRDefn>&, corevm::IRModule&);
 
 /**
  * Add a metadata key-value pair to a IR module.

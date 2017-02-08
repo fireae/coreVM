@@ -1389,10 +1389,10 @@ For example:
 Type Definition Syntax
 ======================
 
-Type definitions come after metadata definition. Each definition start with the
-`"type"` keyword, followed by a pair of curly braces that surround a set of type
-fields. Each type field is defined by the type of the field plus the identifier
-of the field. Type fields are separated by semicolons.
+Each type definition start with the `"type"` keyword, followed by a pair of
+curly braces that surround a set of type fields. Each type field is defined by
+the type of the field plus the identifier of the field. Type fields are
+separated by semicolons.
 
 Example:
 
@@ -1495,12 +1495,12 @@ Below is an example of the textual representation of a sample module.
 
 .. code::
 
-    "module name" : "Dummy_IR"
-    "format version" : "1000"
-    "target version" : "10"
-    "path" : "./dummy_ir.ir"
-    "author" : "Yanzheng Li"
     "timestamp" : "1472959465"
+    "author" : "Yanzheng Li"
+    "format version" : "1000"
+    "module name" : "Dummy_IR"
+    "path" : "./dummy_ir.ir"
+    "target version" : "10"
 
     type Person {
         string name;
@@ -1508,15 +1508,6 @@ Below is an example of the textual representation of a sample module.
         Person* sibling;
         Location* address;
         array [ 10 * Person ] friends;
-    }
-
-    type Location {
-        string street_address;
-        string* country;
-        string zipcode;
-    }
-
-    type NullType {
     }
 
     def Person* createPerson(string* name, ui8 age) {
@@ -1529,6 +1520,12 @@ Below is an example of the textual representation of a sample module.
         ret Person* %person;
     }
 
+    type Location {
+        string street_address;
+        string* country;
+        string zipcode;
+    }
+
     def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson {
     entry:
         %sum = add ui64 %lhs_val %rhs_val;
@@ -1536,4 +1533,7 @@ Below is an example of the textual representation of a sample module.
     }
 
     def void doNothing() {
+    }
+
+    type NullType {
     }

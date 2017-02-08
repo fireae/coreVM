@@ -100,11 +100,10 @@ class IRParserDriver;
 %type <std::vector<corevm::IRParameter>> function_arg_list;
 %type <std::vector<corevm::IRParameter>> function_arg_list_core;
 %type <corevm::IRClosure> function_def;
-%type <std::vector<corevm::IRClosure>> function_def_list;
 %type <corevm::IRTypeField> type_field;
 %type <std::vector<corevm::IRTypeField>> type_field_list;
 %type <corevm::IRTypeDecl> type_def;
-%type <std::vector<corevm::IRTypeDecl>> type_def_list;
+%type <std::vector<corevm::ir::IRDefn>> definition_list;
 %type <corevm::ir::MetadataPair> metadata_def;
 %type <std::vector<corevm::ir::MetadataPair>> metadata_def_list;
 %type <corevm::IRModule> input;
@@ -116,12 +115,10 @@ class IRParserDriver;
 %start input;
 
 input
-    : metadata_def_list type_def_list function_def_list
+    : metadata_def_list definition_list
         {
             $$ = corevm::IRModule();
-            $$.types = std::move($2);
-            $$.closures = std::move($3);
-            corevm::ir::set_metadata($1, $$);
+            corevm::ir::set_metadata_and_definitions($1, $2, $$);
             driver.set_module(std::move($$));
         }
     ;
@@ -145,24 +142,17 @@ metadata_def
         }
     ;
 
-function_def_list
+definition_list
     :
         {
-            $$ = std::vector<corevm::IRClosure>();
+            $$ = std::vector<corevm::ir::IRDefn>();
         }
-    | function_def_list function_def
+    | definition_list type_def
         {
             $$ = std::move($1);
             $$.push_back($2);
         }
-    ;
-
-type_def_list
-    :
-        {
-            $$ = std::vector<corevm::IRTypeDecl>();
-        }
-    | type_def_list type_def
+    | definition_list function_def
         {
             $$ = std::move($1);
             $$.push_back($2);

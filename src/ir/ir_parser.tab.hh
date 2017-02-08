@@ -395,35 +395,32 @@ namespace yy {
       // basic_block_list
       char dummy20[sizeof(std::vector<corevm::IRBasicBlock>)];
 
-      // function_def_list
-      char dummy21[sizeof(std::vector<corevm::IRClosure>)];
-
       // instruction_group
-      char dummy22[sizeof(std::vector<corevm::IRInstruction >)];
+      char dummy21[sizeof(std::vector<corevm::IRInstruction >)];
 
       // label_list
       // label_list_core
-      char dummy23[sizeof(std::vector<corevm::IRLabel>)];
+      char dummy22[sizeof(std::vector<corevm::IRLabel>)];
 
       // operand_list
-      char dummy24[sizeof(std::vector<corevm::IROperand>)];
+      char dummy23[sizeof(std::vector<corevm::IROperand>)];
 
       // function_arg_list
       // function_arg_list_core
-      char dummy25[sizeof(std::vector<corevm::IRParameter>)];
-
-      // type_def_list
-      char dummy26[sizeof(std::vector<corevm::IRTypeDecl>)];
+      char dummy24[sizeof(std::vector<corevm::IRParameter>)];
 
       // type_field_list
-      char dummy27[sizeof(std::vector<corevm::IRTypeField>)];
+      char dummy25[sizeof(std::vector<corevm::IRTypeField>)];
+
+      // definition_list
+      char dummy26[sizeof(std::vector<corevm::ir::IRDefn>)];
 
       // metadata_def_list
-      char dummy28[sizeof(std::vector<corevm::ir::MetadataPair>)];
+      char dummy27[sizeof(std::vector<corevm::ir::MetadataPair>)];
 
       // instruction_options
       // instruction_option_list
-      char dummy29[sizeof(std::vector<std::string>)];
+      char dummy28[sizeof(std::vector<std::string>)];
 };
 
     /// Symbol semantic values.
@@ -561,8 +558,6 @@ namespace yy {
 
   basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRBasicBlock> v, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRClosure> v, const location_type& l);
-
   basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRInstruction > v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRLabel> v, const location_type& l);
@@ -571,9 +566,9 @@ namespace yy {
 
   basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRParameter> v, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRTypeDecl> v, const location_type& l);
-
   basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRTypeField> v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const std::vector<corevm::ir::IRDefn> v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::vector<corevm::ir::MetadataPair> v, const location_type& l);
 
@@ -1004,7 +999,7 @@ namespace yy {
     {
       yyeof_ = 0,
       yylast_ = 193,     ///< Last index in yytable_.
-      yynnts_ = 35,  ///< Number of nonterminal symbols.
+      yynnts_ = 34,  ///< Number of nonterminal symbols.
       yyfinal_ = 3, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
@@ -1094,28 +1089,28 @@ namespace yy {
         value.copy< bool > (other.value);
         break;
 
-      case 69: // ir_value_type_array
+      case 68: // ir_value_type_array
         value.copy< corevm::IRArrayType > (other.value);
         break;
 
-      case 54: // basic_block
+      case 53: // basic_block
         value.copy< corevm::IRBasicBlock > (other.value);
         break;
 
-      case 49: // function_def
+      case 48: // function_def
         value.copy< corevm::IRClosure > (other.value);
         break;
 
-      case 66: // ir_identifier_type
+      case 65: // ir_identifier_type
         value.copy< corevm::IRIdentifierType > (other.value);
         break;
 
-      case 56: // instruction
-      case 57: // expr
+      case 55: // instruction
+      case 56: // expr
         value.copy< corevm::IRInstruction > (other.value);
         break;
 
-      case 62: // label
+      case 61: // label
         value.copy< corevm::IRLabel > (other.value);
         break;
 
@@ -1127,32 +1122,32 @@ namespace yy {
         value.copy< corevm::IROpcode > (other.value);
         break;
 
-      case 64: // operand
+      case 63: // operand
         value.copy< corevm::IROperand > (other.value);
         break;
 
-      case 52: // function_arg
+      case 51: // function_arg
         value.copy< corevm::IRParameter > (other.value);
         break;
 
-      case 46: // type_def
+      case 45: // type_def
         value.copy< corevm::IRTypeDecl > (other.value);
         break;
 
-      case 48: // type_field
+      case 47: // type_field
         value.copy< corevm::IRTypeField > (other.value);
         break;
 
-      case 67: // ir_value
+      case 66: // ir_value
         value.copy< corevm::IRValue > (other.value);
         break;
 
-      case 68: // ir_value_type
-      case 70: // ir_value_type_string
-      case 71: // ir_value_type_floating_numeric
-      case 72: // ir_value_type_integer_numeric
-      case 73: // ir_value_type_long_integer_numeric
-      case 74: // ir_value_type_short_integer_numeric
+      case 67: // ir_value_type
+      case 69: // ir_value_type_string
+      case 70: // ir_value_type_floating_numeric
+      case 71: // ir_value_type_integer_numeric
+      case 72: // ir_value_type_long_integer_numeric
+      case 73: // ir_value_type_short_integer_numeric
         value.copy< corevm::IRValueType > (other.value);
         break;
 
@@ -1201,50 +1196,46 @@ namespace yy {
       case 37: // LBRACE
       case 38: // RBRACE
       case 39: // LABEL
-      case 65: // identifier
+      case 64: // identifier
         value.copy< std::string > (other.value);
         break;
 
-      case 53: // basic_block_list
+      case 52: // basic_block_list
         value.copy< std::vector<corevm::IRBasicBlock> > (other.value);
         break;
 
-      case 44: // function_def_list
-        value.copy< std::vector<corevm::IRClosure> > (other.value);
-        break;
-
-      case 55: // instruction_group
+      case 54: // instruction_group
         value.copy< std::vector<corevm::IRInstruction > > (other.value);
         break;
 
-      case 60: // label_list
-      case 61: // label_list_core
+      case 59: // label_list
+      case 60: // label_list_core
         value.copy< std::vector<corevm::IRLabel> > (other.value);
         break;
 
-      case 63: // operand_list
+      case 62: // operand_list
         value.copy< std::vector<corevm::IROperand> > (other.value);
         break;
 
-      case 50: // function_arg_list
-      case 51: // function_arg_list_core
+      case 49: // function_arg_list
+      case 50: // function_arg_list_core
         value.copy< std::vector<corevm::IRParameter> > (other.value);
         break;
 
-      case 45: // type_def_list
-        value.copy< std::vector<corevm::IRTypeDecl> > (other.value);
+      case 46: // type_field_list
+        value.copy< std::vector<corevm::IRTypeField> > (other.value);
         break;
 
-      case 47: // type_field_list
-        value.copy< std::vector<corevm::IRTypeField> > (other.value);
+      case 44: // definition_list
+        value.copy< std::vector<corevm::ir::IRDefn> > (other.value);
         break;
 
       case 42: // metadata_def_list
         value.copy< std::vector<corevm::ir::MetadataPair> > (other.value);
         break;
 
-      case 58: // instruction_options
-      case 59: // instruction_option_list
+      case 57: // instruction_options
+      case 58: // instruction_option_list
         value.copy< std::vector<std::string> > (other.value);
         break;
 
@@ -1269,28 +1260,28 @@ namespace yy {
         value.copy< bool > (v);
         break;
 
-      case 69: // ir_value_type_array
+      case 68: // ir_value_type_array
         value.copy< corevm::IRArrayType > (v);
         break;
 
-      case 54: // basic_block
+      case 53: // basic_block
         value.copy< corevm::IRBasicBlock > (v);
         break;
 
-      case 49: // function_def
+      case 48: // function_def
         value.copy< corevm::IRClosure > (v);
         break;
 
-      case 66: // ir_identifier_type
+      case 65: // ir_identifier_type
         value.copy< corevm::IRIdentifierType > (v);
         break;
 
-      case 56: // instruction
-      case 57: // expr
+      case 55: // instruction
+      case 56: // expr
         value.copy< corevm::IRInstruction > (v);
         break;
 
-      case 62: // label
+      case 61: // label
         value.copy< corevm::IRLabel > (v);
         break;
 
@@ -1302,32 +1293,32 @@ namespace yy {
         value.copy< corevm::IROpcode > (v);
         break;
 
-      case 64: // operand
+      case 63: // operand
         value.copy< corevm::IROperand > (v);
         break;
 
-      case 52: // function_arg
+      case 51: // function_arg
         value.copy< corevm::IRParameter > (v);
         break;
 
-      case 46: // type_def
+      case 45: // type_def
         value.copy< corevm::IRTypeDecl > (v);
         break;
 
-      case 48: // type_field
+      case 47: // type_field
         value.copy< corevm::IRTypeField > (v);
         break;
 
-      case 67: // ir_value
+      case 66: // ir_value
         value.copy< corevm::IRValue > (v);
         break;
 
-      case 68: // ir_value_type
-      case 70: // ir_value_type_string
-      case 71: // ir_value_type_floating_numeric
-      case 72: // ir_value_type_integer_numeric
-      case 73: // ir_value_type_long_integer_numeric
-      case 74: // ir_value_type_short_integer_numeric
+      case 67: // ir_value_type
+      case 69: // ir_value_type_string
+      case 70: // ir_value_type_floating_numeric
+      case 71: // ir_value_type_integer_numeric
+      case 72: // ir_value_type_long_integer_numeric
+      case 73: // ir_value_type_short_integer_numeric
         value.copy< corevm::IRValueType > (v);
         break;
 
@@ -1376,50 +1367,46 @@ namespace yy {
       case 37: // LBRACE
       case 38: // RBRACE
       case 39: // LABEL
-      case 65: // identifier
+      case 64: // identifier
         value.copy< std::string > (v);
         break;
 
-      case 53: // basic_block_list
+      case 52: // basic_block_list
         value.copy< std::vector<corevm::IRBasicBlock> > (v);
         break;
 
-      case 44: // function_def_list
-        value.copy< std::vector<corevm::IRClosure> > (v);
-        break;
-
-      case 55: // instruction_group
+      case 54: // instruction_group
         value.copy< std::vector<corevm::IRInstruction > > (v);
         break;
 
-      case 60: // label_list
-      case 61: // label_list_core
+      case 59: // label_list
+      case 60: // label_list_core
         value.copy< std::vector<corevm::IRLabel> > (v);
         break;
 
-      case 63: // operand_list
+      case 62: // operand_list
         value.copy< std::vector<corevm::IROperand> > (v);
         break;
 
-      case 50: // function_arg_list
-      case 51: // function_arg_list_core
+      case 49: // function_arg_list
+      case 50: // function_arg_list_core
         value.copy< std::vector<corevm::IRParameter> > (v);
         break;
 
-      case 45: // type_def_list
-        value.copy< std::vector<corevm::IRTypeDecl> > (v);
+      case 46: // type_field_list
+        value.copy< std::vector<corevm::IRTypeField> > (v);
         break;
 
-      case 47: // type_field_list
-        value.copy< std::vector<corevm::IRTypeField> > (v);
+      case 44: // definition_list
+        value.copy< std::vector<corevm::ir::IRDefn> > (v);
         break;
 
       case 42: // metadata_def_list
         value.copy< std::vector<corevm::ir::MetadataPair> > (v);
         break;
 
-      case 58: // instruction_options
-      case 59: // instruction_option_list
+      case 57: // instruction_options
+      case 58: // instruction_option_list
         value.copy< std::vector<std::string> > (v);
         break;
 
@@ -1579,13 +1566,6 @@ namespace yy {
   {}
 
   template <typename Base>
-  ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRClosure> v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-  template <typename Base>
   ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRInstruction > v, const location_type& l)
     : Base (t)
     , value (v)
@@ -1614,14 +1594,14 @@ namespace yy {
   {}
 
   template <typename Base>
-  ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRTypeDecl> v, const location_type& l)
+  ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRTypeField> v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
   {}
 
   template <typename Base>
-  ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRTypeField> v, const location_type& l)
+  ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<corevm::ir::IRDefn> v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
@@ -1671,28 +1651,28 @@ namespace yy {
         value.template destroy< bool > ();
         break;
 
-      case 69: // ir_value_type_array
+      case 68: // ir_value_type_array
         value.template destroy< corevm::IRArrayType > ();
         break;
 
-      case 54: // basic_block
+      case 53: // basic_block
         value.template destroy< corevm::IRBasicBlock > ();
         break;
 
-      case 49: // function_def
+      case 48: // function_def
         value.template destroy< corevm::IRClosure > ();
         break;
 
-      case 66: // ir_identifier_type
+      case 65: // ir_identifier_type
         value.template destroy< corevm::IRIdentifierType > ();
         break;
 
-      case 56: // instruction
-      case 57: // expr
+      case 55: // instruction
+      case 56: // expr
         value.template destroy< corevm::IRInstruction > ();
         break;
 
-      case 62: // label
+      case 61: // label
         value.template destroy< corevm::IRLabel > ();
         break;
 
@@ -1704,32 +1684,32 @@ namespace yy {
         value.template destroy< corevm::IROpcode > ();
         break;
 
-      case 64: // operand
+      case 63: // operand
         value.template destroy< corevm::IROperand > ();
         break;
 
-      case 52: // function_arg
+      case 51: // function_arg
         value.template destroy< corevm::IRParameter > ();
         break;
 
-      case 46: // type_def
+      case 45: // type_def
         value.template destroy< corevm::IRTypeDecl > ();
         break;
 
-      case 48: // type_field
+      case 47: // type_field
         value.template destroy< corevm::IRTypeField > ();
         break;
 
-      case 67: // ir_value
+      case 66: // ir_value
         value.template destroy< corevm::IRValue > ();
         break;
 
-      case 68: // ir_value_type
-      case 70: // ir_value_type_string
-      case 71: // ir_value_type_floating_numeric
-      case 72: // ir_value_type_integer_numeric
-      case 73: // ir_value_type_long_integer_numeric
-      case 74: // ir_value_type_short_integer_numeric
+      case 67: // ir_value_type
+      case 69: // ir_value_type_string
+      case 70: // ir_value_type_floating_numeric
+      case 71: // ir_value_type_integer_numeric
+      case 72: // ir_value_type_long_integer_numeric
+      case 73: // ir_value_type_short_integer_numeric
         value.template destroy< corevm::IRValueType > ();
         break;
 
@@ -1778,50 +1758,46 @@ namespace yy {
       case 37: // LBRACE
       case 38: // RBRACE
       case 39: // LABEL
-      case 65: // identifier
+      case 64: // identifier
         value.template destroy< std::string > ();
         break;
 
-      case 53: // basic_block_list
+      case 52: // basic_block_list
         value.template destroy< std::vector<corevm::IRBasicBlock> > ();
         break;
 
-      case 44: // function_def_list
-        value.template destroy< std::vector<corevm::IRClosure> > ();
-        break;
-
-      case 55: // instruction_group
+      case 54: // instruction_group
         value.template destroy< std::vector<corevm::IRInstruction > > ();
         break;
 
-      case 60: // label_list
-      case 61: // label_list_core
+      case 59: // label_list
+      case 60: // label_list_core
         value.template destroy< std::vector<corevm::IRLabel> > ();
         break;
 
-      case 63: // operand_list
+      case 62: // operand_list
         value.template destroy< std::vector<corevm::IROperand> > ();
         break;
 
-      case 50: // function_arg_list
-      case 51: // function_arg_list_core
+      case 49: // function_arg_list
+      case 50: // function_arg_list_core
         value.template destroy< std::vector<corevm::IRParameter> > ();
         break;
 
-      case 45: // type_def_list
-        value.template destroy< std::vector<corevm::IRTypeDecl> > ();
+      case 46: // type_field_list
+        value.template destroy< std::vector<corevm::IRTypeField> > ();
         break;
 
-      case 47: // type_field_list
-        value.template destroy< std::vector<corevm::IRTypeField> > ();
+      case 44: // definition_list
+        value.template destroy< std::vector<corevm::ir::IRDefn> > ();
         break;
 
       case 42: // metadata_def_list
         value.template destroy< std::vector<corevm::ir::MetadataPair> > ();
         break;
 
-      case 58: // instruction_options
-      case 59: // instruction_option_list
+      case 57: // instruction_options
+      case 58: // instruction_option_list
         value.template destroy< std::vector<std::string> > ();
         break;
 
@@ -1852,28 +1828,28 @@ namespace yy {
         value.move< bool > (s.value);
         break;
 
-      case 69: // ir_value_type_array
+      case 68: // ir_value_type_array
         value.move< corevm::IRArrayType > (s.value);
         break;
 
-      case 54: // basic_block
+      case 53: // basic_block
         value.move< corevm::IRBasicBlock > (s.value);
         break;
 
-      case 49: // function_def
+      case 48: // function_def
         value.move< corevm::IRClosure > (s.value);
         break;
 
-      case 66: // ir_identifier_type
+      case 65: // ir_identifier_type
         value.move< corevm::IRIdentifierType > (s.value);
         break;
 
-      case 56: // instruction
-      case 57: // expr
+      case 55: // instruction
+      case 56: // expr
         value.move< corevm::IRInstruction > (s.value);
         break;
 
-      case 62: // label
+      case 61: // label
         value.move< corevm::IRLabel > (s.value);
         break;
 
@@ -1885,32 +1861,32 @@ namespace yy {
         value.move< corevm::IROpcode > (s.value);
         break;
 
-      case 64: // operand
+      case 63: // operand
         value.move< corevm::IROperand > (s.value);
         break;
 
-      case 52: // function_arg
+      case 51: // function_arg
         value.move< corevm::IRParameter > (s.value);
         break;
 
-      case 46: // type_def
+      case 45: // type_def
         value.move< corevm::IRTypeDecl > (s.value);
         break;
 
-      case 48: // type_field
+      case 47: // type_field
         value.move< corevm::IRTypeField > (s.value);
         break;
 
-      case 67: // ir_value
+      case 66: // ir_value
         value.move< corevm::IRValue > (s.value);
         break;
 
-      case 68: // ir_value_type
-      case 70: // ir_value_type_string
-      case 71: // ir_value_type_floating_numeric
-      case 72: // ir_value_type_integer_numeric
-      case 73: // ir_value_type_long_integer_numeric
-      case 74: // ir_value_type_short_integer_numeric
+      case 67: // ir_value_type
+      case 69: // ir_value_type_string
+      case 70: // ir_value_type_floating_numeric
+      case 71: // ir_value_type_integer_numeric
+      case 72: // ir_value_type_long_integer_numeric
+      case 73: // ir_value_type_short_integer_numeric
         value.move< corevm::IRValueType > (s.value);
         break;
 
@@ -1959,50 +1935,46 @@ namespace yy {
       case 37: // LBRACE
       case 38: // RBRACE
       case 39: // LABEL
-      case 65: // identifier
+      case 64: // identifier
         value.move< std::string > (s.value);
         break;
 
-      case 53: // basic_block_list
+      case 52: // basic_block_list
         value.move< std::vector<corevm::IRBasicBlock> > (s.value);
         break;
 
-      case 44: // function_def_list
-        value.move< std::vector<corevm::IRClosure> > (s.value);
-        break;
-
-      case 55: // instruction_group
+      case 54: // instruction_group
         value.move< std::vector<corevm::IRInstruction > > (s.value);
         break;
 
-      case 60: // label_list
-      case 61: // label_list_core
+      case 59: // label_list
+      case 60: // label_list_core
         value.move< std::vector<corevm::IRLabel> > (s.value);
         break;
 
-      case 63: // operand_list
+      case 62: // operand_list
         value.move< std::vector<corevm::IROperand> > (s.value);
         break;
 
-      case 50: // function_arg_list
-      case 51: // function_arg_list_core
+      case 49: // function_arg_list
+      case 50: // function_arg_list_core
         value.move< std::vector<corevm::IRParameter> > (s.value);
         break;
 
-      case 45: // type_def_list
-        value.move< std::vector<corevm::IRTypeDecl> > (s.value);
+      case 46: // type_field_list
+        value.move< std::vector<corevm::IRTypeField> > (s.value);
         break;
 
-      case 47: // type_field_list
-        value.move< std::vector<corevm::IRTypeField> > (s.value);
+      case 44: // definition_list
+        value.move< std::vector<corevm::ir::IRDefn> > (s.value);
         break;
 
       case 42: // metadata_def_list
         value.move< std::vector<corevm::ir::MetadataPair> > (s.value);
         break;
 
-      case 58: // instruction_options
-      case 59: // instruction_option_list
+      case 57: // instruction_options
+      case 58: // instruction_option_list
         value.move< std::vector<std::string> > (s.value);
         break;
 
@@ -2300,7 +2272,7 @@ namespace yy {
 
 
 } // yy
-#line 2304 "src/ir/ir_parser.tab.hh" // lalr1.cc:392
+#line 2276 "src/ir/ir_parser.tab.hh" // lalr1.cc:392
 
 
 

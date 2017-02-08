@@ -294,6 +294,29 @@ set_metadata(const std::vector<MetadataPair>& metadata,
 
 // -----------------------------------------------------------------------------
 
+void
+set_metadata_and_definitions(const std::vector<MetadataPair>& metadata,
+  const std::vector<IRDefn>& defns, corevm::IRModule& module)
+{
+  set_metadata(metadata, module);
+
+  module.types.reserve(defns.size());
+  module.closures.reserve(defns.size());
+  for (const auto& defn : defns)
+  {
+    if (defn.is<corevm::IRClosure>())
+    {
+      module.closures.push_back(defn.get<corevm::IRClosure>());
+    }
+    else if (defn.is<corevm::IRTypeDecl>())
+    {
+      module.types.push_back(defn.get<corevm::IRTypeDecl>());
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 bool are_compatible_types(const corevm::IRIdentifierType& lhs,
   const corevm::IRIdentifierType& rhs)
 {

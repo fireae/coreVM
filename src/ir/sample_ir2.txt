@@ -1,9 +1,9 @@
-"timestamp" : "1472959465"
-"author" : "Yanzheng Li"
-"format version" : "1000"
 "module name" : "Dummy_IR"
-"path" : "./dummy_ir.ir"
+"format version" : "1000"
 "target version" : "10"
+"path" : "./dummy_ir.ir"
+"author" : "Yanzheng Li"
+"timestamp" : "1472959465"
 
 type Person {
     string name;
@@ -13,6 +13,14 @@ type Person {
     array [ 10 * Person ] friends;
 }
 
+type Location {
+    string street_address;
+    string* country;
+    string zipcode;
+}
+
+type NullType {
+}
 
 def Person* createPerson(string* name, ui8 age) {
 entry:
@@ -24,12 +32,6 @@ end:
     ret Person* %person;
 }
 
-type Location {
-    string street_address;
-    string* country;
-    string zipcode;
-}
-
 def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson {
 entry:
     %sum = add ui64 %lhs_val %rhs_val;
@@ -39,5 +41,3 @@ entry:
 def void doNothing() {
 }
 
-type NullType {
-}

@@ -64,18 +64,26 @@ def run(opts):
     ir_dis_path = os.path.join(opts.build_dir, 'ir_dis')
     ir_asm_path = os.path.join(opts.build_dir, 'ir_asm')
 
-    cmds = (
-        'python tools/ir_gen.py --output sample.ir',
-        '%s --input sample.ir --output sample.ir.txt' % ir_dis_path,
-        '%s --input sample.ir.txt --output sample2.ir' % ir_asm_path,
-        '%s --input sample2.ir --output sample2.ir.txt' % ir_dis_path,
-        'diff sample.ir.txt sample2.ir.txt',
+    test_suites = (
+        (
+            'python tools/ir_gen.py --output sample.ir',
+            '%s --input sample.ir --output sample.ir.txt' % ir_dis_path,
+            '%s --input sample.ir.txt --output sample2.ir' % ir_asm_path,
+            '%s --input sample2.ir --output sample2.ir.txt' % ir_dis_path,
+            'diff sample.ir.txt sample2.ir.txt',
+        ),
+        (
+            '%s --input src/ir/sample_ir.txt --output sample_ir.bin' % ir_asm_path,
+            '%s --input sample_ir.bin --output sample_ir.txt' % ir_dis_path,
+            'diff sample_ir.txt src/ir/sample_ir2.txt'
+        )
     )
 
-    for cmd in cmds:
-        if Step(cmd).run() != 0:
-            print status
-            return False
+    for test_suite in test_suites:
+        for cmd in test_suite:
+            if Step(cmd).run() != 0:
+                print status
+                return False
 
     return True
 
