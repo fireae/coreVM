@@ -35,7 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-namespace types {
+namespace common {
 namespace variant {
 
 // -----------------------------------------------------------------------------
@@ -308,7 +308,7 @@ auto apply_visitor(F f, V & v0, V & v1) -> decltype(V::binary_visit(v0, v1, f))
 // -----------------------------------------------------------------------------
 
 } /* end namespace variant */
-} /* end namespace types */
+} /* end namespace common */
 } /* end namespace corevm */
 
 

@@ -24,8 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_NATIVE_TYPE_VISITORS_IMPL_H_
 
 #include "fwd.h"
-#include "variant/static_visitor.h"
-#include "variant/variant.h"
+#include "common/variant/static_visitor.h"
+#include "common/variant/variant.h"
 
 #include <type_traits>
 
@@ -42,7 +42,7 @@ namespace types {
 // -----------------------------------------------------------------------------
 
 template<class op>
-class native_type_unary_visitor : public variant::static_visitor<NativeTypeValue>
+class native_type_unary_visitor : public common::variant::static_visitor<NativeTypeValue>
 {
 public:
   static_assert(std::is_same<typename op::operator_category, unary_op_tag>::value, "");
@@ -57,7 +57,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op>
-class native_type_parameterized_unary_visitor : public variant::static_visitor<NativeTypeValue>
+class native_type_parameterized_unary_visitor : public common::variant::static_visitor<NativeTypeValue>
 {
 public:
   static_assert(std::is_same<typename op::operator_category, unary_op_tag>::value, "");
@@ -82,7 +82,7 @@ private:
 // -----------------------------------------------------------------------------
 
 template<class op, class R>
-class native_type_typed_unary_visitor : public variant::static_visitor<R>
+class native_type_typed_unary_visitor : public common::variant::static_visitor<R>
 {
 public:
   static_assert(std::is_same<typename op::operator_category, typed_unary_op_tag>::value, "");
@@ -98,7 +98,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op>
-class native_type_binary_visitor : public variant::static_visitor<NativeTypeValue>
+class native_type_binary_visitor : public common::variant::static_visitor<NativeTypeValue>
 {
 public:
   static_assert(std::is_same<typename op::operator_category, binary_op_tag>::value, "");
@@ -120,7 +120,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op, typename R>
-class native_type_typed_binary_visitor : public variant::static_visitor<R>
+class native_type_typed_binary_visitor : public common::variant::static_visitor<R>
 {
 public:
   static_assert(std::is_same<typename op::operator_category, typed_binary_op_tag>::value, "");
@@ -143,7 +143,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op, typename R>
-class native_type_typed_cast_binary_visitor : public variant::static_visitor<R>
+class native_type_typed_cast_binary_visitor : public common::variant::static_visitor<R>
 {
 public:
   static_assert(std::is_same<typename op::operator_category, typed_cast_binary_op_tag>::value, "");
@@ -159,7 +159,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<typename T>
-class native_type_value_visitor : public variant::static_visitor<T>
+class native_type_value_visitor : public common::variant::static_visitor<T>
 {
 public:
   template<typename H>

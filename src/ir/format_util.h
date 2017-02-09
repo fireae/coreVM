@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_FORMAT_UTIL_H_
 
 #include "format.h"
-#include "types/variant/variant.h"
+#include "common/variant/variant.h"
 #include <string>
 #include <utility>
 #include <vector>
@@ -50,7 +50,7 @@ const char* IROpcode_to_string(corevm::IROpcode);
  * Generic type representing an IR definition, it can be either a type
  * or function definition.
  */
-using IRDefn = types::variant::variant<corevm::IRClosure, corevm::IRTypeDecl>;
+using IRDefn = common::variant::variant<corevm::IRClosure, corevm::IRTypeDecl>;
 
 /**
  * IR module metadata key-value pair.

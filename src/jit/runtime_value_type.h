@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_RUNTIME_VALUE_TYPE_H_
 #define COREVM_RUNTIME_VALUE_TYPE_H_
 
-#include "types/variant/variant.h"
+#include "common/variant/variant.h"
 #include <cstdint>
 #include <vector>
 
@@ -54,7 +54,7 @@ struct AggregateType;
 /**
  * Represents type of generic runtime values.
  */
-typedef corevm::types::variant::variant<ValueType, AggregateType> RuntimeValueType;
+typedef common::variant::variant<ValueType, AggregateType> RuntimeValueType;
 
 /**
  * Represents type of aggregate runtime values.

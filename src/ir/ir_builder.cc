@@ -67,7 +67,7 @@ typedef uint64_t type_id_t;
  */
 struct IdentifierType
 {
-  typedef corevm::types::variant::variant<ValueType, ArrayType, TypeDecl> Value;
+  typedef common::variant::variant<ValueType, ArrayType, TypeDecl> Value;
 
   ValueRefType ref_type;
   Value value;

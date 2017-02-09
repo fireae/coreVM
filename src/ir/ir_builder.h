@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_IR_BUILDER_H_
 #define COREVM_IR_BUILDER_H_
 
-#include "types/variant/variant.h"
+#include "common/variant/variant.h"
 
 #include <cstdint>
 #include <memory>
@@ -156,7 +156,7 @@ struct SSAVariable
 /**
  * Abstraction of an IR operand value.
  */
-typedef corevm::types::variant::variant<
+typedef corevm::common::variant::variant<
   bool,
   uint8_t,
   int8_t,

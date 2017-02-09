@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-namespace types {
+namespace common {
 namespace variant {
 
 // -----------------------------------------------------------------------------
@@ -43,7 +43,7 @@ protected:
 // -----------------------------------------------------------------------------
 
 } /* end namespace variant */
-} /* end namespace types */
+} /* end namespace common */
 } /* end namespace corevm */
 
 

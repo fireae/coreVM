@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_NATIVE_TYPE_VALUE_H_
 
 #include "visitors.h"
-#include "variant/variant.h"
+#include "common/variant/variant.h"
 
 
 namespace corevm {
@@ -36,7 +36,7 @@ template<typename T>
 T
 get_intrinsic_value_from_type_value(const NativeTypeValue& type_val)
 {
-  return variant::apply_visitor(
+  return common::variant::apply_visitor(
     native_type_value_visitor<T>(), type_val
   );
 }
@@ -56,7 +56,7 @@ template<class operator_visitor>
 NativeTypeValue
 apply_unary_visitor(const NativeTypeValue& type_val)
 {
-  return variant::apply_visitor(operator_visitor(), type_val);
+  return common::variant::apply_visitor(operator_visitor(), type_val);
 }
 
 // -----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ template<class operator_visitor, typename... Arguments>
 NativeTypeValue
 apply_unary_visitor_parameterized(NativeTypeValue& type_val, Arguments... args)
 {
-  return variant::apply_visitor(operator_visitor(args...), type_val);
+  return common::variant::apply_visitor(operator_visitor(args...), type_val);
 }
 
 // -----------------------------------------------------------------------------
@@ -75,7 +75,7 @@ NativeTypeValue
 apply_binary_visitor(
   NativeTypeValue& lhs, NativeTypeValue& rhs)
 {
-  return variant::apply_visitor(operator_visitor(), lhs, rhs);
+  return common::variant::apply_visitor(operator_visitor(), lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------

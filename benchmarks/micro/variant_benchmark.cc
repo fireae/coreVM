@@ -22,8 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <benchmark/benchmark.h>
 
-#include "types/variant/static_visitor.h"
-#include "types/variant/variant.h"
+#include "common/variant/static_visitor.h"
+#include "common/variant/variant.h"
 
 #include <boost/variant/get.hpp>
 #include <boost/variant/apply_visitor.hpp>
@@ -39,7 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 using BoostVariant = typename boost::variant<int, double, std::string, std::vector<int>>;
-using CorevmVariant = typename corevm::types::variant::variant<int, double, std::string, std::vector<int>>;
+using CorevmVariant = typename corevm::common::variant::variant<int, double, std::string, std::vector<int>>;
 
 // -----------------------------------------------------------------------------
 
@@ -241,10 +241,10 @@ static void BenchmarkVariantUnaryVisitor_coreVM(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    corevm::types::variant::apply_visitor(tostring_visitor<corevm::types::variant::static_visitor<std::string>>(), v1);
-    corevm::types::variant::apply_visitor(tostring_visitor<corevm::types::variant::static_visitor<std::string>>(), v2);
-    corevm::types::variant::apply_visitor(tostring_visitor<corevm::types::variant::static_visitor<std::string>>(), v3);
-    corevm::types::variant::apply_visitor(tostring_visitor<corevm::types::variant::static_visitor<std::string>>(), v4);
+    corevm::common::variant::apply_visitor(tostring_visitor<corevm::common::variant::static_visitor<std::string>>(), v1);
+    corevm::common::variant::apply_visitor(tostring_visitor<corevm::common::variant::static_visitor<std::string>>(), v2);
+    corevm::common::variant::apply_visitor(tostring_visitor<corevm::common::variant::static_visitor<std::string>>(), v3);
+    corevm::common::variant::apply_visitor(tostring_visitor<corevm::common::variant::static_visitor<std::string>>(), v4);
   }
 }
 
@@ -288,8 +288,8 @@ static void BenchmarkVariantBinaryVisitor_coreVM(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    corevm::types::variant::apply_visitor(
-      equality_visitor<corevm::types::variant::static_visitor<bool>>(), v1, v2);
+    corevm::common::variant::apply_visitor(
+      equality_visitor<corevm::common::variant::static_visitor<bool>>(), v1, v2);
   }
 }
 

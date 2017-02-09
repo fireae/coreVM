@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types/native_array.h"
 #include "types/native_map.h"
 #include "types/native_string.h"
-#include "types/variant/variant.h"
+#include "common/variant/variant.h"
 
 #include <benchmark/benchmark.h>
 
@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-using ComplexNativeType = typename corevm::types::variant::variant<
+using ComplexNativeType = typename corevm::common::variant::variant<
   corevm::types::native_string,
   corevm::types::native_array,
   corevm::types::native_map

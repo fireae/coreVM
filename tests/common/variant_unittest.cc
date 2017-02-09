@@ -22,8 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <gtest/gtest.h>
 
-#include "types/variant/static_visitor.h"
-#include "types/variant/variant.h"
+#include "common/variant/static_visitor.h"
+#include "common/variant/variant.h"
 
 #include <cstdio>
 #include <sstream>
@@ -41,7 +41,7 @@ class VariantUnitTest : public ::testing::Test
 {
 protected:
   using VariantType =
-    typename corevm::types::variant::variant<int, double, std::string, std::vector<int>>;
+    typename corevm::common::variant::variant<int, double, std::string, std::vector<int>>;
 };
 
 // -----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ TEST_F(VariantUnitTest, TestEmptyInitialization)
   VariantType v;
 
   ASSERT_EQ(false, v.valid());
-  ASSERT_EQ(corevm::types::variant::impl::invalid_type_index, v.type_index());
+  ASSERT_EQ(corevm::common::variant::impl::invalid_type_index, v.type_index());
 
   ASSERT_EQ(false, v.is<int>());
   ASSERT_EQ(false, v.is<double>());
@@ -268,8 +268,8 @@ TEST_F(VariantUnitTest, TestEqualityOperatorOnSameType)
 
 TEST_F(VariantUnitTest, TestEqualityOperatorOnDifferentTypes)
 {
-  typedef corevm::types::variant::variant<int, double> VariantType1;
-  typedef corevm::types::variant::variant<int, float> VariantType2;
+  typedef corevm::common::variant::variant<int, double> VariantType1;
+  typedef corevm::common::variant::variant<int, float> VariantType2;
 
   VariantType1 v1 = (int)1;
 
@@ -307,7 +307,7 @@ TEST_F(VariantUnitTest, TestLessThanOperatorOnDifferentTypes)
 class VariantUnaryVisitationUnitTest : public VariantUnitTest
 {
 protected:
-  struct tostring_visitor : public corevm::types::variant::static_visitor<std::string>
+  struct tostring_visitor : public corevm::common::variant::static_visitor<std::string>
   {
     std::string operator()(const int& val) const
     {
@@ -358,16 +358,16 @@ TEST_F(VariantUnaryVisitationUnitTest, TestVisitation)
   VariantType v3 = std::string(HELLO_WORLD);
   VariantType v4 = std::vector<int> { 1, 2, 3 };
 
-  const std::string val1 = corevm::types::variant::apply_visitor(tostring_visitor(), v1);
+  const std::string val1 = corevm::common::variant::apply_visitor(tostring_visitor(), v1);
   ASSERT_STREQ("1", val1.c_str());
 
-  const std::string val2 = corevm::types::variant::apply_visitor(tostring_visitor(), v2);
+  const std::string val2 = corevm::common::variant::apply_visitor(tostring_visitor(), v2);
   ASSERT_STREQ("3.14", val2.c_str());
 
-  const std::string val3 = corevm::types::variant::apply_visitor(tostring_visitor(), v3);
+  const std::string val3 = corevm::common::variant::apply_visitor(tostring_visitor(), v3);
   ASSERT_STREQ(HELLO_WORLD, val3.c_str());
 
-  const std::string val4 = corevm::types::variant::apply_visitor(tostring_visitor(), v4);
+  const std::string val4 = corevm::common::variant::apply_visitor(tostring_visitor(), v4);
   ASSERT_STREQ("[1, 2, 3]", val4.c_str());
 }
 
@@ -376,7 +376,7 @@ TEST_F(VariantUnaryVisitationUnitTest, TestVisitation)
 class VariantBinaryVisitationUnitTest : public VariantUnitTest
 {
 protected:
-  struct equality_visitor : public corevm::types::variant::static_visitor<bool>
+  struct equality_visitor : public corevm::common::variant::static_visitor<bool>
   {
     template <typename T>
     bool operator() (const T& lhs, const T& rhs) const
@@ -408,20 +408,20 @@ TEST_F(VariantBinaryVisitationUnitTest, TestVisitation)
   VariantType v1_vec = std::vector<int> {1, 2, 3};
   VariantType v2_vec = std::vector<int> {1, 2, 3};
 
-  bool res1 = corevm::types::variant::apply_visitor(equality_visitor(), v1_int, v2_int);
+  bool res1 = corevm::common::variant::apply_visitor(equality_visitor(), v1_int, v2_int);
   ASSERT_EQ(false, res1);
 
-  bool res2 = corevm::types::variant::apply_visitor(equality_visitor(), v1_double, v2_double);
+  bool res2 = corevm::common::variant::apply_visitor(equality_visitor(), v1_double, v2_double);
   ASSERT_EQ(true, res2);
 
-  bool res3 = corevm::types::variant::apply_visitor(equality_visitor(), v1_str, v2_str);
+  bool res3 = corevm::common::variant::apply_visitor(equality_visitor(), v1_str, v2_str);
   ASSERT_EQ(false, res3);
 
-  bool res4 = corevm::types::variant::apply_visitor(equality_visitor(), v1_vec, v2_vec);
+  bool res4 = corevm::common::variant::apply_visitor(equality_visitor(), v1_vec, v2_vec);
   ASSERT_EQ(true, res4);
 
   VariantType v3_double = (double)1.0;
-  bool res5 = corevm::types::variant::apply_visitor(equality_visitor(), v1_int, v3_double);
+  bool res5 = corevm::common::variant::apply_visitor(equality_visitor(), v1_int, v3_double);
   ASSERT_EQ(false, res5);
 }
 

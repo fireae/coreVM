@@ -24,6 +24,7 @@
 
 # Build executable `run_tests`.
 add_executable(run_tests
+    common/variant_unittest.cc
     ir/ir_parser_driver_unittest.cc
     ir/ir_module_index_unittest.cc
     ir/verifier_unittest.cc
@@ -52,7 +53,6 @@ add_executable(run_tests
     types/native_string_unittest.cc
     types/native_type_handle_unittest.cc
     types/unary_operators_unittest.cc
-    types/variant_unittest.cc
     runtime/compartment_unittest.cc
     runtime/frame_unittest.cc
     runtime/instr_info_unittest.cc
