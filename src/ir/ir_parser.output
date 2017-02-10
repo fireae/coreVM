@@ -20,140 +20,148 @@ Grammar
 
    11 type_field: ir_identifier_type IDENTIFIER SEMICOLON
 
-   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list LBRACE basic_block_list RBRACE
-   13             | DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE basic_block_list RBRACE
+   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list function_def_option_list LBRACE basic_block_list RBRACE
+   13             | DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER function_def_option_list LBRACE basic_block_list RBRACE
 
-   14 function_arg_list: LPAREN RPAREN
-   15                  | LPAREN function_arg_list_core RPAREN
+   14 function_def_option_list: %empty
+   15                         | LBRACKET function_def_option_list_core RBRACKET
 
-   16 function_arg_list_core: function_arg
-   17                       | function_arg_list_core COMMA function_arg
+   16 function_def_option_list_core: function_def_option
+   17                              | function_def_option_list_core function_def_option
 
-   18 function_arg: ir_identifier_type IDENTIFIER
+   18 function_def_option: IDENTIFIER
 
-   19 basic_block_list: %empty
-   20                 | basic_block_list basic_block
+   19 function_arg_list: LPAREN RPAREN
+   20                  | LPAREN function_arg_list_core RPAREN
 
-   21 basic_block: IDENTIFIER COLON instruction_group
+   21 function_arg_list_core: function_arg
+   22                       | function_arg_list_core COMMA function_arg
 
-   22 instruction_group: instruction
-   23                  | instruction_group instruction
+   23 function_arg: ir_identifier_type IDENTIFIER
 
-   24 instruction: identifier ASSIGN expr SEMICOLON
-   25            | expr SEMICOLON
+   24 basic_block_list: %empty
+   25                 | basic_block_list basic_block
 
-   26 expr: OPCODE instruction_options
-   27     | OPCODE instruction_options ir_identifier_type
-   28     | OPCODE instruction_options operand_list
-   29     | OPCODE instruction_options operand_list label_list
-   30     | OPCODE instruction_options ir_identifier_type operand_list
-   31     | OPCODE instruction_options ir_identifier_type operand_list label_list
+   26 basic_block: IDENTIFIER COLON instruction_group
 
-   32 instruction_options: %empty
-   33                    | LBRACKET instruction_option_list RBRACKET
+   27 instruction_group: instruction
+   28                  | instruction_group instruction
 
-   34 instruction_option_list: IDENTIFIER
-   35                        | instruction_option_list IDENTIFIER
+   29 instruction: identifier ASSIGN expr SEMICOLON
+   30            | expr SEMICOLON
 
-   36 label_list: LBRACKET label_list_core RBRACKET
+   31 expr: OPCODE instruction_options
+   32     | OPCODE instruction_options ir_identifier_type
+   33     | OPCODE instruction_options operand_list
+   34     | OPCODE instruction_options operand_list label_list
+   35     | OPCODE instruction_options ir_identifier_type operand_list
+   36     | OPCODE instruction_options ir_identifier_type operand_list label_list
 
-   37 label_list_core: label
-   38                | label_list_core COMMA label
+   37 instruction_options: %empty
+   38                    | LBRACKET instruction_option_list RBRACKET
 
-   39 label: LABEL POND IDENTIFIER
+   39 instruction_option_list: IDENTIFIER
+   40                        | instruction_option_list IDENTIFIER
 
-   40 operand_list: operand
-   41             | operand_list operand
+   41 label_list: LBRACKET label_list_core RBRACKET
 
-   42 operand: ir_value
-   43        | identifier
+   42 label_list_core: label
+   43                | label_list_core COMMA label
 
-   44 identifier: PERCENT IDENTIFIER
+   44 label: LABEL POND IDENTIFIER
 
-   45 ir_identifier_type: IDENTIFIER
-   46                   | ir_value_type
-   47                   | ir_value_type_array
-   48                   | IDENTIFIER STAR
-   49                   | ir_value_type STAR
-   50                   | ir_value_type_array STAR
+   45 operand_list: operand
+   46             | operand_list operand
 
-   51 ir_value: ir_value_type_short_integer_numeric DECIMALINTEGER
-   52         | ir_value_type_long_integer_numeric DECIMALINTEGER
-   53         | TYPE_NAME_SPF FLOATINGNUM
-   54         | TYPE_NAME_DPF FLOATINGNUM
-   55         | ir_value_type_string STRING_LITERAL
-   56         | TYPE_NAME_BOOLEAN BOOLEAN_CONSTANT
-   57         | TYPE_NAME_BOOLEAN DECIMALINTEGER
+   47 operand: ir_value
+   48        | identifier
 
-   58 ir_value_type: ir_value_type_integer_numeric
-   59              | ir_value_type_floating_numeric
-   60              | ir_value_type_string
-   61              | TYPE_NAME_VOID
-   62              | TYPE_NAME_BOOLEAN
-   63              | TYPE_NAME_OBJECT
+   49 identifier: PERCENT IDENTIFIER
 
-   64 ir_value_type_array: ARRAY LBRACKET DECIMALINTEGER STAR ir_identifier_type RBRACKET
+   50 ir_identifier_type: IDENTIFIER
+   51                   | ir_value_type
+   52                   | ir_value_type_array
+   53                   | IDENTIFIER STAR
+   54                   | ir_value_type STAR
+   55                   | ir_value_type_array STAR
 
-   65 ir_value_type_string: TYPE_NAME_STRING
+   56 ir_value: ir_value_type_short_integer_numeric DECIMALINTEGER
+   57         | ir_value_type_long_integer_numeric DECIMALINTEGER
+   58         | TYPE_NAME_SPF FLOATINGNUM
+   59         | TYPE_NAME_DPF FLOATINGNUM
+   60         | ir_value_type_string STRING_LITERAL
+   61         | TYPE_NAME_BOOLEAN BOOLEAN_CONSTANT
+   62         | TYPE_NAME_BOOLEAN DECIMALINTEGER
 
-   66 ir_value_type_floating_numeric: TYPE_NAME_SPF
-   67                               | TYPE_NAME_DPF
+   63 ir_value_type: ir_value_type_integer_numeric
+   64              | ir_value_type_floating_numeric
+   65              | ir_value_type_string
+   66              | TYPE_NAME_VOID
+   67              | TYPE_NAME_BOOLEAN
+   68              | TYPE_NAME_OBJECT
 
-   68 ir_value_type_integer_numeric: ir_value_type_short_integer_numeric
-   69                              | ir_value_type_long_integer_numeric
+   69 ir_value_type_array: ARRAY LBRACKET DECIMALINTEGER STAR ir_identifier_type RBRACKET
 
-   70 ir_value_type_long_integer_numeric: TYPE_NAME_I64
-   71                                   | TYPE_NAME_UI64
+   70 ir_value_type_string: TYPE_NAME_STRING
 
-   72 ir_value_type_short_integer_numeric: TYPE_NAME_I8
-   73                                    | TYPE_NAME_UI8
-   74                                    | TYPE_NAME_I16
-   75                                    | TYPE_NAME_UI16
-   76                                    | TYPE_NAME_I32
-   77                                    | TYPE_NAME_UI32
+   71 ir_value_type_floating_numeric: TYPE_NAME_SPF
+   72                               | TYPE_NAME_DPF
+
+   73 ir_value_type_integer_numeric: ir_value_type_short_integer_numeric
+   74                              | ir_value_type_long_integer_numeric
+
+   75 ir_value_type_long_integer_numeric: TYPE_NAME_I64
+   76                                   | TYPE_NAME_UI64
+
+   77 ir_value_type_short_integer_numeric: TYPE_NAME_I8
+   78                                    | TYPE_NAME_UI8
+   79                                    | TYPE_NAME_I16
+   80                                    | TYPE_NAME_UI16
+   81                                    | TYPE_NAME_I32
+   82                                    | TYPE_NAME_UI32
 
 
 Terminals, with rules where they appear
 
 "end of file" (0) 0
 error (256)
-TYPE_NAME_I8 (258) 72
-TYPE_NAME_UI8 (259) 73
-TYPE_NAME_I16 (260) 74
-TYPE_NAME_UI16 (261) 75
-TYPE_NAME_I32 (262) 76
-TYPE_NAME_UI32 (263) 77
-TYPE_NAME_I64 (264) 70
-TYPE_NAME_UI64 (265) 71
-TYPE_NAME_SPF (266) 53 66
-TYPE_NAME_DPF (267) 54 67
-TYPE_NAME_BOOLEAN (268) 56 57 62
-TYPE_NAME_VOID (269) 61
-TYPE_NAME_STRING (270) 65
-TYPE_NAME_OBJECT (271) 63
-OPCODE (272) 26 27 28 29 30 31
-ARRAY (273) 64
+TYPE_NAME_I8 (258) 77
+TYPE_NAME_UI8 (259) 78
+TYPE_NAME_I16 (260) 79
+TYPE_NAME_UI16 (261) 80
+TYPE_NAME_I32 (262) 81
+TYPE_NAME_UI32 (263) 82
+TYPE_NAME_I64 (264) 75
+TYPE_NAME_UI64 (265) 76
+TYPE_NAME_SPF (266) 58 71
+TYPE_NAME_DPF (267) 59 72
+TYPE_NAME_BOOLEAN (268) 61 62 67
+TYPE_NAME_VOID (269) 66
+TYPE_NAME_STRING (270) 70
+TYPE_NAME_OBJECT (271) 68
+OPCODE (272) 31 32 33 34 35 36
+ARRAY (273) 69
 DEF (274) 12 13
 TYPE (275) 8
-IDENTIFIER (276) 8 11 12 13 18 21 34 35 39 44 45 48
-STRING_LITERAL (277) 4 55
-DECIMALINTEGER (278) 51 52 57 64
-FLOATINGNUM (279) 53 54
-BOOLEAN_CONSTANT (280) 56
-COMMA (281) 17 38
-COLON (282) 4 13 21
-SEMICOLON (283) 11 24 25
-PERCENT (284) 44
-STAR (285) 48 49 50 64
-POND (286) 39
-ASSIGN (287) 24
-LPAREN (288) 14 15
-RPAREN (289) 14 15
-LBRACKET (290) 33 36 64
-RBRACKET (291) 33 36 64
+IDENTIFIER (276) 8 11 12 13 18 23 26 39 40 44 49 50 53
+STRING_LITERAL (277) 4 60
+DECIMALINTEGER (278) 56 57 62 69
+FLOATINGNUM (279) 58 59
+BOOLEAN_CONSTANT (280) 61
+COMMA (281) 22 43
+COLON (282) 4 13 26
+SEMICOLON (283) 11 29 30
+PERCENT (284) 49
+STAR (285) 53 54 55 69
+POND (286) 44
+ASSIGN (287) 29
+LPAREN (288) 19 20
+RPAREN (289) 19 20
+LBRACKET (290) 15 38 41 69
+RBRACKET (291) 15 38 41 69
 LBRACE (292) 8 12 13
 RBRACE (293) 8 12 13
-LABEL (294) 39
+LABEL (294) 44
 
 
 Nonterminals, with rules where they appear
@@ -176,56 +184,62 @@ type_field (47)
     on left: 11, on right: 10
 function_def (48)
     on left: 12 13, on right: 7
-function_arg_list (49)
+function_def_option_list (49)
     on left: 14 15, on right: 12 13
-function_arg_list_core (50)
+function_def_option_list_core (50)
     on left: 16 17, on right: 15 17
-function_arg (51)
+function_def_option (51)
     on left: 18, on right: 16 17
-basic_block_list (52)
-    on left: 19 20, on right: 12 13 20
-basic_block (53)
-    on left: 21, on right: 20
-instruction_group (54)
-    on left: 22 23, on right: 21 23
-instruction (55)
-    on left: 24 25, on right: 22 23
-expr (56)
-    on left: 26 27 28 29 30 31, on right: 24 25
-instruction_options (57)
-    on left: 32 33, on right: 26 27 28 29 30 31
-instruction_option_list (58)
-    on left: 34 35, on right: 33 35
-label_list (59)
-    on left: 36, on right: 29 31
-label_list_core (60)
-    on left: 37 38, on right: 36 38
-label (61)
-    on left: 39, on right: 37 38
-operand_list (62)
-    on left: 40 41, on right: 28 29 30 31 41
-operand (63)
-    on left: 42 43, on right: 40 41
-identifier (64)
-    on left: 44, on right: 24 43
-ir_identifier_type (65)
-    on left: 45 46 47 48 49 50, on right: 11 12 13 18 27 30 31 64
-ir_value (66)
-    on left: 51 52 53 54 55 56 57, on right: 42
-ir_value_type (67)
-    on left: 58 59 60 61 62 63, on right: 46 49
-ir_value_type_array (68)
-    on left: 64, on right: 47 50
-ir_value_type_string (69)
-    on left: 65, on right: 55 60
-ir_value_type_floating_numeric (70)
-    on left: 66 67, on right: 59
-ir_value_type_integer_numeric (71)
-    on left: 68 69, on right: 58
-ir_value_type_long_integer_numeric (72)
-    on left: 70 71, on right: 52 69
-ir_value_type_short_integer_numeric (73)
-    on left: 72 73 74 75 76 77, on right: 51 68
+function_arg_list (52)
+    on left: 19 20, on right: 12 13
+function_arg_list_core (53)
+    on left: 21 22, on right: 20 22
+function_arg (54)
+    on left: 23, on right: 21 22
+basic_block_list (55)
+    on left: 24 25, on right: 12 13 25
+basic_block (56)
+    on left: 26, on right: 25
+instruction_group (57)
+    on left: 27 28, on right: 26 28
+instruction (58)
+    on left: 29 30, on right: 27 28
+expr (59)
+    on left: 31 32 33 34 35 36, on right: 29 30
+instruction_options (60)
+    on left: 37 38, on right: 31 32 33 34 35 36
+instruction_option_list (61)
+    on left: 39 40, on right: 38 40
+label_list (62)
+    on left: 41, on right: 34 36
+label_list_core (63)
+    on left: 42 43, on right: 41 43
+label (64)
+    on left: 44, on right: 42 43
+operand_list (65)
+    on left: 45 46, on right: 33 34 35 36 46
+operand (66)
+    on left: 47 48, on right: 45 46
+identifier (67)
+    on left: 49, on right: 29 48
+ir_identifier_type (68)
+    on left: 50 51 52 53 54 55, on right: 11 12 13 23 32 35 36 69
+ir_value (69)
+    on left: 56 57 58 59 60 61 62, on right: 47
+ir_value_type (70)
+    on left: 63 64 65 66 67 68, on right: 51 54
+ir_value_type_array (71)
+    on left: 69, on right: 52 55
+ir_value_type_string (72)
+    on left: 70, on right: 60 65
+ir_value_type_floating_numeric (73)
+    on left: 71 72, on right: 64
+ir_value_type_integer_numeric (74)
+    on left: 73 74, on right: 63
+ir_value_type_long_integer_numeric (75)
+    on left: 75 76, on right: 57 74
+ir_value_type_short_integer_numeric (76)
+    on left: 77 78 79 80 81 82, on right: 56 73
 
 
 State 0
@@ -303,8 +317,8 @@ State 7
 
 State 8
 
-   12 function_def: DEF . ir_identifier_type IDENTIFIER function_arg_list LBRACE basic_block_list RBRACE
-   13             | DEF . ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE basic_block_list RBRACE
+   12 function_def: DEF . ir_identifier_type IDENTIFIER function_arg_list function_def_option_list LBRACE basic_block_list RBRACE
+   13             | DEF . ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER function_def_option_list LBRACE basic_block_list RBRACE
 
     TYPE_NAME_I8       shift, and go to state 13
     TYPE_NAME_UI8      shift, and go to state 14
@@ -363,180 +377,180 @@ State 12
 
 State 13
 
-   72 ir_value_type_short_integer_numeric: TYPE_NAME_I8 .
-
-    $default  reduce using rule 72 (ir_value_type_short_integer_numeric)
-
-
-State 14
-
-   73 ir_value_type_short_integer_numeric: TYPE_NAME_UI8 .
-
-    $default  reduce using rule 73 (ir_value_type_short_integer_numeric)
-
-
-State 15
-
-   74 ir_value_type_short_integer_numeric: TYPE_NAME_I16 .
-
-    $default  reduce using rule 74 (ir_value_type_short_integer_numeric)
-
-
-State 16
-
-   75 ir_value_type_short_integer_numeric: TYPE_NAME_UI16 .
-
-    $default  reduce using rule 75 (ir_value_type_short_integer_numeric)
-
-
-State 17
-
-   76 ir_value_type_short_integer_numeric: TYPE_NAME_I32 .
-
-    $default  reduce using rule 76 (ir_value_type_short_integer_numeric)
-
-
-State 18
-
-   77 ir_value_type_short_integer_numeric: TYPE_NAME_UI32 .
+   77 ir_value_type_short_integer_numeric: TYPE_NAME_I8 .
 
     $default  reduce using rule 77 (ir_value_type_short_integer_numeric)
 
 
+State 14
+
+   78 ir_value_type_short_integer_numeric: TYPE_NAME_UI8 .
+
+    $default  reduce using rule 78 (ir_value_type_short_integer_numeric)
+
+
+State 15
+
+   79 ir_value_type_short_integer_numeric: TYPE_NAME_I16 .
+
+    $default  reduce using rule 79 (ir_value_type_short_integer_numeric)
+
+
+State 16
+
+   80 ir_value_type_short_integer_numeric: TYPE_NAME_UI16 .
+
+    $default  reduce using rule 80 (ir_value_type_short_integer_numeric)
+
+
+State 17
+
+   81 ir_value_type_short_integer_numeric: TYPE_NAME_I32 .
+
+    $default  reduce using rule 81 (ir_value_type_short_integer_numeric)
+
+
+State 18
+
+   82 ir_value_type_short_integer_numeric: TYPE_NAME_UI32 .
+
+    $default  reduce using rule 82 (ir_value_type_short_integer_numeric)
+
+
 State 19
 
-   70 ir_value_type_long_integer_numeric: TYPE_NAME_I64 .
+   75 ir_value_type_long_integer_numeric: TYPE_NAME_I64 .
 
-    $default  reduce using rule 70 (ir_value_type_long_integer_numeric)
+    $default  reduce using rule 75 (ir_value_type_long_integer_numeric)
 
 
 State 20
 
-   71 ir_value_type_long_integer_numeric: TYPE_NAME_UI64 .
+   76 ir_value_type_long_integer_numeric: TYPE_NAME_UI64 .
 
-    $default  reduce using rule 71 (ir_value_type_long_integer_numeric)
+    $default  reduce using rule 76 (ir_value_type_long_integer_numeric)
 
 
 State 21
 
-   66 ir_value_type_floating_numeric: TYPE_NAME_SPF .
+   71 ir_value_type_floating_numeric: TYPE_NAME_SPF .
 
-    $default  reduce using rule 66 (ir_value_type_floating_numeric)
+    $default  reduce using rule 71 (ir_value_type_floating_numeric)
 
 
 State 22
 
-   67 ir_value_type_floating_numeric: TYPE_NAME_DPF .
+   72 ir_value_type_floating_numeric: TYPE_NAME_DPF .
 
-    $default  reduce using rule 67 (ir_value_type_floating_numeric)
+    $default  reduce using rule 72 (ir_value_type_floating_numeric)
 
 
 State 23
 
-   62 ir_value_type: TYPE_NAME_BOOLEAN .
+   67 ir_value_type: TYPE_NAME_BOOLEAN .
 
-    $default  reduce using rule 62 (ir_value_type)
+    $default  reduce using rule 67 (ir_value_type)
 
 
 State 24
 
-   61 ir_value_type: TYPE_NAME_VOID .
+   66 ir_value_type: TYPE_NAME_VOID .
 
-    $default  reduce using rule 61 (ir_value_type)
+    $default  reduce using rule 66 (ir_value_type)
 
 
 State 25
 
-   65 ir_value_type_string: TYPE_NAME_STRING .
+   70 ir_value_type_string: TYPE_NAME_STRING .
 
-    $default  reduce using rule 65 (ir_value_type_string)
+    $default  reduce using rule 70 (ir_value_type_string)
 
 
 State 26
 
-   63 ir_value_type: TYPE_NAME_OBJECT .
+   68 ir_value_type: TYPE_NAME_OBJECT .
 
-    $default  reduce using rule 63 (ir_value_type)
+    $default  reduce using rule 68 (ir_value_type)
 
 
 State 27
 
-   64 ir_value_type_array: ARRAY . LBRACKET DECIMALINTEGER STAR ir_identifier_type RBRACKET
+   69 ir_value_type_array: ARRAY . LBRACKET DECIMALINTEGER STAR ir_identifier_type RBRACKET
 
     LBRACKET  shift, and go to state 38
 
 
 State 28
 
-   45 ir_identifier_type: IDENTIFIER .
-   48                   | IDENTIFIER . STAR
+   50 ir_identifier_type: IDENTIFIER .
+   53                   | IDENTIFIER . STAR
 
     STAR  shift, and go to state 39
 
-    $default  reduce using rule 45 (ir_identifier_type)
+    $default  reduce using rule 50 (ir_identifier_type)
 
 
 State 29
 
-   12 function_def: DEF ir_identifier_type . IDENTIFIER function_arg_list LBRACE basic_block_list RBRACE
-   13             | DEF ir_identifier_type . IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE basic_block_list RBRACE
+   12 function_def: DEF ir_identifier_type . IDENTIFIER function_arg_list function_def_option_list LBRACE basic_block_list RBRACE
+   13             | DEF ir_identifier_type . IDENTIFIER function_arg_list COLON IDENTIFIER function_def_option_list LBRACE basic_block_list RBRACE
 
     IDENTIFIER  shift, and go to state 40
 
 
 State 30
 
-   46 ir_identifier_type: ir_value_type .
-   49                   | ir_value_type . STAR
+   51 ir_identifier_type: ir_value_type .
+   54                   | ir_value_type . STAR
 
     STAR  shift, and go to state 41
 
-    $default  reduce using rule 46 (ir_identifier_type)
+    $default  reduce using rule 51 (ir_identifier_type)
 
 
 State 31
 
-   47 ir_identifier_type: ir_value_type_array .
-   50                   | ir_value_type_array . STAR
+   52 ir_identifier_type: ir_value_type_array .
+   55                   | ir_value_type_array . STAR
 
     STAR  shift, and go to state 42
 
-    $default  reduce using rule 47 (ir_identifier_type)
+    $default  reduce using rule 52 (ir_identifier_type)
 
 
 State 32
 
-   60 ir_value_type: ir_value_type_string .
+   65 ir_value_type: ir_value_type_string .
 
-    $default  reduce using rule 60 (ir_value_type)
+    $default  reduce using rule 65 (ir_value_type)
 
 
 State 33
 
-   59 ir_value_type: ir_value_type_floating_numeric .
+   64 ir_value_type: ir_value_type_floating_numeric .
 
-    $default  reduce using rule 59 (ir_value_type)
+    $default  reduce using rule 64 (ir_value_type)
 
 
 State 34
 
-   58 ir_value_type: ir_value_type_integer_numeric .
+   63 ir_value_type: ir_value_type_integer_numeric .
 
-    $default  reduce using rule 58 (ir_value_type)
+    $default  reduce using rule 63 (ir_value_type)
 
 
 State 35
 
-   69 ir_value_type_integer_numeric: ir_value_type_long_integer_numeric .
+   74 ir_value_type_integer_numeric: ir_value_type_long_integer_numeric .
 
-    $default  reduce using rule 69 (ir_value_type_integer_numeric)
+    $default  reduce using rule 74 (ir_value_type_integer_numeric)
 
 
 State 36
 
-   68 ir_value_type_integer_numeric: ir_value_type_short_integer_numeric .
+   73 ir_value_type_integer_numeric: ir_value_type_short_integer_numeric .
 
-    $default  reduce using rule 68 (ir_value_type_integer_numeric)
+    $default  reduce using rule 73 (ir_value_type_integer_numeric)
 
 
 State 37
@@ -548,22 +562,22 @@ State 37
 
 State 38
 
-   64 ir_value_type_array: ARRAY LBRACKET . DECIMALINTEGER STAR ir_identifier_type RBRACKET
+   69 ir_value_type_array: ARRAY LBRACKET . DECIMALINTEGER STAR ir_identifier_type RBRACKET
 
     DECIMALINTEGER  shift, and go to state 44
 
 
 State 39
 
-   48 ir_identifier_type: IDENTIFIER STAR .
+   53 ir_identifier_type: IDENTIFIER STAR .
 
-    $default  reduce using rule 48 (ir_identifier_type)
+    $default  reduce using rule 53 (ir_identifier_type)
 
 
 State 40
 
-   12 function_def: DEF ir_identifier_type IDENTIFIER . function_arg_list LBRACE basic_block_list RBRACE
-   13             | DEF ir_identifier_type IDENTIFIER . function_arg_list COLON IDENTIFIER LBRACE basic_block_list RBRACE
+   12 function_def: DEF ir_identifier_type IDENTIFIER . function_arg_list function_def_option_list LBRACE basic_block_list RBRACE
+   13             | DEF ir_identifier_type IDENTIFIER . function_arg_list COLON IDENTIFIER function_def_option_list LBRACE basic_block_list RBRACE
 
     LPAREN  shift, and go to state 45
 
@@ -572,16 +586,16 @@ State 40
 
 State 41
 
-   49 ir_identifier_type: ir_value_type STAR .
+   54 ir_identifier_type: ir_value_type STAR .
 
-    $default  reduce using rule 49 (ir_identifier_type)
+    $default  reduce using rule 54 (ir_identifier_type)
 
 
 State 42
 
-   50 ir_identifier_type: ir_value_type_array STAR .
+   55 ir_identifier_type: ir_value_type_array STAR .
 
-    $default  reduce using rule 50 (ir_identifier_type)
+    $default  reduce using rule 55 (ir_identifier_type)
 
 
 State 43
@@ -595,15 +609,15 @@ State 43
 
 State 44
 
-   64 ir_value_type_array: ARRAY LBRACKET DECIMALINTEGER . STAR ir_identifier_type RBRACKET
+   69 ir_value_type_array: ARRAY LBRACKET DECIMALINTEGER . STAR ir_identifier_type RBRACKET
 
     STAR  shift, and go to state 48
 
 
 State 45
 
-   14 function_arg_list: LPAREN . RPAREN
-   15                  | LPAREN . function_arg_list_core RPAREN
+   19 function_arg_list: LPAREN . RPAREN
+   20                  | LPAREN . function_arg_list_core RPAREN
 
     TYPE_NAME_I8       shift, and go to state 13
     TYPE_NAME_UI8      shift, and go to state 14
@@ -637,11 +651,15 @@ State 45
 
 State 46
 
-   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list . LBRACE basic_block_list RBRACE
-   13             | DEF ir_identifier_type IDENTIFIER function_arg_list . COLON IDENTIFIER LBRACE basic_block_list RBRACE
+   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list . function_def_option_list LBRACE basic_block_list RBRACE
+   13             | DEF ir_identifier_type IDENTIFIER function_arg_list . COLON IDENTIFIER function_def_option_list LBRACE basic_block_list RBRACE
 
-    COLON   shift, and go to state 53
-    LBRACE  shift, and go to state 54
+    COLON     shift, and go to state 53
+    LBRACKET  shift, and go to state 54
+
+    $default  reduce using rule 14 (function_def_option_list)
+
+    function_def_option_list  go to state 55
 
 
 State 47
@@ -665,10 +683,10 @@ State 47
     TYPE_NAME_OBJECT   shift, and go to state 26
     ARRAY              shift, and go to state 27
     IDENTIFIER         shift, and go to state 28
-    RBRACE             shift, and go to state 55
+    RBRACE             shift, and go to state 56
 
-    type_field                           go to state 56
-    ir_identifier_type                   go to state 57
+    type_field                           go to state 57
+    ir_identifier_type                   go to state 58
     ir_value_type                        go to state 30
     ir_value_type_array                  go to state 31
     ir_value_type_string                 go to state 32
@@ -680,7 +698,7 @@ State 47
 
 State 48
 
-   64 ir_value_type_array: ARRAY LBRACKET DECIMALINTEGER STAR . ir_identifier_type RBRACKET
+   69 ir_value_type_array: ARRAY LBRACKET DECIMALINTEGER STAR . ir_identifier_type RBRACKET
 
     TYPE_NAME_I8       shift, and go to state 13
     TYPE_NAME_UI8      shift, and go to state 14
@@ -699,7 +717,7 @@ State 48
     ARRAY              shift, and go to state 27
     IDENTIFIER         shift, and go to state 28
 
-    ir_identifier_type                   go to state 58
+    ir_identifier_type                   go to state 59
     ir_value_type                        go to state 30
     ir_value_type_array                  go to state 31
     ir_value_type_string                 go to state 32
@@ -711,81 +729,89 @@ State 48
 
 State 49
 
-   14 function_arg_list: LPAREN RPAREN .
+   19 function_arg_list: LPAREN RPAREN .
 
-    $default  reduce using rule 14 (function_arg_list)
+    $default  reduce using rule 19 (function_arg_list)
 
 
 State 50
 
-   15 function_arg_list: LPAREN function_arg_list_core . RPAREN
-   17 function_arg_list_core: function_arg_list_core . COMMA function_arg
+   20 function_arg_list: LPAREN function_arg_list_core . RPAREN
+   22 function_arg_list_core: function_arg_list_core . COMMA function_arg
 
-    COMMA   shift, and go to state 59
-    RPAREN  shift, and go to state 60
+    COMMA   shift, and go to state 60
+    RPAREN  shift, and go to state 61
 
 
 State 51
 
-   16 function_arg_list_core: function_arg .
+   21 function_arg_list_core: function_arg .
 
-    $default  reduce using rule 16 (function_arg_list_core)
+    $default  reduce using rule 21 (function_arg_list_core)
 
 
 State 52
 
-   18 function_arg: ir_identifier_type . IDENTIFIER
-
-    IDENTIFIER  shift, and go to state 61
-
-
-State 53
-
-   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON . IDENTIFIER LBRACE basic_block_list RBRACE
+   23 function_arg: ir_identifier_type . IDENTIFIER
 
     IDENTIFIER  shift, and go to state 62
 
 
+State 53
+
+   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON . IDENTIFIER function_def_option_list LBRACE basic_block_list RBRACE
+
+    IDENTIFIER  shift, and go to state 63
+
+
 State 54
 
-   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list LBRACE . basic_block_list RBRACE
+   15 function_def_option_list: LBRACKET . function_def_option_list_core RBRACKET
 
-    $default  reduce using rule 19 (basic_block_list)
+    IDENTIFIER  shift, and go to state 64
 
-    basic_block_list  go to state 63
+    function_def_option_list_core  go to state 65
+    function_def_option            go to state 66
 
 
 State 55
+
+   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list function_def_option_list . LBRACE basic_block_list RBRACE
+
+    LBRACE  shift, and go to state 67
+
+
+State 56
 
     8 type_def: TYPE IDENTIFIER LBRACE type_field_list RBRACE .
 
     $default  reduce using rule 8 (type_def)
 
 
-State 56
+State 57
 
    10 type_field_list: type_field_list type_field .
 
     $default  reduce using rule 10 (type_field_list)
 
 
-State 57
+State 58
 
    11 type_field: ir_identifier_type . IDENTIFIER SEMICOLON
 
-    IDENTIFIER  shift, and go to state 64
-
-
-State 58
-
-   64 ir_value_type_array: ARRAY LBRACKET DECIMALINTEGER STAR ir_identifier_type . RBRACKET
-
-    RBRACKET  shift, and go to state 65
+    IDENTIFIER  shift, and go to state 68
 
 
 State 59
 
-   17 function_arg_list_core: function_arg_list_core COMMA . function_arg
+   69 ir_value_type_array: ARRAY LBRACKET DECIMALINTEGER STAR ir_identifier_type . RBRACKET
+
+    RBRACKET  shift, and go to state 69
+
+
+State 60
+
+   22 function_arg_list_core: function_arg_list_core COMMA . function_arg
 
     TYPE_NAME_I8       shift, and go to state 13
     TYPE_NAME_UI8      shift, and go to state 14
@@ -804,7 +830,7 @@ State 59
     ARRAY              shift, and go to state 27
     IDENTIFIER         shift, and go to state 28
 
-    function_arg                         go to state 66
+    function_arg                         go to state 70
     ir_identifier_type                   go to state 52
     ir_value_type                        go to state 30
     ir_value_type_array                  go to state 31
@@ -815,203 +841,262 @@ State 59
     ir_value_type_short_integer_numeric  go to state 36
 
 
-State 60
-
-   15 function_arg_list: LPAREN function_arg_list_core RPAREN .
-
-    $default  reduce using rule 15 (function_arg_list)
-
-
 State 61
 
-   18 function_arg: ir_identifier_type IDENTIFIER .
+   20 function_arg_list: LPAREN function_arg_list_core RPAREN .
 
-    $default  reduce using rule 18 (function_arg)
+    $default  reduce using rule 20 (function_arg_list)
 
 
 State 62
 
-   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER . LBRACE basic_block_list RBRACE
+   23 function_arg: ir_identifier_type IDENTIFIER .
 
-    LBRACE  shift, and go to state 67
+    $default  reduce using rule 23 (function_arg)
 
 
 State 63
 
-   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list LBRACE basic_block_list . RBRACE
-   20 basic_block_list: basic_block_list . basic_block
+   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER . function_def_option_list LBRACE basic_block_list RBRACE
 
-    IDENTIFIER  shift, and go to state 68
-    RBRACE      shift, and go to state 69
+    LBRACKET  shift, and go to state 54
 
-    basic_block  go to state 70
+    $default  reduce using rule 14 (function_def_option_list)
+
+    function_def_option_list  go to state 71
 
 
 State 64
 
-   11 type_field: ir_identifier_type IDENTIFIER . SEMICOLON
+   18 function_def_option: IDENTIFIER .
 
-    SEMICOLON  shift, and go to state 71
+    $default  reduce using rule 18 (function_def_option)
 
 
 State 65
 
-   64 ir_value_type_array: ARRAY LBRACKET DECIMALINTEGER STAR ir_identifier_type RBRACKET .
+   15 function_def_option_list: LBRACKET function_def_option_list_core . RBRACKET
+   17 function_def_option_list_core: function_def_option_list_core . function_def_option
 
-    $default  reduce using rule 64 (ir_value_type_array)
+    IDENTIFIER  shift, and go to state 64
+    RBRACKET    shift, and go to state 72
+
+    function_def_option  go to state 73
 
 
 State 66
 
-   17 function_arg_list_core: function_arg_list_core COMMA function_arg .
+   16 function_def_option_list_core: function_def_option .
 
-    $default  reduce using rule 17 (function_arg_list_core)
+    $default  reduce using rule 16 (function_def_option_list_core)
 
 
 State 67
 
-   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE . basic_block_list RBRACE
+   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list function_def_option_list LBRACE . basic_block_list RBRACE
 
-    $default  reduce using rule 19 (basic_block_list)
+    $default  reduce using rule 24 (basic_block_list)
 
-    basic_block_list  go to state 72
+    basic_block_list  go to state 74
 
 
 State 68
 
-   21 basic_block: IDENTIFIER . COLON instruction_group
+   11 type_field: ir_identifier_type IDENTIFIER . SEMICOLON
 
-    COLON  shift, and go to state 73
+    SEMICOLON  shift, and go to state 75
 
 
 State 69
 
-   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list LBRACE basic_block_list RBRACE .
+   69 ir_value_type_array: ARRAY LBRACKET DECIMALINTEGER STAR ir_identifier_type RBRACKET .
 
-    $default  reduce using rule 12 (function_def)
+    $default  reduce using rule 69 (ir_value_type_array)
 
 
 State 70
 
-   20 basic_block_list: basic_block_list basic_block .
+   22 function_arg_list_core: function_arg_list_core COMMA function_arg .
 
-    $default  reduce using rule 20 (basic_block_list)
+    $default  reduce using rule 22 (function_arg_list_core)
 
 
 State 71
+
+   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER function_def_option_list . LBRACE basic_block_list RBRACE
+
+    LBRACE  shift, and go to state 76
+
+
+State 72
+
+   15 function_def_option_list: LBRACKET function_def_option_list_core RBRACKET .
+
+    $default  reduce using rule 15 (function_def_option_list)
+
+
+State 73
+
+   17 function_def_option_list_core: function_def_option_list_core function_def_option .
+
+    $default  reduce using rule 17 (function_def_option_list_core)
+
+
+State 74
+
+   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list function_def_option_list LBRACE basic_block_list . RBRACE
+   25 basic_block_list: basic_block_list . basic_block
+
+    IDENTIFIER  shift, and go to state 77
+    RBRACE      shift, and go to state 78
+
+    basic_block  go to state 79
+
+
+State 75
 
    11 type_field: ir_identifier_type IDENTIFIER SEMICOLON .
 
     $default  reduce using rule 11 (type_field)
 
 
-State 72
-
-   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE basic_block_list . RBRACE
-   20 basic_block_list: basic_block_list . basic_block
-
-    IDENTIFIER  shift, and go to state 68
-    RBRACE      shift, and go to state 74
-
-    basic_block  go to state 70
-
-
-State 73
-
-   21 basic_block: IDENTIFIER COLON . instruction_group
-
-    OPCODE   shift, and go to state 75
-    PERCENT  shift, and go to state 76
-
-    instruction_group  go to state 77
-    instruction        go to state 78
-    expr               go to state 79
-    identifier         go to state 80
-
-
-State 74
-
-   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE basic_block_list RBRACE .
-
-    $default  reduce using rule 13 (function_def)
-
-
-State 75
-
-   26 expr: OPCODE . instruction_options
-   27     | OPCODE . instruction_options ir_identifier_type
-   28     | OPCODE . instruction_options operand_list
-   29     | OPCODE . instruction_options operand_list label_list
-   30     | OPCODE . instruction_options ir_identifier_type operand_list
-   31     | OPCODE . instruction_options ir_identifier_type operand_list label_list
-
-    LBRACKET  shift, and go to state 81
-
-    $default  reduce using rule 32 (instruction_options)
-
-    instruction_options  go to state 82
-
-
 State 76
 
-   44 identifier: PERCENT . IDENTIFIER
+   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER function_def_option_list LBRACE . basic_block_list RBRACE
 
-    IDENTIFIER  shift, and go to state 83
+    $default  reduce using rule 24 (basic_block_list)
+
+    basic_block_list  go to state 80
 
 
 State 77
 
-   21 basic_block: IDENTIFIER COLON instruction_group .
-   23 instruction_group: instruction_group . instruction
+   26 basic_block: IDENTIFIER . COLON instruction_group
 
-    OPCODE   shift, and go to state 75
-    PERCENT  shift, and go to state 76
-
-    $default  reduce using rule 21 (basic_block)
-
-    instruction  go to state 84
-    expr         go to state 79
-    identifier   go to state 80
+    COLON  shift, and go to state 81
 
 
 State 78
 
-   22 instruction_group: instruction .
+   12 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list function_def_option_list LBRACE basic_block_list RBRACE .
 
-    $default  reduce using rule 22 (instruction_group)
+    $default  reduce using rule 12 (function_def)
 
 
 State 79
 
-   25 instruction: expr . SEMICOLON
+   25 basic_block_list: basic_block_list basic_block .
 
-    SEMICOLON  shift, and go to state 85
+    $default  reduce using rule 25 (basic_block_list)
 
 
 State 80
 
-   24 instruction: identifier . ASSIGN expr SEMICOLON
+   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER function_def_option_list LBRACE basic_block_list . RBRACE
+   25 basic_block_list: basic_block_list . basic_block
 
-    ASSIGN  shift, and go to state 86
+    IDENTIFIER  shift, and go to state 77
+    RBRACE      shift, and go to state 82
+
+    basic_block  go to state 79
 
 
 State 81
 
-   33 instruction_options: LBRACKET . instruction_option_list RBRACKET
+   26 basic_block: IDENTIFIER COLON . instruction_group
 
-    IDENTIFIER  shift, and go to state 87
+    OPCODE   shift, and go to state 83
+    PERCENT  shift, and go to state 84
 
-    instruction_option_list  go to state 88
+    instruction_group  go to state 85
+    instruction        go to state 86
+    expr               go to state 87
+    identifier         go to state 88
 
 
 State 82
 
-   26 expr: OPCODE instruction_options .
-   27     | OPCODE instruction_options . ir_identifier_type
-   28     | OPCODE instruction_options . operand_list
-   29     | OPCODE instruction_options . operand_list label_list
-   30     | OPCODE instruction_options . ir_identifier_type operand_list
-   31     | OPCODE instruction_options . ir_identifier_type operand_list label_list
+   13 function_def: DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER function_def_option_list LBRACE basic_block_list RBRACE .
+
+    $default  reduce using rule 13 (function_def)
+
+
+State 83
+
+   31 expr: OPCODE . instruction_options
+   32     | OPCODE . instruction_options ir_identifier_type
+   33     | OPCODE . instruction_options operand_list
+   34     | OPCODE . instruction_options operand_list label_list
+   35     | OPCODE . instruction_options ir_identifier_type operand_list
+   36     | OPCODE . instruction_options ir_identifier_type operand_list label_list
+
+    LBRACKET  shift, and go to state 89
+
+    $default  reduce using rule 37 (instruction_options)
+
+    instruction_options  go to state 90
+
+
+State 84
+
+   49 identifier: PERCENT . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 91
+
+
+State 85
+
+   26 basic_block: IDENTIFIER COLON instruction_group .
+   28 instruction_group: instruction_group . instruction
+
+    OPCODE   shift, and go to state 83
+    PERCENT  shift, and go to state 84
+
+    $default  reduce using rule 26 (basic_block)
+
+    instruction  go to state 92
+    expr         go to state 87
+    identifier   go to state 88
+
+
+State 86
+
+   27 instruction_group: instruction .
+
+    $default  reduce using rule 27 (instruction_group)
+
+
+State 87
+
+   30 instruction: expr . SEMICOLON
+
+    SEMICOLON  shift, and go to state 93
+
+
+State 88
+
+   29 instruction: identifier . ASSIGN expr SEMICOLON
+
+    ASSIGN  shift, and go to state 94
+
+
+State 89
+
+   38 instruction_options: LBRACKET . instruction_option_list RBRACKET
+
+    IDENTIFIER  shift, and go to state 95
+
+    instruction_option_list  go to state 96
+
+
+State 90
+
+   31 expr: OPCODE instruction_options .
+   32     | OPCODE instruction_options . ir_identifier_type
+   33     | OPCODE instruction_options . operand_list
+   34     | OPCODE instruction_options . operand_list label_list
+   35     | OPCODE instruction_options . ir_identifier_type operand_list
+   36     | OPCODE instruction_options . ir_identifier_type operand_list label_list
 
     TYPE_NAME_I8       shift, and go to state 13
     TYPE_NAME_UI8      shift, and go to state 14
@@ -1021,346 +1106,115 @@ State 82
     TYPE_NAME_UI32     shift, and go to state 18
     TYPE_NAME_I64      shift, and go to state 19
     TYPE_NAME_UI64     shift, and go to state 20
-    TYPE_NAME_SPF      shift, and go to state 89
-    TYPE_NAME_DPF      shift, and go to state 90
-    TYPE_NAME_BOOLEAN  shift, and go to state 91
+    TYPE_NAME_SPF      shift, and go to state 97
+    TYPE_NAME_DPF      shift, and go to state 98
+    TYPE_NAME_BOOLEAN  shift, and go to state 99
     TYPE_NAME_VOID     shift, and go to state 24
     TYPE_NAME_STRING   shift, and go to state 25
     TYPE_NAME_OBJECT   shift, and go to state 26
     ARRAY              shift, and go to state 27
     IDENTIFIER         shift, and go to state 28
-    PERCENT            shift, and go to state 76
+    PERCENT            shift, and go to state 84
 
-    $default  reduce using rule 26 (expr)
+    $default  reduce using rule 31 (expr)
 
-    operand_list                         go to state 92
-    operand                              go to state 93
-    identifier                           go to state 94
-    ir_identifier_type                   go to state 95
-    ir_value                             go to state 96
+    operand_list                         go to state 100
+    operand                              go to state 101
+    identifier                           go to state 102
+    ir_identifier_type                   go to state 103
+    ir_value                             go to state 104
     ir_value_type                        go to state 30
     ir_value_type_array                  go to state 31
-    ir_value_type_string                 go to state 97
+    ir_value_type_string                 go to state 105
     ir_value_type_floating_numeric       go to state 33
     ir_value_type_integer_numeric        go to state 34
-    ir_value_type_long_integer_numeric   go to state 98
-    ir_value_type_short_integer_numeric  go to state 99
-
-
-State 83
-
-   44 identifier: PERCENT IDENTIFIER .
-
-    $default  reduce using rule 44 (identifier)
-
-
-State 84
-
-   23 instruction_group: instruction_group instruction .
-
-    $default  reduce using rule 23 (instruction_group)
-
-
-State 85
-
-   25 instruction: expr SEMICOLON .
-
-    $default  reduce using rule 25 (instruction)
-
-
-State 86
-
-   24 instruction: identifier ASSIGN . expr SEMICOLON
-
-    OPCODE  shift, and go to state 75
-
-    expr  go to state 100
-
-
-State 87
-
-   34 instruction_option_list: IDENTIFIER .
-
-    $default  reduce using rule 34 (instruction_option_list)
-
-
-State 88
-
-   33 instruction_options: LBRACKET instruction_option_list . RBRACKET
-   35 instruction_option_list: instruction_option_list . IDENTIFIER
-
-    IDENTIFIER  shift, and go to state 101
-    RBRACKET    shift, and go to state 102
-
-
-State 89
-
-   53 ir_value: TYPE_NAME_SPF . FLOATINGNUM
-   66 ir_value_type_floating_numeric: TYPE_NAME_SPF .
-
-    FLOATINGNUM  shift, and go to state 103
-
-    $default  reduce using rule 66 (ir_value_type_floating_numeric)
-
-
-State 90
-
-   54 ir_value: TYPE_NAME_DPF . FLOATINGNUM
-   67 ir_value_type_floating_numeric: TYPE_NAME_DPF .
-
-    FLOATINGNUM  shift, and go to state 104
-
-    $default  reduce using rule 67 (ir_value_type_floating_numeric)
+    ir_value_type_long_integer_numeric   go to state 106
+    ir_value_type_short_integer_numeric  go to state 107
 
 
 State 91
 
-   56 ir_value: TYPE_NAME_BOOLEAN . BOOLEAN_CONSTANT
-   57         | TYPE_NAME_BOOLEAN . DECIMALINTEGER
-   62 ir_value_type: TYPE_NAME_BOOLEAN .
+   49 identifier: PERCENT IDENTIFIER .
 
-    DECIMALINTEGER    shift, and go to state 105
-    BOOLEAN_CONSTANT  shift, and go to state 106
-
-    $default  reduce using rule 62 (ir_value_type)
+    $default  reduce using rule 49 (identifier)
 
 
 State 92
 
-   28 expr: OPCODE instruction_options operand_list .
-   29     | OPCODE instruction_options operand_list . label_list
-   41 operand_list: operand_list . operand
+   28 instruction_group: instruction_group instruction .
 
-    TYPE_NAME_I8       shift, and go to state 13
-    TYPE_NAME_UI8      shift, and go to state 14
-    TYPE_NAME_I16      shift, and go to state 15
-    TYPE_NAME_UI16     shift, and go to state 16
-    TYPE_NAME_I32      shift, and go to state 17
-    TYPE_NAME_UI32     shift, and go to state 18
-    TYPE_NAME_I64      shift, and go to state 19
-    TYPE_NAME_UI64     shift, and go to state 20
-    TYPE_NAME_SPF      shift, and go to state 107
-    TYPE_NAME_DPF      shift, and go to state 108
-    TYPE_NAME_BOOLEAN  shift, and go to state 109
-    TYPE_NAME_STRING   shift, and go to state 25
-    PERCENT            shift, and go to state 76
-    LBRACKET           shift, and go to state 110
-
-    $default  reduce using rule 28 (expr)
-
-    label_list                           go to state 111
-    operand                              go to state 112
-    identifier                           go to state 94
-    ir_value                             go to state 96
-    ir_value_type_string                 go to state 113
-    ir_value_type_long_integer_numeric   go to state 114
-    ir_value_type_short_integer_numeric  go to state 115
+    $default  reduce using rule 28 (instruction_group)
 
 
 State 93
 
-   40 operand_list: operand .
+   30 instruction: expr SEMICOLON .
 
-    $default  reduce using rule 40 (operand_list)
+    $default  reduce using rule 30 (instruction)
 
 
 State 94
 
-   43 operand: identifier .
+   29 instruction: identifier ASSIGN . expr SEMICOLON
 
-    $default  reduce using rule 43 (operand)
+    OPCODE  shift, and go to state 83
+
+    expr  go to state 108
 
 
 State 95
 
-   27 expr: OPCODE instruction_options ir_identifier_type .
-   30     | OPCODE instruction_options ir_identifier_type . operand_list
-   31     | OPCODE instruction_options ir_identifier_type . operand_list label_list
+   39 instruction_option_list: IDENTIFIER .
 
-    TYPE_NAME_I8       shift, and go to state 13
-    TYPE_NAME_UI8      shift, and go to state 14
-    TYPE_NAME_I16      shift, and go to state 15
-    TYPE_NAME_UI16     shift, and go to state 16
-    TYPE_NAME_I32      shift, and go to state 17
-    TYPE_NAME_UI32     shift, and go to state 18
-    TYPE_NAME_I64      shift, and go to state 19
-    TYPE_NAME_UI64     shift, and go to state 20
-    TYPE_NAME_SPF      shift, and go to state 107
-    TYPE_NAME_DPF      shift, and go to state 108
-    TYPE_NAME_BOOLEAN  shift, and go to state 109
-    TYPE_NAME_STRING   shift, and go to state 25
-    PERCENT            shift, and go to state 76
-
-    $default  reduce using rule 27 (expr)
-
-    operand_list                         go to state 116
-    operand                              go to state 93
-    identifier                           go to state 94
-    ir_value                             go to state 96
-    ir_value_type_string                 go to state 113
-    ir_value_type_long_integer_numeric   go to state 114
-    ir_value_type_short_integer_numeric  go to state 115
+    $default  reduce using rule 39 (instruction_option_list)
 
 
 State 96
 
-   42 operand: ir_value .
+   38 instruction_options: LBRACKET instruction_option_list . RBRACKET
+   40 instruction_option_list: instruction_option_list . IDENTIFIER
 
-    $default  reduce using rule 42 (operand)
+    IDENTIFIER  shift, and go to state 109
+    RBRACKET    shift, and go to state 110
 
 
 State 97
 
-   55 ir_value: ir_value_type_string . STRING_LITERAL
-   60 ir_value_type: ir_value_type_string .
+   58 ir_value: TYPE_NAME_SPF . FLOATINGNUM
+   71 ir_value_type_floating_numeric: TYPE_NAME_SPF .
 
-    STRING_LITERAL  shift, and go to state 117
+    FLOATINGNUM  shift, and go to state 111
 
-    $default  reduce using rule 60 (ir_value_type)
+    $default  reduce using rule 71 (ir_value_type_floating_numeric)
 
 
 State 98
 
-   52 ir_value: ir_value_type_long_integer_numeric . DECIMALINTEGER
-   69 ir_value_type_integer_numeric: ir_value_type_long_integer_numeric .
+   59 ir_value: TYPE_NAME_DPF . FLOATINGNUM
+   72 ir_value_type_floating_numeric: TYPE_NAME_DPF .
 
-    DECIMALINTEGER  shift, and go to state 118
+    FLOATINGNUM  shift, and go to state 112
 
-    $default  reduce using rule 69 (ir_value_type_integer_numeric)
+    $default  reduce using rule 72 (ir_value_type_floating_numeric)
 
 
 State 99
 
-   51 ir_value: ir_value_type_short_integer_numeric . DECIMALINTEGER
-   68 ir_value_type_integer_numeric: ir_value_type_short_integer_numeric .
+   61 ir_value: TYPE_NAME_BOOLEAN . BOOLEAN_CONSTANT
+   62         | TYPE_NAME_BOOLEAN . DECIMALINTEGER
+   67 ir_value_type: TYPE_NAME_BOOLEAN .
 
-    DECIMALINTEGER  shift, and go to state 119
+    DECIMALINTEGER    shift, and go to state 113
+    BOOLEAN_CONSTANT  shift, and go to state 114
 
-    $default  reduce using rule 68 (ir_value_type_integer_numeric)
+    $default  reduce using rule 67 (ir_value_type)
 
 
 State 100
 
-   24 instruction: identifier ASSIGN expr . SEMICOLON
-
-    SEMICOLON  shift, and go to state 120
-
-
-State 101
-
-   35 instruction_option_list: instruction_option_list IDENTIFIER .
-
-    $default  reduce using rule 35 (instruction_option_list)
-
-
-State 102
-
-   33 instruction_options: LBRACKET instruction_option_list RBRACKET .
-
-    $default  reduce using rule 33 (instruction_options)
-
-
-State 103
-
-   53 ir_value: TYPE_NAME_SPF FLOATINGNUM .
-
-    $default  reduce using rule 53 (ir_value)
-
-
-State 104
-
-   54 ir_value: TYPE_NAME_DPF FLOATINGNUM .
-
-    $default  reduce using rule 54 (ir_value)
-
-
-State 105
-
-   57 ir_value: TYPE_NAME_BOOLEAN DECIMALINTEGER .
-
-    $default  reduce using rule 57 (ir_value)
-
-
-State 106
-
-   56 ir_value: TYPE_NAME_BOOLEAN BOOLEAN_CONSTANT .
-
-    $default  reduce using rule 56 (ir_value)
-
-
-State 107
-
-   53 ir_value: TYPE_NAME_SPF . FLOATINGNUM
-
-    FLOATINGNUM  shift, and go to state 103
-
-
-State 108
-
-   54 ir_value: TYPE_NAME_DPF . FLOATINGNUM
-
-    FLOATINGNUM  shift, and go to state 104
-
-
-State 109
-
-   56 ir_value: TYPE_NAME_BOOLEAN . BOOLEAN_CONSTANT
-   57         | TYPE_NAME_BOOLEAN . DECIMALINTEGER
-
-    DECIMALINTEGER    shift, and go to state 105
-    BOOLEAN_CONSTANT  shift, and go to state 106
-
-
-State 110
-
-   36 label_list: LBRACKET . label_list_core RBRACKET
-
-    LABEL  shift, and go to state 121
-
-    label_list_core  go to state 122
-    label            go to state 123
-
-
-State 111
-
-   29 expr: OPCODE instruction_options operand_list label_list .
-
-    $default  reduce using rule 29 (expr)
-
-
-State 112
-
-   41 operand_list: operand_list operand .
-
-    $default  reduce using rule 41 (operand_list)
-
-
-State 113
-
-   55 ir_value: ir_value_type_string . STRING_LITERAL
-
-    STRING_LITERAL  shift, and go to state 117
-
-
-State 114
-
-   52 ir_value: ir_value_type_long_integer_numeric . DECIMALINTEGER
-
-    DECIMALINTEGER  shift, and go to state 118
-
-
-State 115
-
-   51 ir_value: ir_value_type_short_integer_numeric . DECIMALINTEGER
-
-    DECIMALINTEGER  shift, and go to state 119
-
-
-State 116
-
-   30 expr: OPCODE instruction_options ir_identifier_type operand_list .
-   31     | OPCODE instruction_options ir_identifier_type operand_list . label_list
-   41 operand_list: operand_list . operand
+   33 expr: OPCODE instruction_options operand_list .
+   34     | OPCODE instruction_options operand_list . label_list
+   46 operand_list: operand_list . operand
 
     TYPE_NAME_I8       shift, and go to state 13
     TYPE_NAME_UI8      shift, and go to state 14
@@ -1370,114 +1224,345 @@ State 116
     TYPE_NAME_UI32     shift, and go to state 18
     TYPE_NAME_I64      shift, and go to state 19
     TYPE_NAME_UI64     shift, and go to state 20
-    TYPE_NAME_SPF      shift, and go to state 107
-    TYPE_NAME_DPF      shift, and go to state 108
-    TYPE_NAME_BOOLEAN  shift, and go to state 109
+    TYPE_NAME_SPF      shift, and go to state 115
+    TYPE_NAME_DPF      shift, and go to state 116
+    TYPE_NAME_BOOLEAN  shift, and go to state 117
     TYPE_NAME_STRING   shift, and go to state 25
-    PERCENT            shift, and go to state 76
-    LBRACKET           shift, and go to state 110
+    PERCENT            shift, and go to state 84
+    LBRACKET           shift, and go to state 118
 
-    $default  reduce using rule 30 (expr)
+    $default  reduce using rule 33 (expr)
 
-    label_list                           go to state 124
-    operand                              go to state 112
-    identifier                           go to state 94
-    ir_value                             go to state 96
-    ir_value_type_string                 go to state 113
-    ir_value_type_long_integer_numeric   go to state 114
-    ir_value_type_short_integer_numeric  go to state 115
+    label_list                           go to state 119
+    operand                              go to state 120
+    identifier                           go to state 102
+    ir_value                             go to state 104
+    ir_value_type_string                 go to state 121
+    ir_value_type_long_integer_numeric   go to state 122
+    ir_value_type_short_integer_numeric  go to state 123
+
+
+State 101
+
+   45 operand_list: operand .
+
+    $default  reduce using rule 45 (operand_list)
+
+
+State 102
+
+   48 operand: identifier .
+
+    $default  reduce using rule 48 (operand)
+
+
+State 103
+
+   32 expr: OPCODE instruction_options ir_identifier_type .
+   35     | OPCODE instruction_options ir_identifier_type . operand_list
+   36     | OPCODE instruction_options ir_identifier_type . operand_list label_list
+
+    TYPE_NAME_I8       shift, and go to state 13
+    TYPE_NAME_UI8      shift, and go to state 14
+    TYPE_NAME_I16      shift, and go to state 15
+    TYPE_NAME_UI16     shift, and go to state 16
+    TYPE_NAME_I32      shift, and go to state 17
+    TYPE_NAME_UI32     shift, and go to state 18
+    TYPE_NAME_I64      shift, and go to state 19
+    TYPE_NAME_UI64     shift, and go to state 20
+    TYPE_NAME_SPF      shift, and go to state 115
+    TYPE_NAME_DPF      shift, and go to state 116
+    TYPE_NAME_BOOLEAN  shift, and go to state 117
+    TYPE_NAME_STRING   shift, and go to state 25
+    PERCENT            shift, and go to state 84
+
+    $default  reduce using rule 32 (expr)
+
+    operand_list                         go to state 124
+    operand                              go to state 101
+    identifier                           go to state 102
+    ir_value                             go to state 104
+    ir_value_type_string                 go to state 121
+    ir_value_type_long_integer_numeric   go to state 122
+    ir_value_type_short_integer_numeric  go to state 123
+
+
+State 104
+
+   47 operand: ir_value .
+
+    $default  reduce using rule 47 (operand)
+
+
+State 105
+
+   60 ir_value: ir_value_type_string . STRING_LITERAL
+   65 ir_value_type: ir_value_type_string .
+
+    STRING_LITERAL  shift, and go to state 125
+
+    $default  reduce using rule 65 (ir_value_type)
+
+
+State 106
+
+   57 ir_value: ir_value_type_long_integer_numeric . DECIMALINTEGER
+   74 ir_value_type_integer_numeric: ir_value_type_long_integer_numeric .
+
+    DECIMALINTEGER  shift, and go to state 126
+
+    $default  reduce using rule 74 (ir_value_type_integer_numeric)
+
+
+State 107
+
+   56 ir_value: ir_value_type_short_integer_numeric . DECIMALINTEGER
+   73 ir_value_type_integer_numeric: ir_value_type_short_integer_numeric .
+
+    DECIMALINTEGER  shift, and go to state 127
+
+    $default  reduce using rule 73 (ir_value_type_integer_numeric)
+
+
+State 108
+
+   29 instruction: identifier ASSIGN expr . SEMICOLON
+
+    SEMICOLON  shift, and go to state 128
+
+
+State 109
+
+   40 instruction_option_list: instruction_option_list IDENTIFIER .
+
+    $default  reduce using rule 40 (instruction_option_list)
+
+
+State 110
+
+   38 instruction_options: LBRACKET instruction_option_list RBRACKET .
+
+    $default  reduce using rule 38 (instruction_options)
+
+
+State 111
+
+   58 ir_value: TYPE_NAME_SPF FLOATINGNUM .
+
+    $default  reduce using rule 58 (ir_value)
+
+
+State 112
+
+   59 ir_value: TYPE_NAME_DPF FLOATINGNUM .
+
+    $default  reduce using rule 59 (ir_value)
+
+
+State 113
+
+   62 ir_value: TYPE_NAME_BOOLEAN DECIMALINTEGER .
+
+    $default  reduce using rule 62 (ir_value)
+
+
+State 114
+
+   61 ir_value: TYPE_NAME_BOOLEAN BOOLEAN_CONSTANT .
+
+    $default  reduce using rule 61 (ir_value)
+
+
+State 115
+
+   58 ir_value: TYPE_NAME_SPF . FLOATINGNUM
+
+    FLOATINGNUM  shift, and go to state 111
+
+
+State 116
+
+   59 ir_value: TYPE_NAME_DPF . FLOATINGNUM
+
+    FLOATINGNUM  shift, and go to state 112
 
 
 State 117
 
-   55 ir_value: ir_value_type_string STRING_LITERAL .
+   61 ir_value: TYPE_NAME_BOOLEAN . BOOLEAN_CONSTANT
+   62         | TYPE_NAME_BOOLEAN . DECIMALINTEGER
 
-    $default  reduce using rule 55 (ir_value)
+    DECIMALINTEGER    shift, and go to state 113
+    BOOLEAN_CONSTANT  shift, and go to state 114
 
 
 State 118
 
-   52 ir_value: ir_value_type_long_integer_numeric DECIMALINTEGER .
+   41 label_list: LBRACKET . label_list_core RBRACKET
 
-    $default  reduce using rule 52 (ir_value)
+    LABEL  shift, and go to state 129
+
+    label_list_core  go to state 130
+    label            go to state 131
 
 
 State 119
 
-   51 ir_value: ir_value_type_short_integer_numeric DECIMALINTEGER .
+   34 expr: OPCODE instruction_options operand_list label_list .
 
-    $default  reduce using rule 51 (ir_value)
+    $default  reduce using rule 34 (expr)
 
 
 State 120
 
-   24 instruction: identifier ASSIGN expr SEMICOLON .
+   46 operand_list: operand_list operand .
 
-    $default  reduce using rule 24 (instruction)
+    $default  reduce using rule 46 (operand_list)
 
 
 State 121
 
-   39 label: LABEL . POND IDENTIFIER
+   60 ir_value: ir_value_type_string . STRING_LITERAL
 
-    POND  shift, and go to state 125
+    STRING_LITERAL  shift, and go to state 125
 
 
 State 122
 
-   36 label_list: LBRACKET label_list_core . RBRACKET
-   38 label_list_core: label_list_core . COMMA label
+   57 ir_value: ir_value_type_long_integer_numeric . DECIMALINTEGER
 
-    COMMA     shift, and go to state 126
-    RBRACKET  shift, and go to state 127
+    DECIMALINTEGER  shift, and go to state 126
 
 
 State 123
 
-   37 label_list_core: label .
+   56 ir_value: ir_value_type_short_integer_numeric . DECIMALINTEGER
 
-    $default  reduce using rule 37 (label_list_core)
+    DECIMALINTEGER  shift, and go to state 127
 
 
 State 124
 
-   31 expr: OPCODE instruction_options ir_identifier_type operand_list label_list .
+   35 expr: OPCODE instruction_options ir_identifier_type operand_list .
+   36     | OPCODE instruction_options ir_identifier_type operand_list . label_list
+   46 operand_list: operand_list . operand
 
-    $default  reduce using rule 31 (expr)
+    TYPE_NAME_I8       shift, and go to state 13
+    TYPE_NAME_UI8      shift, and go to state 14
+    TYPE_NAME_I16      shift, and go to state 15
+    TYPE_NAME_UI16     shift, and go to state 16
+    TYPE_NAME_I32      shift, and go to state 17
+    TYPE_NAME_UI32     shift, and go to state 18
+    TYPE_NAME_I64      shift, and go to state 19
+    TYPE_NAME_UI64     shift, and go to state 20
+    TYPE_NAME_SPF      shift, and go to state 115
+    TYPE_NAME_DPF      shift, and go to state 116
+    TYPE_NAME_BOOLEAN  shift, and go to state 117
+    TYPE_NAME_STRING   shift, and go to state 25
+    PERCENT            shift, and go to state 84
+    LBRACKET           shift, and go to state 118
+
+    $default  reduce using rule 35 (expr)
+
+    label_list                           go to state 132
+    operand                              go to state 120
+    identifier                           go to state 102
+    ir_value                             go to state 104
+    ir_value_type_string                 go to state 121
+    ir_value_type_long_integer_numeric   go to state 122
+    ir_value_type_short_integer_numeric  go to state 123
 
 
 State 125
 
-   39 label: LABEL POND . IDENTIFIER
+   60 ir_value: ir_value_type_string STRING_LITERAL .
 
-    IDENTIFIER  shift, and go to state 128
+    $default  reduce using rule 60 (ir_value)
 
 
 State 126
 
-   38 label_list_core: label_list_core COMMA . label
+   57 ir_value: ir_value_type_long_integer_numeric DECIMALINTEGER .
 
-    LABEL  shift, and go to state 121
-
-    label  go to state 129
+    $default  reduce using rule 57 (ir_value)
 
 
 State 127
 
-   36 label_list: LBRACKET label_list_core RBRACKET .
+   56 ir_value: ir_value_type_short_integer_numeric DECIMALINTEGER .
 
-    $default  reduce using rule 36 (label_list)
+    $default  reduce using rule 56 (ir_value)
 
 
 State 128
 
-   39 label: LABEL POND IDENTIFIER .
+   29 instruction: identifier ASSIGN expr SEMICOLON .
 
-    $default  reduce using rule 39 (label)
+    $default  reduce using rule 29 (instruction)
 
 
 State 129
 
-   38 label_list_core: label_list_core COMMA label .
+   44 label: LABEL . POND IDENTIFIER
 
-    $default  reduce using rule 38 (label_list_core)
+    POND  shift, and go to state 133
+
+
+State 130
+
+   41 label_list: LBRACKET label_list_core . RBRACKET
+   43 label_list_core: label_list_core . COMMA label
+
+    COMMA     shift, and go to state 134
+    RBRACKET  shift, and go to state 135
+
+
+State 131
+
+   42 label_list_core: label .
+
+    $default  reduce using rule 42 (label_list_core)
+
+
+State 132
+
+   36 expr: OPCODE instruction_options ir_identifier_type operand_list label_list .
+
+    $default  reduce using rule 36 (expr)
+
+
+State 133
+
+   44 label: LABEL POND . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 136
+
+
+State 134
+
+   43 label_list_core: label_list_core COMMA . label
+
+    LABEL  shift, and go to state 129
+
+    label  go to state 137
+
+
+State 135
+
+   41 label_list: LBRACKET label_list_core RBRACKET .
+
+    $default  reduce using rule 41 (label_list)
+
+
+State 136
+
+   44 label: LABEL POND IDENTIFIER .
+
+    $default  reduce using rule 44 (label)
+
+
+State 137
+
+   43 label_list_core: label_list_core COMMA label .
+
+    $default  reduce using rule 43 (label_list_core)

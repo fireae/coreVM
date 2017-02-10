@@ -218,6 +218,10 @@ Below is the IR schema:
                 "type": "corevm.ir.IRIdentifierType"
               },
               {
+                "name": "options",
+                "type": "long"
+              },
+              {
                 "name": "parameters",
                 "type": {
                   "type": "array",
@@ -584,15 +588,16 @@ to be hierarchically scoped.
 
 .. table::
 
-  =================  =======================  ================================================
+  =================  =======================  ==========================================================
         Field                 Type                              Description
-  =================  =======================  ================================================
+  =================  =======================  ==========================================================
     `name`             string                   Name of the function.
     `parent`           Unioned structure.       Optional parent closure.
     `rettype`          `IRIdentifierType`       Type of the function return value.
+    `options`          long                     A set of compiler options for the function definition.
     `parameters`       set<`IRParameter`>       A set of parameters of the function.
     `blocks`           set<`IRBasicBlock`>      A set of basic blocks in the function.
-  =================  =======================  ================================================
+  =================  =======================  ==========================================================
 
 Entity 'IRParameter'
 --------------------
@@ -1429,6 +1434,20 @@ of the function, then the name of the function, and then the set of parameters
 of the function. Optionally, a scope parent can be specified following the
 parameters.
 
+Each function definition can be specified with a set of optional compiler
+options, each represented by an identifier and separated by whitespace.
+These options serve as hints to the IR compiler to trigger certain
+optimizations. Below is a list of the options currently supported and their
+respective meanings.
+
+.. table::
+
+  ===============  =============================================================================================================
+       Option        Description
+  ===============  =============================================================================================================
+    `constexpr`      Instructs the compiler to perform compile-time computation on invocations of this function when possible.
+  ===============  =============================================================================================================
+
 Inside the body of a function, a set of basic blocks each start with the
 identifier of the block, followed by one or more instructions.
 
@@ -1436,7 +1455,7 @@ For example:
 
 .. code-block:: none
 
-    def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson {
+    def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson [constexpr] {
     entry:
         %sum = add ui64 %lhs_val %rhs_val;
         putelement dpf 3.14 %values ui32 2;
@@ -1526,7 +1545,7 @@ Below is an example of the textual representation of a sample module.
         string zipcode;
     }
 
-    def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson {
+    def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson [constexpr] {
     entry:
         %sum = add ui64 %lhs_val %rhs_val;
         putelement dpf 3.14 %values ui32 2;

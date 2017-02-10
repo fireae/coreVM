@@ -30,7 +30,7 @@ type Location {
     string zipcode;
 }
 
-def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson {
+def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson [constexpr] {
 entry:
     %sum = add ui64 %lhs_val %rhs_val;
     putelement dpf 3.14 %values ui32 2;

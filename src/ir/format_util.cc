@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cassert>
 #include <cstdint>
 #include <cstdlib>
+#include <cstring>
 
 #if defined(__clang__) and __clang__
   #pragma clang diagnostic push
@@ -34,6 +35,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace corevm {
 namespace ir {
+
+// -----------------------------------------------------------------------------
+
+int64_t interpret_func_defn_option(const std::string& val)
+{
+  static const char* STRS[] {
+    "constexpr"
+  };
+
+  static const size_t STRS_COUNT = sizeof(STRS) / sizeof(const char*);
+  for (size_t i = 0; i < STRS_COUNT; ++i)
+  {
+    if (strcmp(STRS[i], val.c_str()) == 0)
+    {
+      return (1 << i);
+    }
+  } 
+
+  return 0;
+}
 
 // -----------------------------------------------------------------------------
 

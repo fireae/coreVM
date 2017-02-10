@@ -36,6 +36,30 @@ namespace corevm {
 namespace ir {
 
 /**
+ * Type representing the set of allowed values for IR function definition
+ * options.
+ */
+enum class FuncDefnOption : int64_t
+{
+  CONSTEXPR = (1 << 0x00)
+};
+
+/**
+ * Determine if a particular function definition option has been set.
+ */
+inline
+constexpr bool is_func_defn_option_enabled(int64_t val, FuncDefnOption opt)
+{
+  return (val & static_cast<int64_t>(opt)) == static_cast<int64_t>(opt);
+}
+
+/**
+ * Determine the function definition option from its string representation.
+ * Return 0 if it cannot be determined.
+ */
+int64_t interpret_func_defn_option(const std::string&);
+
+/**
  * Convert IR opcode string representation to enum value.
  */
 corevm::IROpcode

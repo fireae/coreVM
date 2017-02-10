@@ -174,6 +174,7 @@ class IRGen(object):
                 'ref_type': 'pointer',
                 'value': 'Person'
             },
+            'options': 0,
             'parameters': [
                 {
                     'identifier': 'name',
@@ -303,6 +304,7 @@ class IRGen(object):
                 'ref_type': 'value',
                 'value': 'voidtype'
             },
+            'options': 1,
             'parameters': [
                 {
                     'identifier': 'lhs_val',
@@ -397,6 +399,7 @@ class IRGen(object):
                 'ref_type': 'value',
                 'value': 'voidtype'
             },
+            'options': 0,
             'parameters': [],
             'blocks': []
         }

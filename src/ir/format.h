@@ -374,12 +374,14 @@ struct IRClosure {
     std::string name;
     parent_t parent;
     IRIdentifierType rettype;
+    int64_t options;
     std::vector<IRParameter > parameters;
     std::vector<IRBasicBlock > blocks;
     IRClosure() :
         name(std::string()),
         parent(parent_t()),
         rettype(IRIdentifierType()),
+        options(int64_t()),
         parameters(std::vector<IRParameter >()),
         blocks(std::vector<IRBasicBlock >())
         { }
@@ -1372,6 +1374,7 @@ template<> struct codec_traits<corevm::IRClosure> {
         avro::encode(e, v.name);
         avro::encode(e, v.parent);
         avro::encode(e, v.rettype);
+        avro::encode(e, v.options);
         avro::encode(e, v.parameters);
         avro::encode(e, v.blocks);
     }
@@ -1392,9 +1395,12 @@ template<> struct codec_traits<corevm::IRClosure> {
                     avro::decode(d, v.rettype);
                     break;
                 case 3:
-                    avro::decode(d, v.parameters);
+                    avro::decode(d, v.options);
                     break;
                 case 4:
+                    avro::decode(d, v.parameters);
+                    break;
+                case 5:
                     avro::decode(d, v.blocks);
                     break;
                 default:
@@ -1405,6 +1411,7 @@ template<> struct codec_traits<corevm::IRClosure> {
             avro::decode(d, v.name);
             avro::decode(d, v.parent);
             avro::decode(d, v.rettype);
+            avro::decode(d, v.options);
             avro::decode(d, v.parameters);
             avro::decode(d, v.blocks);
         }

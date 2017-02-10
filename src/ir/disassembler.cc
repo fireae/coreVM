@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "disassembler.h"
 #include "format.h"
+#include "format_util.h"
 
 #include <iostream>
 
@@ -301,6 +302,30 @@ Disassembler::disassemble(const IRClosure& closure, std::ostream& stream) const
   if (!closure.parent.is_null())
   {
     stream <<  " : " << closure.parent.get_string();
+  }
+
+  if (closure.options)
+  {
+    std::vector<const char*> options;
+
+    if (is_func_defn_option_enabled(closure.options, FuncDefnOption::CONSTEXPR))
+    {
+      options.push_back("constexpr");
+    }
+
+    if (!options.empty())
+    {
+      stream << " [";
+      for (size_t i = 0; i < options.size(); ++i)
+      {
+        stream << options[i];
+        if (i + 1 < options.size())
+        {
+          stream << ' ';
+        }
+      }
+      stream << ']';
+    }
   }
 
   stream << " {";

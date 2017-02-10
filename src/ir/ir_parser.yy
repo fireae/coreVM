@@ -7,6 +7,7 @@
 %define parse.assert
 %code requires
 {
+# include <cstdint>
 # include <string>
 # include <utility>
 # include "format.h"
@@ -99,6 +100,9 @@ class IRParserDriver;
 %type <corevm::IRParameter> function_arg;
 %type <std::vector<corevm::IRParameter>> function_arg_list;
 %type <std::vector<corevm::IRParameter>> function_arg_list_core;
+%type <int64_t> function_def_option;
+%type <int64_t> function_def_option_list_core;
+%type <int64_t> function_def_option_list;
 %type <corevm::IRClosure> function_def;
 %type <corevm::IRTypeField> type_field;
 %type <std::vector<corevm::IRTypeField>> type_field_list;
@@ -190,22 +194,54 @@ type_field
     ;
 
 function_def
-    : DEF ir_identifier_type IDENTIFIER function_arg_list LBRACE basic_block_list RBRACE
+    : DEF ir_identifier_type IDENTIFIER function_arg_list function_def_option_list LBRACE basic_block_list RBRACE
         {
             $$ = corevm::IRClosure();
             $$.rettype = $2;
             $$.name = std::move($3);
             $$.parameters = std::move($4);
-            $$.blocks = std::move($6);
+            $$.options = $5;
+            $$.blocks = std::move($7);
         }
-    | DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE basic_block_list RBRACE
+    | DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER function_def_option_list LBRACE basic_block_list RBRACE
         {
             $$ = corevm::IRClosure();
             $$.rettype = $2;
             $$.name = std::move($3);
             $$.parameters = std::move($4);
             $$.parent.set_string($6);
-            $$.blocks = std::move($8);
+            $$.options = $7;
+            $$.blocks = std::move($9);
+        }
+    ;
+
+function_def_option_list
+    :
+        {
+            $$ = 0;
+        }
+    | LBRACKET function_def_option_list_core RBRACKET
+        {
+            $$ = $2;
+        }
+    ;
+
+function_def_option_list_core
+    : function_def_option
+        {
+            $$ = $1;
+        }
+    | function_def_option_list_core function_def_option
+        {
+            $$ = $1;
+            $$ |= $2;
+        }
+    ;
+
+function_def_option
+    : IDENTIFIER
+        {
+            $$ = corevm::ir::interpret_func_defn_option($1);
         }
     ;
 

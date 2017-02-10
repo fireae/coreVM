@@ -161,6 +161,10 @@
               "type": "corevm.ir.IRIdentifierType"
             },
             {
+              "name": "options",
+              "type": "long"
+            },
+            {
               "name": "parameters",
               "type": {
                 "type": "array",
