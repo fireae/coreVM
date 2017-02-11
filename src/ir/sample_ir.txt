@@ -5,6 +5,8 @@
 "path" : "./dummy_ir.ir"
 "target version" : "10"
 
+declare i8 corevm.foundation.memove(i8* dst, i8* src, i64 num)
+
 type Person {
     string name;
     ui8 age;
@@ -12,7 +14,6 @@ type Person {
     Location* address;
     array [ 10 * Person ] friends;
 }
-
 
 def Person* createPerson(string* name, ui8 age) {
 entry:
@@ -24,19 +25,20 @@ end:
     ret Person* %person;
 }
 
+[model=cplusplus]
 type Location {
     string street_address;
     string* country;
     string zipcode;
 }
 
-def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson [constexpr] {
+def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson [constexpr inline] {
 entry:
     %sum = add ui64 %lhs_val %rhs_val;
     putelement dpf 3.14 %values ui32 2;
 }
 
-def void doNothing() {
+def void doNothing(*args, **kwargs) {
 }
 
 type NullType {

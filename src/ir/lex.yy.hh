@@ -451,7 +451,7 @@ extern int yylex (yyscan_t yyscanner);
 #undef YY_DECL
 #endif
 
-#line 171 "src/ir/ir_lexer.ll"
+#line 175 "src/ir/ir_lexer.ll"
 
 
 #line 457 "src/ir/lex.yy.hh"

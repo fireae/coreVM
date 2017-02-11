@@ -102,6 +102,26 @@ Below is the IR schema:
             "type": "record",
             "fields": [
               {
+                "name": "attributes",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "IRTypeAttribute",
+                    "fields": [
+                      {
+                        "name": "name",
+                        "type": "string"
+                      },
+                      {
+                        "name": "value",
+                        "type": "string"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
                 "name": "name",
                 "type": "string"
               },
@@ -211,7 +231,7 @@ Below is the IR schema:
               },
               {
                 "name": "parent",
-                "type": ["null", "string"]
+                "type": "string"
               },
               {
                 "name": "rettype",
@@ -240,6 +260,14 @@ Below is the IR schema:
                     ]
                   }
                 }
+              },
+              {
+                "name": "positional_args",
+                "type": "string"
+              },
+              {
+                "name": "keyword_args",
+                "type": "string"
               },
               {
                 "name": "blocks",
@@ -414,6 +442,33 @@ Below is the IR schema:
             ]
           }
         }
+      },
+      {
+        "name": "intrinsic_decls",
+        "type": {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "name": "IRIntrinsicDecl",
+            "fields": [
+              {
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "name": "rettype",
+                "type": "corevm.ir.IRIdentifierType"
+              },
+              {
+                "name": "parameters",
+                "type": {
+                  "type": "array",
+                  "items": "corevm.ir.IRParameter"
+                }
+              }
+            ]
+          }
+        }
       }
     ]
   }
@@ -433,13 +488,14 @@ with a module, which corresponds to a physical translation unit.
 
 .. table::
 
-  ==============  =====================  ======================================
-      Field               Type                        Description
-  ==============  =====================  ======================================
-    `meta`          `IRModuleMeta`         Set of metadata of the module.
-    `types`         set<`IRTypeDecl`>      Set of type definitions.
-    `closures`      set<`IRClosure`>       Set of function definitions.
-  ==============  =====================  ======================================
+  =====================  ==========================  ===================================
+         Field                     Type                          Description
+  =====================  ==========================  ===================================
+    `meta`                 `IRModuleMeta`              Set of metadata of the module.
+    `types`                set<`IRTypeDecl`>           Set of type definitions.
+    `intrinsic_decls`      set<`IRIntrinsicDecl`>      Set of intrinsic declarations.
+    `closures`             set<`IRClosure`>            Set of function definitions.
+  =====================  ==========================  ===================================
 
 Entity 'IRModuleMeta'
 ---------------------
@@ -471,12 +527,13 @@ Represents a type definition.
 
 .. table::
 
-  ============  ======================  ===========================================
-     Field               Type                          Description
-  ============  ======================  ===========================================
-    `name`        string                  Name of type definition.
-    `fields`      set<`IRTypeField`>      Set of fields encapsulated in the type.
-  ============  ======================  ===========================================
+  ================  ==========================  =================================================================
+       Field                   Type                                        Description
+  ================  ==========================  =================================================================
+    `name`            string                      Name of type definition.
+    `fields`          set<`IRTypeField`>          Set of fields encapsulated in the type.
+    `attributes`      set<`IRTypeAttribute`>      Set of type key-value pair atrributes that annotate the type.
+  ================  ==========================  =================================================================
 
 Entity 'IRTypeField'
 --------------------
@@ -491,6 +548,22 @@ Represents a single field in a type definition.
     `identifier`      string                 Name of field.
     `type`            `IRIdentifierType`     Type of the field.
   ================  =====================  ================================
+
+Entity 'IRTypeAttribute'
+------------------------
+
+A key-value pair attribute that annotates a type definition. Type attributes
+serve as instructions on how to handle type definitions, such as storage,
+object model, etc.
+
+.. table::
+
+  ===========  =========  ===========================
+     Field       Type            Description
+  ===========  =========  ===========================
+    `name`      string      Name of the attribute.
+    `value`     string      Value of the attribute.
+  ===========  =========  ===========================
 
 Enumeration 'IRValueRefType'
 ----------------------------
@@ -547,6 +620,21 @@ encapsulated elements, as well as the size of the array.
     `type`      `IRIdentifierType`      Type of the encapsulated elements.
     `len`       long                    Number of elements in the array.
   ==========  ======================  ======================================
+
+Entity 'IRIntrinsicDecl'
+------------------------
+
+Represents an intrinsic being imported into the current translation.
+
+.. table::
+
+  ================  ======================  ==============================================
+       Field                 Type                            Description
+  ================  ======================  ==============================================
+    `rettype`         `IRIdentifierType`      Type of the encapsulated elements.
+    `name`            string                  Name of the intrinsic.
+    `parameters`      set<`IRParameter`>      Set of parameters passed to the intrinsic.
+  ================  ======================  ==============================================
 
 enum 'IRIdentifierTypeType'
 ---------------------------
@@ -1362,6 +1450,193 @@ Synopsis:
 Invokes a function call by calling the specified call target with a set of
 arguments.
 
+**********
+Intrinsics
+**********
+
+Intrinsics are a powerful way to extend the capability of coreVM IR. Intrinsics
+are function-like constructs that users can declare in their IR modules.
+They are able to perform operations that are not trivial or impractical to
+achieve with the instruction set.
+
+Intrincs are categorized based on their functionalities. Below are the default
+intrinsics proposed:
+
+**NOTE**: Currently intrinsics are a work in progress. All the intrinsics
+proposed are to be implemented as part of core library. In the future, there
+will be APIs that allow users to bind their custom-defined intrinsics at
+compile-time.
+
+
+'corevm.foundation.memcpy' Intrinsic
+====================================
+
+Syntax:
+-------
+
+.. code-block:: none
+
+  declare i8* corevm.foundation.memcpy(i8* dst, i8* src, ui64 size)
+
+Synopsis:
+---------
+
+  Copies `size` bytes from `src` to `dst` address. Returns the address of the
+  copied memory block.
+
+
+'corevm.foundation.memmove' Intrinsic
+=====================================
+
+Syntax:
+-------
+
+.. code-block:: none
+
+  declare i8* corevm.foundation.memmove(i8* dst, i8* src, ui64 size)
+
+Synopsis:
+---------
+
+  Copies `size` bytes from `src` to `dst` address, taking consideration of
+  overlapping address range. Returns the address of the memory block.
+
+
+'corevm.foundation.memset' Intrinsic
+====================================
+
+Syntax:
+-------
+
+.. code-block:: none
+
+  declare i8* corevm.foundation.memset(i8* dst, i8 value, ui64 size)
+
+Synopsis:
+---------
+
+  Sets the first `size` bytes of the block of memory pointed by `dst` to the
+  specified value.
+
+  Returns the beginning of the memory block after set.  
+
+
+'corevm.foundation.argslen' Intrinsic
+=====================================
+
+Syntax:
+-------
+
+.. code-block:: none
+
+  declare ui32 corevm.foundation.argslen(*args)
+
+Synopsis:
+---------
+
+  Returns the size of a positional argument.
+
+
+'corevm.foundation.getarg' Intrinsic
+====================================
+
+Syntax:
+-------
+
+.. code-block:: none
+
+  declare object corevm.foundation.getarg(*args, ui32 n)
+
+Synpopsis:
+----------
+
+  Gets the `n` th argument from a positional argument.
+
+
+'corevm.foundation.kwargslen' Intrinsic
+=======================================
+
+Syntax:
+-------
+
+.. code-block:: none
+
+  declare ui32 corevm.foundation.kwargslen(**kwargs)
+
+Synpopsis:
+----------
+
+  Returns the size of a keyword argument.
+
+
+'corevm.foundation.getkwarg' Intrinsic
+======================================
+
+Syntax:
+-------
+
+.. code-block:: none
+
+  declare object corevm.foundation.getkwarg(**kwargs, string* key)
+
+Synpopsis:
+----------
+
+  Gets the argument from a keyword argument with the associated `key`.
+  Returns `null` if key is not found.
+
+
+'corevm.reflection.gettype' Intrinsic
+=====================================
+
+Syntax:
+-------
+
+.. code-block:: none
+
+  declare object corevm.reflection.gettype(object val)
+
+Synopsis:
+---------
+
+  Determine the type information of an object.
+
+  If the type of the input object can be determined at compile-time, it will be
+  determined if the enclosing function is under compile-time computation
+  optimization, otherwise the type will be computed at runtime.
+
+
+'corevm.reflection.hasmember' Intrinsic
+=======================================
+
+Syntax:
+-------
+
+.. code-block:: none
+
+  declare bool corevm.reflection.hasmember(object val, string* member)
+
+Synopsis:
+---------
+
+  Determines if a value has a member at runtime.
+
+
+'corevm.dbg.setbreakpoint' Intrinsic
+====================================
+
+Syntax:
+-------
+
+.. code-block:: none
+
+  declare void corevm.dbg.setbreakpoint()
+
+Synopsis:
+---------
+
+  Debug facility for setting up a breakpoint at runtime.
+
 
 *****************************
 Textual Representation Syntax
@@ -1411,6 +1686,22 @@ Example:
         array [ 10 * Person ] friends;
     }
 
+Type definitions can be also be decorated with "attributes". Type attributes
+are key-value pairs that annotate different behaviors of types, such as storage,
+object model, etc. The key-value pairs are surrounded by square brackets that
+start at the beginning of the definition.
+
+Example:
+
+.. code-block:: none
+
+    [model=cplusplus]
+    type Location {
+        string street_address;
+        string* country;
+        string zipcode;
+    }
+
 
 Array Type Syntax
 =================
@@ -1442,11 +1733,14 @@ respective meanings.
 
 .. table::
 
-  ===============  =============================================================================================================
-       Option        Description
-  ===============  =============================================================================================================
-    `constexpr`      Instructs the compiler to perform compile-time computation on invocations of this function when possible.
-  ===============  =============================================================================================================
+  =====================  =============================================================================================================
+          Option                                                     Description
+  =====================  =============================================================================================================
+    `constexpr`            Instructs the compiler to perform compile-time computation on invocations of this function when possible.
+    `inline`               Inline the function into the call site during compilations.
+    `tailduplication`      Instructs the compiler to perform tail duplication optimization.
+    `loopsimplify`         Instructs the compiler to perform optimizations on detected loops.
+  =====================  =============================================================================================================
 
 Inside the body of a function, a set of basic blocks each start with the
 identifier of the block, followed by one or more instructions.
@@ -1460,6 +1754,28 @@ For example:
         %sum = add ui64 %lhs_val %rhs_val;
         putelement dpf 3.14 %values ui32 2;
     }
+
+Functions can also be specified to take positional and keyword arguments. This
+makes functions significantly flexible as users can avoid function overloadings
+if possible. It also provides opportunities for promoting function programming
+constructs to be used, such as currying.
+
+Positional arguments are specified by one parameter, which is not associated
+with a type, and starts with `*`.
+
+Keyword arguments are specified by one parameter, wich is not associated with
+a type, and starts with `**`.
+
+Both positional and keyword arguments need to come after all regular parameter
+declarations.
+
+Example:
+
+.. code-block:: none
+
+  def i64 compute(*args, **kwargs) {
+    // Computation code here.
+  }
 
 
 Instruction Syntax
@@ -1521,6 +1837,8 @@ Below is an example of the textual representation of a sample module.
     "path" : "./dummy_ir.ir"
     "target version" : "10"
 
+    declare i8 corevm.foundation.memove(i8* dst, i8* src, i64 num)
+
     type Person {
         string name;
         ui8 age;
@@ -1539,19 +1857,20 @@ Below is an example of the textual representation of a sample module.
         ret Person* %person;
     }
 
+    [model=cplusplus]
     type Location {
         string street_address;
         string* country;
         string zipcode;
     }
 
-    def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson [constexpr] {
+    def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson [constexpr inline] {
     entry:
         %sum = add ui64 %lhs_val %rhs_val;
         putelement dpf 3.14 %values ui32 2;
     }
 
-    def void doNothing() {
+    def void doNothing(*args, **kwargs) {
     }
 
     type NullType {

@@ -45,6 +45,26 @@
           "type": "record",
           "fields": [
             {
+              "name": "attributes",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "IRTypeAttribute",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "type": "string"
+                    },
+                    {
+                      "name": "value",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
               "name": "name",
               "type": "string"
             },
@@ -154,7 +174,7 @@
             },
             {
               "name": "parent",
-              "type": ["null", "string"]
+              "type": "string"
             },
             {
               "name": "rettype",
@@ -183,6 +203,14 @@
                   ]
                 }
               }
+            },
+            {
+              "name": "positional_args",
+              "type": "string"
+            },
+            {
+              "name": "keyword_args",
+              "type": "string"
             },
             {
               "name": "blocks",
@@ -352,6 +380,33 @@
                     }
                   ]
                 }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "intrinsic_decls",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "IRIntrinsicDecl",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "rettype",
+              "type": "corevm.ir.IRIdentifierType"
+            },
+            {
+              "name": "parameters",
+              "type": {
+                "type": "array",
+                "items": "corevm.ir.IRParameter"
               }
             }
           ]

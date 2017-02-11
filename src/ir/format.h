@@ -45,6 +45,15 @@ struct IRModuleMeta {
         { }
 };
 
+struct IRTypeAttribute {
+    std::string name;
+    std::string value;
+    IRTypeAttribute() :
+        name(std::string()),
+        value(std::string())
+        { }
+};
+
 enum IRIdentifierTypeType {
     IdentifierType_Identifier,
     IdentifierType_Array,
@@ -137,11 +146,22 @@ struct IRTypeField {
 };
 
 struct IRTypeDecl {
+    std::vector<IRTypeAttribute > attributes;
     std::string name;
     std::vector<IRTypeField > fields;
     IRTypeDecl() :
+        attributes(std::vector<IRTypeAttribute >()),
         name(std::string()),
         fields(std::vector<IRTypeField >())
+        { }
+};
+
+struct IRParameter {
+    std::string identifier;
+    IRIdentifierType type;
+    IRParameter() :
+        identifier(std::string()),
+        type(IRIdentifierType())
         { }
 };
 
@@ -161,33 +181,6 @@ public:
     std::string get_string() const;
     void set_string(const std::string& v);
     _corevm_ir_schema_json_Union__1__();
-};
-
-struct IRParameter {
-    std::string identifier;
-    IRIdentifierType type;
-    IRParameter() :
-        identifier(std::string()),
-        type(IRIdentifierType())
-        { }
-};
-
-struct _corevm_ir_schema_json_Union__2__ {
-private:
-    size_t idx_;
-    boost::any value_;
-public:
-    size_t idx() const { return idx_; }
-    bool is_null() const {
-        return (idx_ == 0);
-    }
-    void set_null() {
-        idx_ = 0;
-        value_ = boost::any();
-    }
-    std::string get_string() const;
-    void set_string(const std::string& v);
-    _corevm_ir_schema_json_Union__2__();
 };
 
 enum IROpcode {
@@ -231,7 +224,7 @@ enum IROpcode {
     call,
 };
 
-struct _corevm_ir_schema_json_Union__3__ {
+struct _corevm_ir_schema_json_Union__2__ {
 private:
     size_t idx_;
     boost::any value_;
@@ -246,7 +239,7 @@ public:
     }
     IRIdentifierType get_IRIdentifierType() const;
     void set_IRIdentifierType(const IRIdentifierType& v);
-    _corevm_ir_schema_json_Union__3__();
+    _corevm_ir_schema_json_Union__2__();
 };
 
 enum IROperandType {
@@ -254,7 +247,7 @@ enum IROperandType {
     ref,
 };
 
-struct _corevm_ir_schema_json_Union__4__ {
+struct _corevm_ir_schema_json_Union__3__ {
 private:
     size_t idx_;
     boost::any value_;
@@ -279,11 +272,11 @@ public:
     void set_double(const double& v);
     std::string get_string() const;
     void set_string(const std::string& v);
-    _corevm_ir_schema_json_Union__4__();
+    _corevm_ir_schema_json_Union__3__();
 };
 
 struct IRValue {
-    typedef _corevm_ir_schema_json_Union__4__ value_t;
+    typedef _corevm_ir_schema_json_Union__3__ value_t;
     IRValueType type;
     value_t value;
     IRValue() :
@@ -292,7 +285,7 @@ struct IRValue {
         { }
 };
 
-struct _corevm_ir_schema_json_Union__5__ {
+struct _corevm_ir_schema_json_Union__4__ {
 private:
     size_t idx_;
     boost::any value_;
@@ -302,11 +295,11 @@ public:
     void set_string(const std::string& v);
     IRValue get_IRValue() const;
     void set_IRValue(const IRValue& v);
-    _corevm_ir_schema_json_Union__5__();
+    _corevm_ir_schema_json_Union__4__();
 };
 
 struct IROperand {
-    typedef _corevm_ir_schema_json_Union__5__ value_t;
+    typedef _corevm_ir_schema_json_Union__4__ value_t;
     IROperandType type;
     value_t value;
     IROperand() :
@@ -322,7 +315,7 @@ struct IRLabel {
         { }
 };
 
-struct _corevm_ir_schema_json_Union__6__ {
+struct _corevm_ir_schema_json_Union__5__ {
 private:
     size_t idx_;
     boost::any value_;
@@ -337,13 +330,13 @@ public:
     }
     std::vector<IRLabel > get_array() const;
     void set_array(const std::vector<IRLabel >& v);
-    _corevm_ir_schema_json_Union__6__();
+    _corevm_ir_schema_json_Union__5__();
 };
 
 struct IRInstruction {
-    typedef _corevm_ir_schema_json_Union__2__ target_t;
-    typedef _corevm_ir_schema_json_Union__3__ type_t;
-    typedef _corevm_ir_schema_json_Union__6__ labels_t;
+    typedef _corevm_ir_schema_json_Union__1__ target_t;
+    typedef _corevm_ir_schema_json_Union__2__ type_t;
+    typedef _corevm_ir_schema_json_Union__5__ labels_t;
     target_t target;
     IROpcode opcode;
     type_t type;
@@ -370,20 +363,34 @@ struct IRBasicBlock {
 };
 
 struct IRClosure {
-    typedef _corevm_ir_schema_json_Union__1__ parent_t;
     std::string name;
-    parent_t parent;
+    std::string parent;
     IRIdentifierType rettype;
     int64_t options;
     std::vector<IRParameter > parameters;
+    std::string positional_args;
+    std::string keyword_args;
     std::vector<IRBasicBlock > blocks;
     IRClosure() :
         name(std::string()),
-        parent(parent_t()),
+        parent(std::string()),
         rettype(IRIdentifierType()),
         options(int64_t()),
         parameters(std::vector<IRParameter >()),
+        positional_args(std::string()),
+        keyword_args(std::string()),
         blocks(std::vector<IRBasicBlock >())
+        { }
+};
+
+struct IRIntrinsicDecl {
+    std::string name;
+    IRIdentifierType rettype;
+    std::vector<IRParameter > parameters;
+    IRIntrinsicDecl() :
+        name(std::string()),
+        rettype(IRIdentifierType()),
+        parameters(std::vector<IRParameter >())
         { }
 };
 
@@ -391,10 +398,12 @@ struct IRModule {
     IRModuleMeta meta;
     std::vector<IRTypeDecl > types;
     std::vector<IRClosure > closures;
+    std::vector<IRIntrinsicDecl > intrinsic_decls;
     IRModule() :
         meta(IRModuleMeta()),
         types(std::vector<IRTypeDecl >()),
-        closures(std::vector<IRClosure >())
+        closures(std::vector<IRClosure >()),
+        intrinsic_decls(std::vector<IRIntrinsicDecl >())
         { }
 };
 
@@ -455,21 +464,7 @@ void _corevm_ir_schema_json_Union__1__::set_string(const std::string& v) {
 }
 
 inline
-std::string _corevm_ir_schema_json_Union__2__::get_string() const {
-    if (idx_ != 1) {
-        throw avro::Exception("Invalid type for union");
-    }
-    return boost::any_cast<std::string >(value_);
-}
-
-inline
-void _corevm_ir_schema_json_Union__2__::set_string(const std::string& v) {
-    idx_ = 1;
-    value_ = v;
-}
-
-inline
-IRIdentifierType _corevm_ir_schema_json_Union__3__::get_IRIdentifierType() const {
+IRIdentifierType _corevm_ir_schema_json_Union__2__::get_IRIdentifierType() const {
     if (idx_ != 1) {
         throw avro::Exception("Invalid type for union");
     }
@@ -477,13 +472,13 @@ IRIdentifierType _corevm_ir_schema_json_Union__3__::get_IRIdentifierType() const
 }
 
 inline
-void _corevm_ir_schema_json_Union__3__::set_IRIdentifierType(const IRIdentifierType& v) {
+void _corevm_ir_schema_json_Union__2__::set_IRIdentifierType(const IRIdentifierType& v) {
     idx_ = 1;
     value_ = v;
 }
 
 inline
-bool _corevm_ir_schema_json_Union__4__::get_bool() const {
+bool _corevm_ir_schema_json_Union__3__::get_bool() const {
     if (idx_ != 1) {
         throw avro::Exception("Invalid type for union");
     }
@@ -491,13 +486,13 @@ bool _corevm_ir_schema_json_Union__4__::get_bool() const {
 }
 
 inline
-void _corevm_ir_schema_json_Union__4__::set_bool(const bool& v) {
+void _corevm_ir_schema_json_Union__3__::set_bool(const bool& v) {
     idx_ = 1;
     value_ = v;
 }
 
 inline
-int32_t _corevm_ir_schema_json_Union__4__::get_int() const {
+int32_t _corevm_ir_schema_json_Union__3__::get_int() const {
     if (idx_ != 2) {
         throw avro::Exception("Invalid type for union");
     }
@@ -505,13 +500,13 @@ int32_t _corevm_ir_schema_json_Union__4__::get_int() const {
 }
 
 inline
-void _corevm_ir_schema_json_Union__4__::set_int(const int32_t& v) {
+void _corevm_ir_schema_json_Union__3__::set_int(const int32_t& v) {
     idx_ = 2;
     value_ = v;
 }
 
 inline
-int64_t _corevm_ir_schema_json_Union__4__::get_long() const {
+int64_t _corevm_ir_schema_json_Union__3__::get_long() const {
     if (idx_ != 3) {
         throw avro::Exception("Invalid type for union");
     }
@@ -519,13 +514,13 @@ int64_t _corevm_ir_schema_json_Union__4__::get_long() const {
 }
 
 inline
-void _corevm_ir_schema_json_Union__4__::set_long(const int64_t& v) {
+void _corevm_ir_schema_json_Union__3__::set_long(const int64_t& v) {
     idx_ = 3;
     value_ = v;
 }
 
 inline
-float _corevm_ir_schema_json_Union__4__::get_float() const {
+float _corevm_ir_schema_json_Union__3__::get_float() const {
     if (idx_ != 4) {
         throw avro::Exception("Invalid type for union");
     }
@@ -533,13 +528,13 @@ float _corevm_ir_schema_json_Union__4__::get_float() const {
 }
 
 inline
-void _corevm_ir_schema_json_Union__4__::set_float(const float& v) {
+void _corevm_ir_schema_json_Union__3__::set_float(const float& v) {
     idx_ = 4;
     value_ = v;
 }
 
 inline
-double _corevm_ir_schema_json_Union__4__::get_double() const {
+double _corevm_ir_schema_json_Union__3__::get_double() const {
     if (idx_ != 5) {
         throw avro::Exception("Invalid type for union");
     }
@@ -547,13 +542,13 @@ double _corevm_ir_schema_json_Union__4__::get_double() const {
 }
 
 inline
-void _corevm_ir_schema_json_Union__4__::set_double(const double& v) {
+void _corevm_ir_schema_json_Union__3__::set_double(const double& v) {
     idx_ = 5;
     value_ = v;
 }
 
 inline
-std::string _corevm_ir_schema_json_Union__4__::get_string() const {
+std::string _corevm_ir_schema_json_Union__3__::get_string() const {
     if (idx_ != 6) {
         throw avro::Exception("Invalid type for union");
     }
@@ -561,13 +556,13 @@ std::string _corevm_ir_schema_json_Union__4__::get_string() const {
 }
 
 inline
-void _corevm_ir_schema_json_Union__4__::set_string(const std::string& v) {
+void _corevm_ir_schema_json_Union__3__::set_string(const std::string& v) {
     idx_ = 6;
     value_ = v;
 }
 
 inline
-std::string _corevm_ir_schema_json_Union__5__::get_string() const {
+std::string _corevm_ir_schema_json_Union__4__::get_string() const {
     if (idx_ != 0) {
         throw avro::Exception("Invalid type for union");
     }
@@ -575,13 +570,13 @@ std::string _corevm_ir_schema_json_Union__5__::get_string() const {
 }
 
 inline
-void _corevm_ir_schema_json_Union__5__::set_string(const std::string& v) {
+void _corevm_ir_schema_json_Union__4__::set_string(const std::string& v) {
     idx_ = 0;
     value_ = v;
 }
 
 inline
-IRValue _corevm_ir_schema_json_Union__5__::get_IRValue() const {
+IRValue _corevm_ir_schema_json_Union__4__::get_IRValue() const {
     if (idx_ != 1) {
         throw avro::Exception("Invalid type for union");
     }
@@ -589,13 +584,13 @@ IRValue _corevm_ir_schema_json_Union__5__::get_IRValue() const {
 }
 
 inline
-void _corevm_ir_schema_json_Union__5__::set_IRValue(const IRValue& v) {
+void _corevm_ir_schema_json_Union__4__::set_IRValue(const IRValue& v) {
     idx_ = 1;
     value_ = v;
 }
 
 inline
-std::vector<IRLabel > _corevm_ir_schema_json_Union__6__::get_array() const {
+std::vector<IRLabel > _corevm_ir_schema_json_Union__5__::get_array() const {
     if (idx_ != 1) {
         throw avro::Exception("Invalid type for union");
     }
@@ -603,7 +598,7 @@ std::vector<IRLabel > _corevm_ir_schema_json_Union__6__::get_array() const {
 }
 
 inline
-void _corevm_ir_schema_json_Union__6__::set_array(const std::vector<IRLabel >& v) {
+void _corevm_ir_schema_json_Union__5__::set_array(const std::vector<IRLabel >& v) {
     idx_ = 1;
     value_ = v;
 }
@@ -612,9 +607,8 @@ inline _corevm_ir_schema_json_Union__0__::_corevm_ir_schema_json_Union__0__() : 
 inline _corevm_ir_schema_json_Union__1__::_corevm_ir_schema_json_Union__1__() : idx_(0) { }
 inline _corevm_ir_schema_json_Union__2__::_corevm_ir_schema_json_Union__2__() : idx_(0) { }
 inline _corevm_ir_schema_json_Union__3__::_corevm_ir_schema_json_Union__3__() : idx_(0) { }
-inline _corevm_ir_schema_json_Union__4__::_corevm_ir_schema_json_Union__4__() : idx_(0) { }
-inline _corevm_ir_schema_json_Union__5__::_corevm_ir_schema_json_Union__5__() : idx_(0), value_(std::string()) { }
-inline _corevm_ir_schema_json_Union__6__::_corevm_ir_schema_json_Union__6__() : idx_(0) { }
+inline _corevm_ir_schema_json_Union__4__::_corevm_ir_schema_json_Union__4__() : idx_(0), value_(std::string()) { }
+inline _corevm_ir_schema_json_Union__5__::_corevm_ir_schema_json_Union__5__() : idx_(0) { }
 }
 namespace avro {
 template<> struct codec_traits<corevm::IRModuleMeta> {
@@ -662,6 +656,35 @@ template<> struct codec_traits<corevm::IRModuleMeta> {
             avro::decode(d, v.path);
             avro::decode(d, v.author);
             avro::decode(d, v.timestamp);
+        }
+    }
+};
+
+template<> struct codec_traits<corevm::IRTypeAttribute> {
+    static void encode(Encoder& e, const corevm::IRTypeAttribute& v) {
+        avro::encode(e, v.name);
+        avro::encode(e, v.value);
+    }
+    static void decode(Decoder& d, corevm::IRTypeAttribute& v) {
+        if (avro::ResolvingDecoder *rd =
+            dynamic_cast<avro::ResolvingDecoder *>(&d)) {
+            const std::vector<size_t> fo = rd->fieldOrder();
+            for (std::vector<size_t>::const_iterator it = fo.begin();
+                it != fo.end(); ++it) {
+                switch (*it) {
+                case 0:
+                    avro::decode(d, v.name);
+                    break;
+                case 1:
+                    avro::decode(d, v.value);
+                    break;
+                default:
+                    break;
+                }
+            }
+        } else {
+            avro::decode(d, v.name);
+            avro::decode(d, v.value);
         }
     }
 };
@@ -870,6 +893,7 @@ template<> struct codec_traits<corevm::IRTypeField> {
 
 template<> struct codec_traits<corevm::IRTypeDecl> {
     static void encode(Encoder& e, const corevm::IRTypeDecl& v) {
+        avro::encode(e, v.attributes);
         avro::encode(e, v.name);
         avro::encode(e, v.fields);
     }
@@ -881,9 +905,12 @@ template<> struct codec_traits<corevm::IRTypeDecl> {
                 it != fo.end(); ++it) {
                 switch (*it) {
                 case 0:
-                    avro::decode(d, v.name);
+                    avro::decode(d, v.attributes);
                     break;
                 case 1:
+                    avro::decode(d, v.name);
+                    break;
+                case 2:
                     avro::decode(d, v.fields);
                     break;
                 default:
@@ -891,39 +918,9 @@ template<> struct codec_traits<corevm::IRTypeDecl> {
                 }
             }
         } else {
+            avro::decode(d, v.attributes);
             avro::decode(d, v.name);
             avro::decode(d, v.fields);
-        }
-    }
-};
-
-template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__1__> {
-    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__1__ v) {
-        e.encodeUnionIndex(v.idx());
-        switch (v.idx()) {
-        case 0:
-            e.encodeNull();
-            break;
-        case 1:
-            avro::encode(e, v.get_string());
-            break;
-        }
-    }
-    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__1__& v) {
-        size_t n = d.decodeUnionIndex();
-        if (n >= 2) { throw avro::Exception("Union index too big"); }
-        switch (n) {
-        case 0:
-            d.decodeNull();
-            v.set_null();
-            break;
-        case 1:
-            {
-                std::string vv;
-                avro::decode(d, vv);
-                v.set_string(vv);
-            }
-            break;
         }
     }
 };
@@ -957,8 +954,8 @@ template<> struct codec_traits<corevm::IRParameter> {
     }
 };
 
-template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__2__> {
-    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__2__ v) {
+template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__1__> {
+    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__1__ v) {
         e.encodeUnionIndex(v.idx());
         switch (v.idx()) {
         case 0:
@@ -969,7 +966,7 @@ template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__2__> {
             break;
         }
     }
-    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__2__& v) {
+    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__1__& v) {
         size_t n = d.decodeUnionIndex();
         if (n >= 2) { throw avro::Exception("Union index too big"); }
         switch (n) {
@@ -1010,8 +1007,8 @@ template<> struct codec_traits<corevm::IROpcode> {
     }
 };
 
-template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__3__> {
-    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__3__ v) {
+template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__2__> {
+    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__2__ v) {
         e.encodeUnionIndex(v.idx());
         switch (v.idx()) {
         case 0:
@@ -1022,7 +1019,7 @@ template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__3__> {
             break;
         }
     }
-    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__3__& v) {
+    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__2__& v) {
         size_t n = d.decodeUnionIndex();
         if (n >= 2) { throw avro::Exception("Union index too big"); }
         switch (n) {
@@ -1063,8 +1060,8 @@ template<> struct codec_traits<corevm::IROperandType> {
     }
 };
 
-template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__4__> {
-    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__4__ v) {
+template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__3__> {
+    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__3__ v) {
         e.encodeUnionIndex(v.idx());
         switch (v.idx()) {
         case 0:
@@ -1090,7 +1087,7 @@ template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__4__> {
             break;
         }
     }
-    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__4__& v) {
+    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__3__& v) {
         size_t n = d.decodeUnionIndex();
         if (n >= 7) { throw avro::Exception("Union index too big"); }
         switch (n) {
@@ -1173,8 +1170,8 @@ template<> struct codec_traits<corevm::IRValue> {
     }
 };
 
-template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__5__> {
-    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__5__ v) {
+template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__4__> {
+    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__4__ v) {
         e.encodeUnionIndex(v.idx());
         switch (v.idx()) {
         case 0:
@@ -1185,7 +1182,7 @@ template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__5__> {
             break;
         }
     }
-    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__5__& v) {
+    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__4__& v) {
         size_t n = d.decodeUnionIndex();
         if (n >= 2) { throw avro::Exception("Union index too big"); }
         switch (n) {
@@ -1260,8 +1257,8 @@ template<> struct codec_traits<corevm::IRLabel> {
     }
 };
 
-template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__6__> {
-    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__6__ v) {
+template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__5__> {
+    static void encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__5__ v) {
         e.encodeUnionIndex(v.idx());
         switch (v.idx()) {
         case 0:
@@ -1272,7 +1269,7 @@ template<> struct codec_traits<corevm::_corevm_ir_schema_json_Union__6__> {
             break;
         }
     }
-    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__6__& v) {
+    static void decode(Decoder& d, corevm::_corevm_ir_schema_json_Union__5__& v) {
         size_t n = d.decodeUnionIndex();
         if (n >= 2) { throw avro::Exception("Union index too big"); }
         switch (n) {
@@ -1376,6 +1373,8 @@ template<> struct codec_traits<corevm::IRClosure> {
         avro::encode(e, v.rettype);
         avro::encode(e, v.options);
         avro::encode(e, v.parameters);
+        avro::encode(e, v.positional_args);
+        avro::encode(e, v.keyword_args);
         avro::encode(e, v.blocks);
     }
     static void decode(Decoder& d, corevm::IRClosure& v) {
@@ -1401,6 +1400,12 @@ template<> struct codec_traits<corevm::IRClosure> {
                     avro::decode(d, v.parameters);
                     break;
                 case 5:
+                    avro::decode(d, v.positional_args);
+                    break;
+                case 6:
+                    avro::decode(d, v.keyword_args);
+                    break;
+                case 7:
                     avro::decode(d, v.blocks);
                     break;
                 default:
@@ -1413,7 +1418,43 @@ template<> struct codec_traits<corevm::IRClosure> {
             avro::decode(d, v.rettype);
             avro::decode(d, v.options);
             avro::decode(d, v.parameters);
+            avro::decode(d, v.positional_args);
+            avro::decode(d, v.keyword_args);
             avro::decode(d, v.blocks);
+        }
+    }
+};
+
+template<> struct codec_traits<corevm::IRIntrinsicDecl> {
+    static void encode(Encoder& e, const corevm::IRIntrinsicDecl& v) {
+        avro::encode(e, v.name);
+        avro::encode(e, v.rettype);
+        avro::encode(e, v.parameters);
+    }
+    static void decode(Decoder& d, corevm::IRIntrinsicDecl& v) {
+        if (avro::ResolvingDecoder *rd =
+            dynamic_cast<avro::ResolvingDecoder *>(&d)) {
+            const std::vector<size_t> fo = rd->fieldOrder();
+            for (std::vector<size_t>::const_iterator it = fo.begin();
+                it != fo.end(); ++it) {
+                switch (*it) {
+                case 0:
+                    avro::decode(d, v.name);
+                    break;
+                case 1:
+                    avro::decode(d, v.rettype);
+                    break;
+                case 2:
+                    avro::decode(d, v.parameters);
+                    break;
+                default:
+                    break;
+                }
+            }
+        } else {
+            avro::decode(d, v.name);
+            avro::decode(d, v.rettype);
+            avro::decode(d, v.parameters);
         }
     }
 };
@@ -1423,6 +1464,7 @@ template<> struct codec_traits<corevm::IRModule> {
         avro::encode(e, v.meta);
         avro::encode(e, v.types);
         avro::encode(e, v.closures);
+        avro::encode(e, v.intrinsic_decls);
     }
     static void decode(Decoder& d, corevm::IRModule& v) {
         if (avro::ResolvingDecoder *rd =
@@ -1440,6 +1482,9 @@ template<> struct codec_traits<corevm::IRModule> {
                 case 2:
                     avro::decode(d, v.closures);
                     break;
+                case 3:
+                    avro::decode(d, v.intrinsic_decls);
+                    break;
                 default:
                     break;
                 }
@@ -1448,6 +1493,7 @@ template<> struct codec_traits<corevm::IRModule> {
             avro::decode(d, v.meta);
             avro::decode(d, v.types);
             avro::decode(d, v.closures);
+            avro::decode(d, v.intrinsic_decls);
         }
     }
 };

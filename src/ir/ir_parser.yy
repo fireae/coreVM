@@ -53,6 +53,7 @@ class IRParserDriver;
 %token <corevm::IROpcode> OPCODE
 %token <std::string>      ARRAY
 %token <std::string>      DEF
+%token <std::string>      DECLARE
 %token <std::string>      TYPE
 %token <std::string>      IDENTIFIER
 %token <std::string>      STRING_LITERAL
@@ -60,6 +61,7 @@ class IRParserDriver;
 %token <double>           FLOATINGNUM
 %token <bool>             BOOLEAN_CONSTANT
 %token <std::string>      COMMA
+%token <std::string>      DOT
 %token <std::string>      COLON
 %token <std::string>      SEMICOLON
 %token <std::string>      PERCENT
@@ -99,13 +101,19 @@ class IRParserDriver;
 %type <std::vector<corevm::IRBasicBlock>> basic_block_list;
 %type <corevm::IRParameter> function_arg;
 %type <std::vector<corevm::IRParameter>> function_arg_list;
-%type <std::vector<corevm::IRParameter>> function_arg_list_core;
+%type <std::string> position_args;
+%type <std::string> keyword_args;
+%type <std::string> closure_parent;
 %type <int64_t> function_def_option;
 %type <int64_t> function_def_option_list_core;
 %type <int64_t> function_def_option_list;
 %type <corevm::IRClosure> function_def;
+%type <std::string> intrinsic_decl_name;
+%type <corevm::IRIntrinsicDecl> intrinsic_decl;
 %type <corevm::IRTypeField> type_field;
 %type <std::vector<corevm::IRTypeField>> type_field_list;
+%type <corevm::IRTypeAttribute> type_attribute;
+%type <std::vector<corevm::IRTypeAttribute>> type_attribute_list;
 %type <corevm::IRTypeDecl> type_def;
 %type <std::vector<corevm::ir::IRDefn>> definition_list;
 %type <corevm::ir::MetadataPair> metadata_def;
@@ -161,6 +169,11 @@ definition_list
             $$ = std::move($1);
             $$.push_back($2);
         }
+    | definition_list intrinsic_decl
+        {
+            $$ = std::move($1);
+            $$.push_back($2);
+        }
     ;
 
 type_def
@@ -169,6 +182,36 @@ type_def
             $$ = corevm::IRTypeDecl();
             $$.name = std::move($2);
             $$.fields = std::move($4);
+        }
+    |
+        LBRACKET type_attribute_list RBRACKET TYPE IDENTIFIER LBRACE type_field_list RBRACE
+        {
+            $$ = corevm::IRTypeDecl();
+            $$.attributes = std::move($2);
+            $$.name = std::move($5);
+            $$.fields = std::move($7);
+        }
+    ;
+
+type_attribute_list
+    : type_attribute
+        {
+            $$ = std::vector<corevm::IRTypeAttribute>();
+            $$.push_back($1);
+        }
+    | type_attribute_list COMMA type_attribute
+        {
+            $$ = std::move($1);
+            $$.push_back($3);
+        }
+    ;
+
+type_attribute
+    : IDENTIFIER ASSIGN IDENTIFIER
+        {
+            $$ = corevm::IRTypeAttribute();
+            $$.name = std::move($1);
+            $$.value = std::move($3);
         }
     ;
 
@@ -193,25 +236,120 @@ type_field
         }
     ;
 
-function_def
-    : DEF ir_identifier_type IDENTIFIER function_arg_list function_def_option_list LBRACE basic_block_list RBRACE
+intrinsic_decl
+    : DECLARE ir_identifier_type intrinsic_decl_name LPAREN RPAREN
         {
-            $$ = corevm::IRClosure();
-            $$.rettype = $2;
+            $$ = corevm::IRIntrinsicDecl();
+            $$.rettype = std::move($2);
             $$.name = std::move($3);
-            $$.parameters = std::move($4);
-            $$.options = $5;
-            $$.blocks = std::move($7);
         }
-    | DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER function_def_option_list LBRACE basic_block_list RBRACE
+    | DECLARE ir_identifier_type intrinsic_decl_name LPAREN function_arg_list RPAREN
+        {
+            $$ = corevm::IRIntrinsicDecl();
+            $$.rettype = std::move($2);
+            $$.name = std::move($3);
+            $$.parameters = std::move($5);
+        }
+    ;
+
+intrinsic_decl_name
+    : IDENTIFIER
+        {
+            $$ = std::move($1);
+        }
+    | intrinsic_decl_name DOT IDENTIFIER
+        {
+            std::string name(std::move($1));
+            name += ($2);
+            name += ($3);
+            $$ = std::move(name);
+        }
+    ;
+
+function_def
+    : DEF ir_identifier_type IDENTIFIER LPAREN RPAREN closure_parent function_def_option_list LBRACE basic_block_list RBRACE
         {
             $$ = corevm::IRClosure();
             $$.rettype = $2;
             $$.name = std::move($3);
-            $$.parameters = std::move($4);
-            $$.parent.set_string($6);
+            $$.parent = std::move($6);
             $$.options = $7;
             $$.blocks = std::move($9);
+        }
+    | DEF ir_identifier_type IDENTIFIER LPAREN function_arg_list RPAREN closure_parent function_def_option_list LBRACE basic_block_list RBRACE
+        {
+            $$ = corevm::IRClosure();
+            $$.rettype = $2;
+            $$.name = std::move($3);
+            $$.parameters = std::move($5);
+            $$.parent = std::move($7);
+            $$.options = $8;
+            $$.blocks = std::move($10);
+        }
+    | DEF ir_identifier_type IDENTIFIER LPAREN function_arg_list COMMA position_args RPAREN closure_parent function_def_option_list LBRACE basic_block_list RBRACE
+        {
+            $$ = corevm::IRClosure();
+            $$.rettype = $2;
+            $$.name = std::move($3);
+            $$.parameters = std::move($5);
+            $$.positional_args = std::move($7);
+            $$.parent = std::move($9);
+            $$.options = $10;
+            $$.blocks = std::move($12);
+        }
+    | DEF ir_identifier_type IDENTIFIER LPAREN function_arg_list COMMA keyword_args RPAREN closure_parent function_def_option_list LBRACE basic_block_list RBRACE
+        {
+            $$ = corevm::IRClosure();
+            $$.rettype = $2;
+            $$.name = std::move($3);
+            $$.parameters = std::move($5);
+            $$.keyword_args = std::move($7);
+            $$.parent = std::move($9);
+            $$.options = $10;
+            $$.blocks = std::move($12);
+        }
+    | DEF ir_identifier_type IDENTIFIER LPAREN position_args RPAREN closure_parent function_def_option_list LBRACE basic_block_list RBRACE
+        {
+            $$ = corevm::IRClosure();
+            $$.rettype = $2;
+            $$.name = std::move($3);
+            $$.positional_args = std::move($5);
+            $$.parent = std::move($7);
+            $$.options = $8;
+            $$.blocks = std::move($10);
+        }
+    | DEF ir_identifier_type IDENTIFIER LPAREN keyword_args RPAREN closure_parent function_def_option_list LBRACE basic_block_list RBRACE
+        {
+            $$ = corevm::IRClosure();
+            $$.rettype = $2;
+            $$.name = std::move($3);
+            $$.keyword_args = std::move($5);
+            $$.parent = std::move($7);
+            $$.options = $8;
+            $$.blocks = std::move($10);
+        }
+    | DEF ir_identifier_type IDENTIFIER LPAREN position_args COMMA keyword_args RPAREN closure_parent function_def_option_list LBRACE basic_block_list RBRACE
+        {
+            $$ = corevm::IRClosure();
+            $$.rettype = $2;
+            $$.name = std::move($3);
+            $$.positional_args = std::move($5);
+            $$.keyword_args = std::move($7);
+            $$.parent = $9;
+            $$.options = $10;
+            $$.blocks = std::move($12);
+        }
+    | DEF ir_identifier_type IDENTIFIER LPAREN function_arg_list COMMA position_args COMMA keyword_args RPAREN closure_parent function_def_option_list LBRACE basic_block_list RBRACE
+        {
+            $$ = corevm::IRClosure();
+            $$.rettype = $2;
+            $$.name = std::move($3);
+            $$.parameters = std::move($5);
+            $$.positional_args = std::move($7);
+            $$.keyword_args = std::move($9);
+            $$.parent = std::move($11);
+            $$.options = $12;
+            $$.blocks = std::move($14);
         }
     ;
 
@@ -233,8 +371,7 @@ function_def_option_list_core
         }
     | function_def_option_list_core function_def_option
         {
-            $$ = $1;
-            $$ |= $2;
+            $$ = corevm::ir::add_func_defn_option($1, $2);
         }
     ;
 
@@ -245,24 +382,37 @@ function_def_option
         }
     ;
 
-function_arg_list
-    : LPAREN RPAREN
+closure_parent
+    :
         {
-            $$ = std::vector<corevm::IRParameter>();
         }
-    | LPAREN function_arg_list_core RPAREN
+    | COLON IDENTIFIER
         {
             $$ = std::move($2);
         }
     ;
 
-function_arg_list_core
+keyword_args
+    : STAR STAR IDENTIFIER
+        {
+            $$ = std::move($3);
+        }
+    ;
+
+position_args
+    : STAR IDENTIFIER
+        {
+            $$ = std::move($2);
+        }
+    ;
+
+function_arg_list
     : function_arg
         {
             $$ = std::vector<corevm::IRParameter>();
             $$.push_back($1);
         }
-    | function_arg_list_core COMMA function_arg
+    | function_arg_list COMMA function_arg
         {
             $$ = std::move($1);
             $$.push_back($3);

@@ -43,7 +43,7 @@ DOXYGEN_TMP_DIR=$(DOXYGEN_DIR)/build
 
 # NOTE: llvm needs to be installed before sneaker. This is because both targets
 # will install libgtest, but the version we need is the one installed by sneaker.
-BASE_TARGETS=avro llvm sneaker doxygen
+BASE_TARGETS=avro llvm sneaker
 
 ifeq ($(TRAVIS_OS_NAME), linux)
 	BASE_TARGETS:=cmake_target $(BASE_TARGETS)

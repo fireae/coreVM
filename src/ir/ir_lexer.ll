@@ -88,6 +88,7 @@ blank [ \t]
 #keywords
 "array"                                   return yy::ir_parser::make_ARRAY(yytext, loc);
 "def"                                     return yy::ir_parser::make_DEF(yytext, loc);
+"declare"                                 return yy::ir_parser::make_DECLARE(yytext, loc);
 "label"                                   return yy::ir_parser::make_LABEL(yytext, loc);
 "type"                                    return yy::ir_parser::make_TYPE(yytext, loc);
 
@@ -146,6 +147,9 @@ blank [ \t]
 
 #comma
 ","                                       return yy::ir_parser::make_COMMA(yytext, loc);
+
+#dot
+"."                                       return yy::ir_parser::make_DOT(yytext, loc);
 
 #brackets
 "("                                       return yy::ir_parser::make_LPAREN(yytext, loc);

@@ -25,7 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "format.h"
 #include "common/variant/variant.h"
+#include <array>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -41,8 +43,26 @@ namespace ir {
  */
 enum class FuncDefnOption : int64_t
 {
-  CONSTEXPR = (1 << 0x00)
+  CONSTEXPR        = (0x01 << 0),
+  INLINE           = (0x01 << 1),
+  TAIL_DUPLICATION = (0x01 << 2),
+  LOOP_SIMPLIFY    = (0x01 << 3),
 };
+
+/**
+ * FuncDefnOption <--> string representation map.
+ */
+extern
+std::array<std::tuple<FuncDefnOption, const char*>, 4> FuncDefnOptionToStrArray;
+
+/**
+ * Add a function definition option to an value set.
+ * Returns the new value set.
+ */
+inline constexpr int64_t add_func_defn_option(int64_t val, int64_t new_val)
+{
+  return (val | new_val);
+}
 
 /**
  * Determine if a particular function definition option has been set.
@@ -74,7 +94,8 @@ const char* IROpcode_to_string(corevm::IROpcode);
  * Generic type representing an IR definition, it can be either a type
  * or function definition.
  */
-using IRDefn = common::variant::variant<corevm::IRClosure, corevm::IRTypeDecl>;
+using IRDefn = common::variant::variant<
+  corevm::IRClosure, corevm::IRTypeDecl, corevm::IRIntrinsicDecl>;
 
 /**
  * IR module metadata key-value pair.

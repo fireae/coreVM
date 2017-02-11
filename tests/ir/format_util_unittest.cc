@@ -55,6 +55,9 @@ TEST_F(IRFormatUtilUnitTest, Test_interpret_func_defn_option)
   ASSERT_EQ(ir::FuncDefnOption::CONSTEXPR,
     static_cast<ir::FuncDefnOption>(ir::interpret_func_defn_option("constexpr")));
 
+  ASSERT_EQ(ir::FuncDefnOption::INLINE,
+    static_cast<ir::FuncDefnOption>(ir::interpret_func_defn_option("inline")));
+
   ASSERT_EQ(0, ir::interpret_func_defn_option("unknown-option"));
 }
 

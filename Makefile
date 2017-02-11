@@ -95,7 +95,7 @@ all: $(BUILD_TARGETS)
 .PHONY: build
 build:
 	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR); cmake $(BUILD_TARGET_CMAKE_ARGS) ../ && make
+	cd $(BUILD_DIR); cmake $(BUILD_TARGET_CMAKE_ARGS) ../ && make -j16
 
 ## -----------------------------------------------------------------------------
 

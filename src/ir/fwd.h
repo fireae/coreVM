@@ -29,8 +29,10 @@ namespace corevm {
 
 struct IRModule;
 struct IRModuleMeta;
+struct IRIntrinsicDecl;
 struct IRTypeDecl;
 struct IRTypeField;
+struct IRTypeAttribute;
 struct IRValue;
 struct IRArrayType;
 struct IRIdentifierType;

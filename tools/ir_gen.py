@@ -62,6 +62,10 @@ class IRGen(object):
                 self.ir_closure_1(),
                 self.ir_closure_2(),
                 self.ir_closure_3()
+            ],
+            'intrinsic_decls': [
+                self.ir_intrinsic_decl_1(),
+                self.ir_intrinsic_decl_2()
             ]
         }
 
@@ -78,6 +82,16 @@ class IRGen(object):
     def ir_type_decl_1(self):
         return {
             'name': 'Person',
+            'attributes': [
+                {
+                    'name': 'model',
+                    'value': 'cplusplus'
+                },
+                {
+                    'name': 'union',
+                    'value': 'yes'
+                }
+            ],
             'fields': [
                 {
                     'identifier': 'name',
@@ -132,6 +146,12 @@ class IRGen(object):
     def ir_type_decl_2(self):
         return {
             'name': 'Location',
+            'attributes': [
+                {
+                    'name': 'model',
+                    'value': 'cplusplus'
+                }
+            ],
             'fields': [
                 {
                     'identifier': 'street_address',
@@ -163,6 +183,7 @@ class IRGen(object):
     def ir_type_decl_3(self):
         return {
             'name': 'NullType',
+            'attributes': [],
             'fields': []
         }
 
@@ -174,6 +195,7 @@ class IRGen(object):
                 'ref_type': 'pointer',
                 'value': 'Person'
             },
+            'parent': '',
             'options': 0,
             'parameters': [
                 {
@@ -193,6 +215,8 @@ class IRGen(object):
                     },
                 }
             ],
+            "positional_args": "",
+            "keyword_args": "",
             'blocks': [
                 {
                     'label': 'entry',
@@ -338,6 +362,8 @@ class IRGen(object):
                     }
                 }
             ],
+            "positional_args": "",
+            "keyword_args": "",
             'blocks': [
                 {
                     'label': 'entry',
@@ -399,9 +425,68 @@ class IRGen(object):
                 'ref_type': 'value',
                 'value': 'voidtype'
             },
+            'parent': '',
             'options': 0,
             'parameters': [],
+            "positional_args": "args",
+            "keyword_args": "kwargs",
             'blocks': []
+        }
+
+    def ir_intrinsic_decl_1(self):
+        return {
+            'name': 'corevm.reflection.gettype',
+            'rettype': {
+                'type': 'IdentifierType_ValueType',
+                'ref_type': 'value',
+                'value': 'object'
+            },
+            'parameters': [
+                {
+                    'identifier': 'arg',
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'ref_type': 'pointer',
+                        'value': 'object'
+                    },
+                }
+            ] 
+        }
+
+    def ir_intrinsic_decl_2(self):
+        return {
+            'name': 'corevm.foundation.memove',
+            'rettype': {
+                'type': 'IdentifierType_ValueType',
+                'ref_type': 'value',
+                'value': 'i8'
+            },
+            'parameters': [
+                {
+                    'identifier': 'dst',
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'ref_type': 'pointer',
+                        'value': 'i8'
+                    },
+                },
+                {
+                    'identifier': 'src',
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'ref_type': 'pointer',
+                        'value': 'i8'
+                    },
+                },
+                {
+                    'identifier': 'num',
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'ref_type': 'value',
+                        'value': 'i64'
+                    },
+                }
+            ] 
         }
 
 ## -----------------------------------------------------------------------------

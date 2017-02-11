@@ -38,16 +38,20 @@ namespace ir {
 
 // -----------------------------------------------------------------------------
 
+std::array<std::tuple<FuncDefnOption, const char*>, 4> FuncDefnOptionToStrArray {
+  std::make_tuple(FuncDefnOption::CONSTEXPR, "constexpr"),
+  std::make_tuple(FuncDefnOption::INLINE, "inline"),
+  std::make_tuple(FuncDefnOption::TAIL_DUPLICATION, "tailduplication"),
+  std::make_tuple(FuncDefnOption::LOOP_SIMPLIFY, "loopsimplify")
+};
+
+// -----------------------------------------------------------------------------
+
 int64_t interpret_func_defn_option(const std::string& val)
 {
-  static const char* STRS[] {
-    "constexpr"
-  };
-
-  static const size_t STRS_COUNT = sizeof(STRS) / sizeof(const char*);
-  for (size_t i = 0; i < STRS_COUNT; ++i)
+  for (size_t i = 0; i < FuncDefnOptionToStrArray.size(); ++i)
   {
-    if (strcmp(STRS[i], val.c_str()) == 0)
+    if (strcmp(std::get<1>(FuncDefnOptionToStrArray[i]), val.c_str()) == 0)
     {
       return (1 << i);
     }
@@ -322,6 +326,7 @@ set_metadata_and_definitions(const std::vector<MetadataPair>& metadata,
   set_metadata(metadata, module);
 
   module.types.reserve(defns.size());
+  module.intrinsic_decls.reserve(defns.size());
   module.closures.reserve(defns.size());
   for (const auto& defn : defns)
   {
@@ -332,6 +337,10 @@ set_metadata_and_definitions(const std::vector<MetadataPair>& metadata,
     else if (defn.is<corevm::IRTypeDecl>())
     {
       module.types.push_back(defn.get<corevm::IRTypeDecl>());
+    }
+    else if (defn.is<corevm::IRIntrinsicDecl>())
+    {
+      module.intrinsic_decls.push_back(defn.get<corevm::IRIntrinsicDecl>());
     }
   }
 }

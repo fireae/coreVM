@@ -146,9 +146,9 @@ bool
 Verifier::check_func_def(const IRClosure& closure)
 {
   // Check parent.
-  if (!closure.parent.is_null())
+  if (!closure.parent.empty())
   {
-    const std::string parent_name = closure.parent.get_string();
+    const std::string& parent_name = closure.parent;
     if (!m_index->has_func_def(parent_name))
     {
       ERROR("Invalid parent of function of \"%s\": \"%s\"",

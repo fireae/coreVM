@@ -199,6 +199,11 @@ Disassembler::disassemble(const IRModule& module, std::ostream& stream) const
     disassemble(val, stream);
   }
 
+  for (const auto& val : module.intrinsic_decls)
+  {
+    disassemble(val, stream);
+  }
+
   for (const auto& val : module.closures)
   {
     disassemble(val, stream);
@@ -255,6 +260,23 @@ Disassembler::disassemble(const IRModuleMeta& meta,
 void
 Disassembler::disassemble(const IRTypeDecl& decl, std::ostream& stream) const
 {
+  if (!decl.attributes.empty())
+  {
+    stream << '[';
+
+    for (size_t i = 0; i < decl.attributes.size(); ++i)
+    {
+      disassemble(decl.attributes[i], stream);
+      if (i + 1 < decl.attributes.size())
+      {
+        stream << ", ";
+      }
+    }
+
+    stream << ']';
+    stream << std::endl;
+  }
+
   stream << "type " << decl.name << " {";
   emit_newline(stream);
 
@@ -282,14 +304,25 @@ Disassembler::disassemble(const IRTypeField& field, std::ostream& stream) const
 // -----------------------------------------------------------------------------
 
 void
-Disassembler::disassemble(const IRClosure& closure, std::ostream& stream) const
+Disassembler::disassemble(const IRTypeAttribute& attribute,
+  std::ostream& stream) const
 {
-  stream << "def ";
-  disassemble(closure.rettype, stream);
-  stream << " " << closure.name << "(";
+  stream << attribute.name << '=' << attribute.value;
+}
 
-  size_t len = closure.parameters.size();
-  for (const auto& parameter : closure.parameters)
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRIntrinsicDecl& intrinsic_decl,
+  std::ostream& stream) const
+{
+  stream << "declare ";
+  disassemble(intrinsic_decl.rettype, stream);
+  stream << " " << intrinsic_decl.name << "(";
+
+  // Parameters.
+  size_t len = intrinsic_decl.parameters.size();
+  for (const auto& parameter : intrinsic_decl.parameters)
   {
     disassemble(parameter, stream);
     if (len-- > 1)
@@ -298,20 +331,72 @@ Disassembler::disassemble(const IRClosure& closure, std::ostream& stream) const
     }
   }
   stream << ")";
+  stream << std::endl;
+  stream << std::endl;
+}
 
-  if (!closure.parent.is_null())
+// -----------------------------------------------------------------------------
+
+void
+Disassembler::disassemble(const IRClosure& closure, std::ostream& stream) const
+{
+  stream << "def ";
+  disassemble(closure.rettype, stream);
+  stream << " " << closure.name << "(";
+
+  size_t len = closure.parameters.size();
+  bool hasPrevArg = false;
+
+  // Parameters.
+  for (const auto& parameter : closure.parameters)
   {
-    stream <<  " : " << closure.parent.get_string();
+    disassemble(parameter, stream);
+    if (len-- > 1)
+    {
+      stream << ", ";
+    }
+    hasPrevArg = true;
+  }
+
+  // Positional arguments.
+  if (!closure.positional_args.empty())
+  {
+    if (hasPrevArg)
+    {
+      stream << ", ";
+    }
+    stream << '*' << closure.positional_args;
+    hasPrevArg = true;
+  }
+
+  // Keyword arguments.
+  if (!closure.keyword_args.empty())
+  {
+    if (hasPrevArg)
+    {
+      stream << ", ";
+    }
+    stream << "**" << closure.keyword_args;
+  }
+  stream << ")";
+
+  if (!closure.parent.empty())
+  {
+    stream <<  " : " << closure.parent;
   }
 
   if (closure.options)
   {
     std::vector<const char*> options;
 
-    if (is_func_defn_option_enabled(closure.options, FuncDefnOption::CONSTEXPR))
+    for (size_t i = 0; i < FuncDefnOptionToStrArray.size(); ++i)
     {
-      options.push_back("constexpr");
-    }
+      if (is_func_defn_option_enabled(closure.options,
+          std::get<0>(FuncDefnOptionToStrArray[i])))
+      {
+        options.push_back(std::get<1>(FuncDefnOptionToStrArray[i]));
+      }
+    } 
 
     if (!options.empty())
     {

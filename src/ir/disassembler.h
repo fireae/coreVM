@@ -67,6 +67,10 @@ private:
 
   void disassemble(const IRTypeField&, std::ostream&) const;
 
+  void disassemble(const IRTypeAttribute&, std::ostream&) const;
+
+  void disassemble(const IRIntrinsicDecl&, std::ostream&) const;
+
   void disassemble(const IRClosure&, std::ostream&) const;
 
   void disassemble(const IRParameter&, std::ostream&) const;

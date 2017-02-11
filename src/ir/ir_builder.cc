@@ -1436,14 +1436,7 @@ IRBuilderImpl::finalize_func_defn(const std::string& func_name,
   }
 
   // Parent.
-  if (func_defn_impl.parent.empty())
-  {
-    closure.parent.set_null();
-  }
-  else
-  {
-    closure.parent.set_string(func_defn_impl.parent);
-  }
+  closure.parent = func_defn_impl.parent;
 
   // Basic blocks.
   closure.blocks.reserve(func_defn_impl.bb_store.storage.size());
