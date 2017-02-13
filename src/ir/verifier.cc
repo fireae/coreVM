@@ -184,6 +184,36 @@ Verifier::check_func_def(const IRClosure& closure)
     }
   }
 
+  // Positional argument parameter.
+  if (!closure.positional_args.empty())
+  {
+    if (parameters_set.count(closure.positional_args))
+    {
+      ERROR("Duplicate parameter \"%s\" in function \"%s\"",
+        closure.positional_args.c_str(), closure.name.c_str());
+    }
+  }
+
+  // Keyword argument parameter.
+  if (!closure.keyword_args.empty())
+  {
+    bool dup = false;
+    if (!closure.positional_args.empty() &&
+        closure.positional_args == closure.keyword_args)
+    {
+      dup = true;
+    }
+    if (parameters_set.count(closure.keyword_args))
+    {
+      dup = true;
+    }
+    if (dup)
+    {
+      ERROR("Duplicate parameter \"%s\" in function \"%s\"",
+        closure.keyword_args.c_str(), closure.name.c_str());
+    }
+  }
+
   // Basic blocks.
   std::unordered_set<std::string> bb_set;
   FuncDefCheckContext ctx;
@@ -1210,23 +1240,40 @@ Verifier::check_instr_with_OPCODE_RET(const IRInstruction& instr,
     return false;
   }
 
-  if (!check_instruction_operands_count(instr, 1, ctx))
-  {
-    return false;
-  }
-
   if (!check_instruction_labels_count(instr, 0, ctx))
   {
     return false;
   }
 
-  // Check return type matches with function signature.
-  const auto oprd_type = get_operand_type(instr.oprds.front(), ctx);
-  if (oprd_type != ctx.closure->rettype)
+  if (ctx.closure->rettype.type == IdentifierType_ValueType &&
+      ctx.closure->rettype.value.get_IRValueType() == corevm::voidtype)
   {
-    ERROR("Invalid return type for instruction \"%s\" in function \"%s\" under block \"%s\"",
-      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
-      ctx.bb->label.c_str());
+    // Handle return void type.
+
+    if (!instr.oprds.empty())
+    {
+      ERROR("Instruction \"%s\" in function \"%s\" under block \"%s\" has incorrect number of operands",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+  }
+  else
+  {
+    if (instr.oprds.size() > 1)
+    {
+      ERROR("Instruction \"%s\" in function \"%s\" under block \"%s\" has incorrect number of operands",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+
+    // Check return type matches with function signature.
+    const auto oprd_type = get_operand_type(instr.oprds.front(), ctx);
+    if (oprd_type != ctx.closure->rettype)
+    {
+      ERROR("Invalid return type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
   }
 
   return true;
@@ -1248,19 +1295,30 @@ Verifier::check_instr_with_OPCODE_BR(const IRInstruction& instr,
     return false;
   }
 
-  if (!check_instruction_operands_count(instr, 1, ctx))
+  if (instr.oprds.empty())
   {
-    return false;
+    if (!check_instruction_labels_count(instr, 1, ctx))
+    {
+      return false;
+    } 
   }
-
-  if (!check_instruction_labels_count(instr, 2, ctx))
+  else if (instr.oprds.size() == 1)
   {
-    return false;
+    if (!check_instruction_labels_count(instr, 2, ctx))
+    {
+      return false;
+    }
+
+    if (!is_operand_boolean_type(instr.oprds[0], ctx))
+    {
+      ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
   }
-
-  if (!is_operand_boolean_type(instr.oprds[0], ctx))
+  else
   {
-    ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+    ERROR("Invalid number of operands for instruction \"%s\" in function \"%s\" under block \"%s\"",
       IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
       ctx.bb->label.c_str());
   }

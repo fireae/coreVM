@@ -246,8 +246,12 @@ struct TypeDeclImpl
   };
   typedef std::vector<TypeDeclField> FieldSet;
   typedef std::unordered_map<std::string, size_t> FieldSetMap;
+  typedef std::vector<std::pair<std::string, std::string>> AttributeSet;
   FieldSet fields;
   FieldSetMap fields_map;
+  AttributeSet attribute_set;
+
+  // ---------------------------------------------------------------------------
 
   void
   add_field(const std::string& field_name, const IdentifierType& field_type)
@@ -261,6 +265,17 @@ struct TypeDeclImpl
     fields.push_back(TypeDeclField{field_name, field_type});
     fields_map.insert(std::make_pair(field_name, fields.size() - 1));
   }
+
+  // ---------------------------------------------------------------------------
+
+  void
+  add_type_attribution(const std::string& attr_key, const std::string& attr_val)
+  {
+    attribute_set.push_back(std::make_pair(attr_key, attr_val));
+  }
+
+  // ---------------------------------------------------------------------------
+
 };
 
 // -----------------------------------------------------------------------------
@@ -299,7 +314,8 @@ struct TypeDeclStore
       return &itr->second;
     }
 
-    storage.push_back(TypeDeclImpl{type_name, TypeDeclImpl::FieldSet()});
+    storage.push_back(TypeDeclImpl{type_name, TypeDeclImpl::FieldSet(),
+      TypeDeclImpl::FieldSetMap(), TypeDeclImpl::AttributeSet()});
     type_decls_map.insert(std::make_pair(type_name, _TypeDecl{type_id}));
     ++type_id;
 
@@ -319,6 +335,15 @@ struct TypeDeclStore
   TypeDecl get_type_decl_by_name(const std::string& type_decl_name)
   {
     return &type_decls_map.at(type_decl_name);
+  }
+
+  // ---------------------------------------------------------------------------
+
+  void add_type_attribution(TypeDecl type_decl, const std::string& attr_key,
+    const std::string& attr_val)
+  {
+    auto& type_decl_impl = storage.at(type_decl->id);
+    type_decl_impl.add_type_attribution(attr_key, attr_val);
   }
 
   // ---------------------------------------------------------------------------
@@ -396,8 +421,16 @@ struct FuncParamStore
    */
   struct FuncParamImpl
   {
+    enum FunctionParamType
+    {
+      REGULAR_PARAM,
+      POSITIONAL_ARG,
+      KEYWORD_ARG
+    };
+
     std::string name;
     IdentifierType type;
+    FunctionParamType param_type;
   };
 
   type_id_t type_id;
@@ -419,7 +452,8 @@ struct FuncParamStore
       return itr->second;
     }
 
-    storage.push_back(FuncParamImpl{param_name, param_type});
+    storage.push_back(
+      FuncParamImpl{param_name, param_type, FuncParamImpl::REGULAR_PARAM});
     params_map.insert(std::make_pair(param_name, type_id));
     ++type_id;
 
@@ -427,6 +461,42 @@ struct FuncParamStore
   }
 
   // ---------------------------------------------------------------------------
+
+  FuncParamType add_func_positional_arg(const std::string& param_name)
+  {
+    const auto itr = params_map.find(param_name);
+    if (itr != params_map.cend())
+    {
+      return itr->second;
+    }
+
+    storage.push_back(
+      FuncParamImpl{param_name, IdentifierType(), FuncParamImpl::POSITIONAL_ARG});
+    params_map.insert(std::make_pair(param_name, type_id));
+    ++type_id;
+
+    return params_map.at(param_name);
+  }
+
+  // ---------------------------------------------------------------------------
+
+  FuncParamType add_func_keyword_arg(const std::string& param_name)
+  {
+    const auto itr = params_map.find(param_name);
+    if (itr != params_map.cend())
+    {
+      return itr->second;
+    }
+
+    storage.push_back(
+      FuncParamImpl{param_name, IdentifierType(), FuncParamImpl::KEYWORD_ARG});
+    params_map.insert(std::make_pair(param_name, type_id));
+    ++type_id;
+
+    return params_map.at(param_name);
+  }
+
+  // --------------------------------------------------------------------------- 
 
 }; /* end `struct FuncParamStore` */
 
@@ -535,6 +605,17 @@ struct InstructionImpl
     type(),
     options(),
     oprds(oprds_),
+    labels(labels_)
+  {
+  }
+
+  InstructionImpl(InstrOpcode opcode_, const std::vector<BasicBlock>& labels_)
+    :
+    target(0),
+    opcode(opcode_),
+    type(),
+    options(),
+    oprds(),
     labels(labels_)
   {
   }
@@ -652,6 +733,15 @@ struct BasicBlockStore
 
   // ---------------------------------------------------------------------------
 
+  void add_instruction_with_labels(BasicBlock basic_block,
+    InstrOpcode opcode, const std::vector<BasicBlock>& labels)
+  {
+    storage.at(basic_block).instr_store.push_back(
+      InstructionImpl{opcode, labels});
+  }
+
+  // ---------------------------------------------------------------------------
+
 }; /* end `struct BasicBlockStore` */
 
 // -----------------------------------------------------------------------------
@@ -723,6 +813,24 @@ struct FuncDefnStore
 
   // ---------------------------------------------------------------------------
 
+  FuncParamType add_func_positional_arg(FuncDefn func_defn,
+    const std::string& param_name)
+  {
+    auto& func_defn_impl = func_defns_store.at(func_defn);
+    return func_defn_impl.param_store.add_func_positional_arg(param_name);
+  }
+
+  // ---------------------------------------------------------------------------
+
+  FuncParamType add_func_keyword_arg(FuncDefn func_defn,
+    const std::string& param_name)
+  {
+    auto& func_defn_impl = func_defns_store.at(func_defn);
+    return func_defn_impl.param_store.add_func_keyword_arg(param_name);
+  }
+
+  // ---------------------------------------------------------------------------
+
   FuncDefnImpl& get_func_defn(FuncDefn func_defn)
   {
     return func_defns_store.at(func_defn);
@@ -780,6 +888,11 @@ struct IRBuilderImpl
   const char* get_type_decl_name(TypeDecl) const;
 
   /**
+   * Add a key-value attribute pair to a type definition.
+   */
+  void add_type_attribution(TypeDecl, const std::string&, const std::string&);
+
+  /**
    * Add a value type field to a type definition.
    */
   void add_type_field(TypeDecl, IdentifierType, const std::string&);
@@ -816,6 +929,18 @@ struct IRBuilderImpl
    * Returns a reference to the added parameter.
    */
   FuncParam add_func_parameter(FuncDefn, const std::string&, IdentifierType);
+
+  /**
+   * Add a function positional argument parameter with the specified parameter
+   * name.
+   */
+  FuncParam add_func_positional_arg(FuncDefn, const std::string&);
+
+  /**
+   * Add a function keyword argument parameter with the specified parameter
+   * name.
+   */
+  FuncParam add_func_keyword_arg(FuncDefn, const std::string&);
 
   /**
    * Creates a basic block in the specified function definition.
@@ -924,6 +1049,11 @@ struct IRBuilderImpl
     BasicBlock);
 
   /**
+   * Add a unconditional branch statement inside the current basic block.
+   */
+  void add_unconditional_branch(FuncDefn, BasicBlock, BasicBlock);
+
+  /**
    * Add a switch statement construct.
    *
    * Note that the number of cases and target blocks must equal.
@@ -1030,6 +1160,15 @@ IRBuilderImpl::get_type_decl_name(TypeDecl type_decl) const
 // -----------------------------------------------------------------------------
 
 void
+IRBuilderImpl::add_type_attribution(TypeDecl type_decl,
+  const std::string& attr_key, const std::string& attr_val)
+{
+  type_decl_store.add_type_attribution(type_decl, attr_key, attr_val);
+}
+
+// -----------------------------------------------------------------------------
+
+void
 IRBuilderImpl::add_type_field(TypeDecl type_decl, IdentifierType field_type,
   const std::string& field_name)
 {
@@ -1076,6 +1215,24 @@ IRBuilderImpl::add_func_parameter(FuncDefn func_defn,
   const std::string& param_name, IdentifierType param_type)
 {
   return func_defn_store.add_func_parameter(func_defn, param_name, param_type);
+}
+
+// -----------------------------------------------------------------------------
+
+FuncParam
+IRBuilderImpl::add_func_positional_arg(FuncDefn func_defn,
+  const std::string& param_name)
+{
+  return func_defn_store.add_func_positional_arg(func_defn, param_name);
+}
+
+// -----------------------------------------------------------------------------
+
+FuncParam
+IRBuilderImpl::add_func_keyword_arg(FuncDefn func_defn,
+  const std::string& param_name)
+{
+  return func_defn_store.add_func_keyword_arg(func_defn, param_name);
 }
 
 // -----------------------------------------------------------------------------
@@ -1314,6 +1471,20 @@ IRBuilderImpl::add_conditional_branch(FuncDefn func_defn,
 // -----------------------------------------------------------------------------
 
 void
+IRBuilderImpl::add_unconditional_branch(FuncDefn func_defn,
+  BasicBlock basic_block, BasicBlock target_block)
+{
+  auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
+
+  // Add unconditional branch.
+  func_defn_impl.bb_store.add_instruction_with_labels(basic_block,
+    InstrOpcodeBR,
+    std::vector<BasicBlock> {target_block});
+}
+
+// -----------------------------------------------------------------------------
+
+void
 IRBuilderImpl::add_switch(FuncDefn func_defn, BasicBlock basic_block,
   OperandValue predicate, const std::vector<OperandValue>& cases,
   const std::vector<BasicBlock>& target_blocks)
@@ -1428,11 +1599,22 @@ IRBuilderImpl::finalize_func_defn(const std::string& func_name,
   closure.parameters.reserve(func_defn_impl.param_store.params_map.size());
   for (const auto& param_impl : func_defn_impl.param_store.storage)
   {
-    IRParameter ir_param;
-    ir_param.identifier = param_impl.name;
-    translate_IdentifierType(param_impl.type, ir_param.type);
+    if (param_impl.param_type == FuncParamStore::FuncParamImpl::REGULAR_PARAM)
+    {
+      IRParameter ir_param;
+      ir_param.identifier = param_impl.name;
+      translate_IdentifierType(param_impl.type, ir_param.type);
 
-    closure.parameters.push_back(ir_param);
+      closure.parameters.push_back(ir_param);
+    }
+    else if (param_impl.param_type == FuncParamStore::FuncParamImpl::POSITIONAL_ARG)
+    {
+      closure.positional_args = param_impl.name;
+    }
+    else if (param_impl.param_type == FuncParamStore::FuncParamImpl::KEYWORD_ARG)
+    {
+      closure.keyword_args = param_impl.name;
+    }
   }
 
   // Parent.
@@ -1481,6 +1663,17 @@ IRBuilderImpl::finalize_type_decl(const TypeDeclImpl& type_decl_impl)
     translate_IdentifierType(field.type, ir_type_field.type);
 
     ir_type_decl.fields.push_back(ir_type_field);
+  }
+
+  // Attributes.
+  ir_type_decl.attributes.reserve(type_decl_impl.attribute_set.size());
+  for (const auto& pair : type_decl_impl.attribute_set)
+  {
+    IRTypeAttribute ir_type_attribute;
+    ir_type_attribute.name = pair.first;
+    ir_type_attribute.value = pair.second;
+
+    ir_type_decl.attributes.push_back(ir_type_attribute);
   }
 
   return ir_type_decl;
@@ -1754,6 +1947,15 @@ IRBuilder::get_type_decl_name(TypeDecl type_decl) const
 // -----------------------------------------------------------------------------
 
 void
+IRBuilder::add_type_attribution(TypeDecl type_decl,
+  const std::string& attr_key, const std::string& attr_val)
+{
+  m_impl->add_type_attribution(type_decl, attr_key, attr_val);
+}
+
+// -----------------------------------------------------------------------------
+
+void
 IRBuilder::add_type_field(TypeDecl type_decl, ValueType field_type,
   ValueRefType ref_type, const std::string& field_name)
 {
@@ -1885,6 +2087,23 @@ IRBuilder::add_func_parameter(FuncDefn func_defn, const std::string& param_name,
 {
   return m_impl->add_func_parameter(func_defn, param_name,
     IdentifierType{ref_type, param_type});
+}
+
+// -----------------------------------------------------------------------------
+
+FuncParam
+IRBuilder::add_func_positional_arg(FuncDefn func_defn,
+  const std::string& param_name)
+{
+  return m_impl->add_func_positional_arg(func_defn, param_name);
+}
+
+// -----------------------------------------------------------------------------
+
+FuncParam
+IRBuilder::add_func_keyword_arg(FuncDefn func_defn, const std::string& param_name)
+{
+  return m_impl->add_func_keyword_arg(func_defn, param_name);
 }
 
 // -----------------------------------------------------------------------------
@@ -2207,6 +2426,15 @@ IRBuilder::add_conditional_branch(FuncDefn func_defn, BasicBlock basic_block,
   OperandValue predicate, BasicBlock bb1, BasicBlock bb2)
 {
   m_impl->add_conditional_branch(func_defn, basic_block, predicate, bb1, bb2);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+IRBuilder::add_unconditional_branch(FuncDefn func_defn, BasicBlock basic_block,
+  BasicBlock target_block)
+{
+  m_impl->add_unconditional_branch(func_defn, basic_block, target_block);
 }
 
 // -----------------------------------------------------------------------------

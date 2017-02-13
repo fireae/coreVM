@@ -20,7 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "jit/pass_manager.h"
+#include "jit/static_pass_runner.h"
 #include "jit/analysis_pass.h"
 #include "jit/transform_pass.h"
 #include "ir/format.h"
@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-class PassManagerUnitTest : public ::testing::Test
+class StaticPassRunnerUnitTest : public ::testing::Test
 {
 public:
   class DummyAnalysisPass : public corevm::jit::AnalysisPass
@@ -40,7 +40,7 @@ public:
 
     virtual bool run(const corevm::IRModule&, const corevm::jit::AnalysisResult*)
     {
-      PassManagerUnitTest::passed_count++;
+      StaticPassRunnerUnitTest::passed_count++;
       return true;
     }
   };
@@ -52,7 +52,7 @@ public:
 
     virtual bool run(corevm::IRModule&, const corevm::jit::AnalysisResult*)
     {
-      PassManagerUnitTest::passed_count++;
+      StaticPassRunnerUnitTest::passed_count++;
       return true;
     }
   };
@@ -70,57 +70,57 @@ public:
 
   virtual void SetUp()
   {
-    PassManagerUnitTest::passed_count = 0;
+    StaticPassRunnerUnitTest::passed_count = 0;
   }
 
   virtual void TearDown()
   {
-    PassManagerUnitTest::passed_count = 0;
+    StaticPassRunnerUnitTest::passed_count = 0;
   }
 
   static uint32_t passed_count;
 };
 
-uint32_t PassManagerUnitTest::passed_count = 0;
-const char* PassManagerUnitTest::DummyAnalysisPass::Name = "Dummy Analysis Pass";
-const char* PassManagerUnitTest::DummyTransformPass::Name = "Dummy Transform Pass";
-const char* PassManagerUnitTest::BadAnalysisPass::Name = "Bad Analysis Pass";
+uint32_t StaticPassRunnerUnitTest::passed_count = 0;
+const char* StaticPassRunnerUnitTest::DummyAnalysisPass::Name = "Dummy Analysis Pass";
+const char* StaticPassRunnerUnitTest::DummyTransformPass::Name = "Dummy Transform Pass";
+const char* StaticPassRunnerUnitTest::BadAnalysisPass::Name = "Bad Analysis Pass";
 
 // -----------------------------------------------------------------------------
 
-TEST_F(PassManagerUnitTest, TestAddPassAndRun)
+TEST_F(StaticPassRunnerUnitTest, TestAddPassAndRun)
 {
-  ASSERT_EQ(0, PassManagerUnitTest::passed_count);
+  ASSERT_EQ(0, StaticPassRunnerUnitTest::passed_count);
 
-  corevm::jit::PassManager manager;
+  corevm::jit::StaticPassRunner manager;
   corevm::IRModule module;
 
   manager.run_pass<
-    PassManagerUnitTest::DummyAnalysisPass>(module).
-      run_pass<PassManagerUnitTest::DummyTransformPass>(module);
+    StaticPassRunnerUnitTest::DummyAnalysisPass>(module).
+      run_pass<StaticPassRunnerUnitTest::DummyTransformPass>(module);
   
-  ASSERT_EQ(2, PassManagerUnitTest::passed_count);
+  ASSERT_EQ(2, StaticPassRunnerUnitTest::passed_count);
 
   ASSERT_EQ(true, manager.success());
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(PassManagerUnitTest, TestAddBadPassAndRun)
+TEST_F(StaticPassRunnerUnitTest, TestAddBadPassAndRun)
 {
-  ASSERT_EQ(0, PassManagerUnitTest::passed_count);
+  ASSERT_EQ(0, StaticPassRunnerUnitTest::passed_count);
 
-  corevm::jit::PassManager manager;
+  corevm::jit::StaticPassRunner manager;
   corevm::IRModule module;
 
   manager.run_pass<
-    PassManagerUnitTest::BadAnalysisPass>(module).
-      run_pass<PassManagerUnitTest::DummyAnalysisPass>(module);
+    StaticPassRunnerUnitTest::BadAnalysisPass>(module).
+      run_pass<StaticPassRunnerUnitTest::DummyAnalysisPass>(module);
   
-  ASSERT_EQ(0, PassManagerUnitTest::passed_count);
+  ASSERT_EQ(0, StaticPassRunnerUnitTest::passed_count);
 
   ASSERT_EQ(false, manager.success()); 
-  ASSERT_STREQ(PassManagerUnitTest::BadAnalysisPass::Name, manager.msg().c_str());
+  ASSERT_STREQ(StaticPassRunnerUnitTest::BadAnalysisPass::Name, manager.msg().c_str());
 }
 
 // -----------------------------------------------------------------------------

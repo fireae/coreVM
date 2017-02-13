@@ -31,7 +31,7 @@ add_executable(run_tests
     ir/verifier_unittest.cc
     ir/ir_builder_unittest.cc
     ir/disassembler_unittest.cc
-    jit/pass_manager_unittest.cc
+    jit/static_pass_runner_unittest.cc
     jit/runtime_value_unittest.cc
     jit/util_unittest.cc
     jit/jit_compiler_unittest.cc

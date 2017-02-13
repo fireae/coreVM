@@ -20,8 +20,8 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_PASS_MANAGER_H_
-#define COREVM_PASS_MANAGER_H_
+#ifndef COREVM_STATIC_PASS_RUNNER_H_
+#define COREVM_STATIC_PASS_RUNNER_H_
 
 #include "analysis_pass.h"
 #include "ir/fwd.h"
@@ -34,21 +34,21 @@ namespace corevm {
 namespace jit {
 
 /**
- * A "static" pass manager responsible for managing the operations of a set
- * of "pass"es in serial order.
+ * A pass runner responsible for managing the operations of a set of
+ * statically defined "pass"es in serial order.
  */
-class PassManager
+class StaticPassRunner
 {
 public:
   /**
    * Default constructor.
    */
-  PassManager();
+  StaticPassRunner();
 
   /**
    * Copy constructor. Unsupported.
    */
-  PassManager(const PassManager&) = delete;
+  StaticPassRunner(const StaticPassRunner&) = delete;
 
   /**
    * Run sequences of passes in series.
@@ -56,7 +56,7 @@ public:
    * If a previous pass failed, then no further passes shall be run.
    */
   template<typename T>
-  PassManager& run_pass(IRModule& module)
+  StaticPassRunner& run_pass(IRModule& module)
   {
     if (has_failed())
     {
@@ -124,4 +124,4 @@ private:
 } /* end namespace jit */
 } /* end namespace corevm */
 
-#endif /* COREVM_PASS_MANAGER_H_ */
+#endif /* COREVM_STATIC_PASS_RUNNER_H_ */

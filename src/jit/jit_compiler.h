@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_JIT_COMPILER_H_
 #define COREVM_JIT_COMPILER_H_
 
-#include "pass_manager.h"
+#include "static_pass_runner.h"
 #include "verification_pass.h"
 #include "constant_folding_pass.h"
 #include "cse_pass.h"
@@ -79,13 +79,12 @@ public:
   bool run(typename JITScheme::InputModuleType& input_module,
     const std::string& func_name, std::string& msg)
   {
-    PassManager pass_manager;
+    StaticPassRunner pass_manager;
     pass_manager
       .run_pass<VerificationPass>(input_module)
       .template run_pass<ConstantFoldingPass>(input_module)
       .template run_pass<CSEPass>(input_module)
-      .template run_pass<typename JITScheme::TargetLoweringPassType>(input_module)
-      .template run_pass<VerificationPass>(input_module);
+      .template run_pass<typename JITScheme::TargetLoweringPassType>(input_module);
 
     if (!pass_manager.success())
     {

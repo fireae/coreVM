@@ -29,6 +29,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <memory>
 #include <unordered_set>
 
+// TODO: [COREVM-601] Optimize IR module index and verifier
+// TODO: [COREVM-605] Add support for IR intrinsics
+
 namespace corevm {
 namespace ir {
 

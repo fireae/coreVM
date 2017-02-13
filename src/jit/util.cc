@@ -22,6 +22,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "util.h"
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wcovered-switch-default"
+  #pragma clang diagnostic ignored "-Wswitch-enum"
+#endif
 
 namespace corevm {
 namespace jit {
@@ -183,3 +188,7 @@ convert_to_runtime_value(const llvm::GenericValue& generic_value,
 
 } /* end namespace jit */
 } /* end namespace corevm */
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif

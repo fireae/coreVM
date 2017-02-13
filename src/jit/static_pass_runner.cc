@@ -20,7 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "pass_manager.h"
+#include "static_pass_runner.h"
 #include "verification_pass.h"
 #include "transform_pass.h"
 
@@ -30,7 +30,7 @@ namespace jit {
 
 // -----------------------------------------------------------------------------
 
-PassManager::PassManager()
+StaticPassRunner::StaticPassRunner()
   :
   m_run_result({"", true, nullptr})
 {
@@ -39,14 +39,14 @@ PassManager::PassManager()
 // -----------------------------------------------------------------------------
 
 bool
-PassManager::has_failed() const
+StaticPassRunner::has_failed() const
 {
   return !m_run_result.success;
 }
 
 // -----------------------------------------------------------------------------
 
-bool PassManager::success() const
+bool StaticPassRunner::success() const
 {
   return m_run_result.success;
 }
@@ -54,7 +54,7 @@ bool PassManager::success() const
 // -----------------------------------------------------------------------------
 
 std::shared_ptr<const AnalysisResult>
-PassManager::get_analysis_result() const
+StaticPassRunner::get_analysis_result() const
 {
   return m_run_result.analysis_result;
 }
@@ -62,7 +62,7 @@ PassManager::get_analysis_result() const
 // -----------------------------------------------------------------------------
 
 const std::string&
-PassManager::msg() const
+StaticPassRunner::msg() const
 {
   return m_run_result.msg;
 }

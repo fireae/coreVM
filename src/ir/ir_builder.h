@@ -30,6 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 #include <vector>
 
+// TODO: [COREVM-605] Add support for IR intrinsics
+
 /** Forward declaration. */
 namespace corevm {
 struct IRModule;
@@ -254,6 +256,11 @@ public:
   const char* get_type_decl_name(TypeDecl) const;
 
   /**
+   * Add a key-value attribute pair to a type definition.
+   */
+  void add_type_attribution(TypeDecl, const std::string&, const std::string&);
+
+  /**
    * Add a value type field to a type definition.
    */
   void add_type_field(TypeDecl, ValueType, ValueRefType, const std::string&);
@@ -347,6 +354,18 @@ public:
    */
   FuncParam add_func_parameter(FuncDefn, const std::string&, ArrayType,
     ValueRefType);
+
+  /**
+   * Add a function positional argument parameter with the specified parameter
+   * name.
+   */
+  FuncParam add_func_positional_arg(FuncDefn, const std::string&);
+
+  /**
+   * Add a function keyword argument parameter with the specified parameter
+   * name.
+   */
+  FuncParam add_func_keyword_arg(FuncDefn, const std::string&);
 
   /**
    * Creates a basic block in the specified function definition.
@@ -541,6 +560,11 @@ public:
    */
   void add_conditional_branch(FuncDefn, BasicBlock, OperandValue, BasicBlock,
     BasicBlock);
+
+  /**
+   * Add a unconditional branch statement inside the current basic block.
+   */
+  void add_unconditional_branch(FuncDefn, BasicBlock, BasicBlock);
 
   /**
    * Add a switch statement construct.

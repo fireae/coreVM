@@ -1583,98 +1583,98 @@ namespace yy {
     break;
 
   case 55:
-#line 531 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 528 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<std::string> > () = std::vector<std::string>();
+            yylhs.value.as< corevm::IRInstruction > () = corevm::IRInstruction();
+            yylhs.value.as< corevm::IRInstruction > ().opcode = yystack_[1].value.as< corevm::IROpcode > ();
+            yylhs.value.as< corevm::IRInstruction > ().labels.set_array(yystack_[0].value.as< std::vector<corevm::IRLabel> > ());
         }
-#line 1591 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1593 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 56:
-#line 535 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 537 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<std::string> > () = std::move(yystack_[1].value.as< std::vector<std::string> > ());
+            yylhs.value.as< std::vector<std::string> > () = std::vector<std::string>();
         }
-#line 1599 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1601 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 57:
-#line 542 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 541 "src/ir/ir_parser.yy" // lalr1.cc:859
+    {
+            yylhs.value.as< std::vector<std::string> > () = std::move(yystack_[1].value.as< std::vector<std::string> > ());
+        }
+#line 1609 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 58:
+#line 548 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<std::string> > () = std::vector<std::string>();
             yylhs.value.as< std::vector<std::string> > ().push_back(yystack_[0].value.as< std::string > ());
         }
-#line 1608 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1618 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 58:
-#line 547 "src/ir/ir_parser.yy" // lalr1.cc:859
+  case 59:
+#line 553 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<std::string> > () = std::move(yystack_[1].value.as< std::vector<std::string> > ());
             yylhs.value.as< std::vector<std::string> > ().push_back(yystack_[0].value.as< std::string > ());
         }
-#line 1617 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
-    break;
-
-  case 59:
-#line 555 "src/ir/ir_parser.yy" // lalr1.cc:859
-    {
-            yylhs.value.as< std::vector<corevm::IRLabel> > () = std::move(yystack_[1].value.as< std::vector<corevm::IRLabel> > ());
-        }
-#line 1625 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1627 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 60:
-#line 562 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 561 "src/ir/ir_parser.yy" // lalr1.cc:859
+    {
+            yylhs.value.as< std::vector<corevm::IRLabel> > () = std::move(yystack_[1].value.as< std::vector<corevm::IRLabel> > ());
+        }
+#line 1635 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 61:
+#line 568 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IRLabel> > () = std::vector<corevm::IRLabel>();
             yylhs.value.as< std::vector<corevm::IRLabel> > ().push_back(yystack_[0].value.as< corevm::IRLabel > ());
         }
-#line 1634 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1644 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 61:
-#line 567 "src/ir/ir_parser.yy" // lalr1.cc:859
+  case 62:
+#line 573 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IRLabel> > () = std::move(yystack_[2].value.as< std::vector<corevm::IRLabel> > ());
             yylhs.value.as< std::vector<corevm::IRLabel> > ().push_back(yystack_[0].value.as< corevm::IRLabel > ());
         }
-#line 1643 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1653 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 62:
-#line 575 "src/ir/ir_parser.yy" // lalr1.cc:859
+  case 63:
+#line 581 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRLabel > () = corevm::IRLabel();
             yylhs.value.as< corevm::IRLabel > ().name = std::move(yystack_[0].value.as< std::string > ());
         }
-#line 1652 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1662 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 63:
-#line 583 "src/ir/ir_parser.yy" // lalr1.cc:859
+  case 64:
+#line 589 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IROperand> > () = std::vector<corevm::IROperand>();
             yylhs.value.as< std::vector<corevm::IROperand> > ().push_back(yystack_[0].value.as< corevm::IROperand > ());
         }
-#line 1661 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
-    break;
-
-  case 64:
-#line 588 "src/ir/ir_parser.yy" // lalr1.cc:859
-    {
-            yylhs.value.as< std::vector<corevm::IROperand> > () = std::move(yystack_[1].value.as< std::vector<corevm::IROperand> > ());
-            yylhs.value.as< std::vector<corevm::IROperand> > ().push_back(yystack_[0].value.as< corevm::IROperand > ());
-        }
-#line 1670 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1671 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 65:
-#line 596 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 594 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< corevm::IROperand > () = corevm::IROperand();
-            yylhs.value.as< corevm::IROperand > ().type = corevm::constant;
-            yylhs.value.as< corevm::IROperand > ().value.set_IRValue(yystack_[0].value.as< corevm::IRValue > ());
+            yylhs.value.as< std::vector<corevm::IROperand> > () = std::move(yystack_[1].value.as< std::vector<corevm::IROperand> > ());
+            yylhs.value.as< std::vector<corevm::IROperand> > ().push_back(yystack_[0].value.as< corevm::IROperand > ());
         }
 #line 1680 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
@@ -1683,92 +1683,92 @@ namespace yy {
 #line 602 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IROperand > () = corevm::IROperand();
-            yylhs.value.as< corevm::IROperand > ().type = corevm::ref;
-            yylhs.value.as< corevm::IROperand > ().value.set_string(yystack_[0].value.as< std::string > ());
+            yylhs.value.as< corevm::IROperand > ().type = corevm::constant;
+            yylhs.value.as< corevm::IROperand > ().value.set_IRValue(yystack_[0].value.as< corevm::IRValue > ());
         }
 #line 1690 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 67:
-#line 611 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 608 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::string > () = std::move(yystack_[0].value.as< std::string > ());
+            yylhs.value.as< corevm::IROperand > () = corevm::IROperand();
+            yylhs.value.as< corevm::IROperand > ().type = corevm::ref;
+            yylhs.value.as< corevm::IROperand > ().value.set_string(yystack_[0].value.as< std::string > ());
         }
-#line 1698 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1700 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 68:
-#line 618 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 617 "src/ir/ir_parser.yy" // lalr1.cc:859
+    {
+            yylhs.value.as< std::string > () = std::move(yystack_[0].value.as< std::string > ());
+        }
+#line 1708 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 69:
+#line 624 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRIdentifierType > () = corevm::IRIdentifierType();
             yylhs.value.as< corevm::IRIdentifierType > ().type = corevm::IdentifierType_Identifier;
             yylhs.value.as< corevm::IRIdentifierType > ().ref_type = corevm::value;
             yylhs.value.as< corevm::IRIdentifierType > ().value.set_string(yystack_[0].value.as< std::string > ());
         }
-#line 1709 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1719 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 69:
-#line 625 "src/ir/ir_parser.yy" // lalr1.cc:859
+  case 70:
+#line 631 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRIdentifierType > () = corevm::IRIdentifierType();
             yylhs.value.as< corevm::IRIdentifierType > ().type = corevm::IdentifierType_ValueType;
             yylhs.value.as< corevm::IRIdentifierType > ().ref_type = corevm::value;
             yylhs.value.as< corevm::IRIdentifierType > ().value.set_IRValueType(yystack_[0].value.as< corevm::IRValueType > ());
         }
-#line 1720 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1730 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 70:
-#line 632 "src/ir/ir_parser.yy" // lalr1.cc:859
+  case 71:
+#line 638 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRIdentifierType > () = corevm::IRIdentifierType();
             yylhs.value.as< corevm::IRIdentifierType > ().type = corevm::IdentifierType_Array;
             yylhs.value.as< corevm::IRIdentifierType > ().ref_type = corevm::value;
             yylhs.value.as< corevm::IRIdentifierType > ().value.set_IRArrayType(yystack_[0].value.as< corevm::IRArrayType > ());
         }
-#line 1731 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1741 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 71:
-#line 639 "src/ir/ir_parser.yy" // lalr1.cc:859
+  case 72:
+#line 645 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRIdentifierType > () = corevm::IRIdentifierType();
             yylhs.value.as< corevm::IRIdentifierType > ().type = corevm::IdentifierType_Identifier;
             yylhs.value.as< corevm::IRIdentifierType > ().ref_type = corevm::pointer;
             yylhs.value.as< corevm::IRIdentifierType > ().value.set_string(yystack_[1].value.as< std::string > ());
         }
-#line 1742 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1752 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 72:
-#line 646 "src/ir/ir_parser.yy" // lalr1.cc:859
+  case 73:
+#line 652 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRIdentifierType > () = corevm::IRIdentifierType();
             yylhs.value.as< corevm::IRIdentifierType > ().type = corevm::IdentifierType_ValueType;
             yylhs.value.as< corevm::IRIdentifierType > ().ref_type = corevm::pointer;
             yylhs.value.as< corevm::IRIdentifierType > ().value.set_IRValueType(yystack_[1].value.as< corevm::IRValueType > ());
         }
-#line 1753 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1763 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 73:
-#line 653 "src/ir/ir_parser.yy" // lalr1.cc:859
+  case 74:
+#line 659 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRIdentifierType > () = corevm::IRIdentifierType();
             yylhs.value.as< corevm::IRIdentifierType > ().type = corevm::IdentifierType_Array;
             yylhs.value.as< corevm::IRIdentifierType > ().ref_type = corevm::pointer;
             yylhs.value.as< corevm::IRIdentifierType > ().value.set_IRArrayType(yystack_[1].value.as< corevm::IRArrayType > ());
-        }
-#line 1764 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
-    break;
-
-  case 74:
-#line 663 "src/ir/ir_parser.yy" // lalr1.cc:859
-    {
-            yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
-            yylhs.value.as< corevm::IRValue > ().type = yystack_[1].value.as< corevm::IRValueType > ();
-            yylhs.value.as< corevm::IRValue > ().value.set_int(yystack_[0].value.as< int64_t > ());
         }
 #line 1774 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
@@ -1778,7 +1778,7 @@ namespace yy {
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
             yylhs.value.as< corevm::IRValue > ().type = yystack_[1].value.as< corevm::IRValueType > ();
-            yylhs.value.as< corevm::IRValue > ().value.set_long(yystack_[0].value.as< int64_t > ());
+            yylhs.value.as< corevm::IRValue > ().value.set_int(yystack_[0].value.as< int64_t > ());
         }
 #line 1784 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
@@ -1787,8 +1787,8 @@ namespace yy {
 #line 675 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
-            yylhs.value.as< corevm::IRValue > ().type = corevm::spf;
-            yylhs.value.as< corevm::IRValue > ().value.set_float(yystack_[0].value.as< double > ());
+            yylhs.value.as< corevm::IRValue > ().type = yystack_[1].value.as< corevm::IRValueType > ();
+            yylhs.value.as< corevm::IRValue > ().value.set_long(yystack_[0].value.as< int64_t > ());
         }
 #line 1794 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
@@ -1797,8 +1797,8 @@ namespace yy {
 #line 681 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
-            yylhs.value.as< corevm::IRValue > ().type = corevm::dpf;
-            yylhs.value.as< corevm::IRValue > ().value.set_double(yystack_[0].value.as< double > ());
+            yylhs.value.as< corevm::IRValue > ().type = corevm::spf;
+            yylhs.value.as< corevm::IRValue > ().value.set_float(yystack_[0].value.as< double > ());
         }
 #line 1804 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
@@ -1807,8 +1807,8 @@ namespace yy {
 #line 687 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
-            yylhs.value.as< corevm::IRValue > ().type = yystack_[1].value.as< corevm::IRValueType > ();
-            yylhs.value.as< corevm::IRValue > ().value.set_string(yystack_[0].value.as< std::string > ());
+            yylhs.value.as< corevm::IRValue > ().type = corevm::dpf;
+            yylhs.value.as< corevm::IRValue > ().value.set_double(yystack_[0].value.as< double > ());
         }
 #line 1814 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
@@ -1817,8 +1817,8 @@ namespace yy {
 #line 693 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
-            yylhs.value.as< corevm::IRValue > ().type = corevm::boolean;
-            yylhs.value.as< corevm::IRValue > ().value.set_bool(yystack_[0].value.as< bool > ());
+            yylhs.value.as< corevm::IRValue > ().type = yystack_[1].value.as< corevm::IRValueType > ();
+            yylhs.value.as< corevm::IRValue > ().value.set_string(yystack_[0].value.as< std::string > ());
         }
 #line 1824 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
@@ -1828,137 +1828,147 @@ namespace yy {
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
             yylhs.value.as< corevm::IRValue > ().type = corevm::boolean;
-            yylhs.value.as< corevm::IRValue > ().value.set_bool(static_cast<bool>(yystack_[0].value.as< int64_t > ()));
+            yylhs.value.as< corevm::IRValue > ().value.set_bool(yystack_[0].value.as< bool > ());
         }
 #line 1834 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 81:
-#line 707 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
-#line 1840 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 705 "src/ir/ir_parser.yy" // lalr1.cc:859
+    {
+            yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
+            yylhs.value.as< corevm::IRValue > ().type = corevm::boolean;
+            yylhs.value.as< corevm::IRValue > ().value.set_bool(static_cast<bool>(yystack_[0].value.as< int64_t > ()));
+        }
+#line 1844 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 82:
-#line 708 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 713 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
-#line 1846 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1850 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 83:
-#line 709 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 714 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
-#line 1852 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1856 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 84:
-#line 710 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::voidtype;   }
-#line 1858 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 715 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
+#line 1862 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 85:
-#line 711 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::boolean;    }
-#line 1864 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 716 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::voidtype;   }
+#line 1868 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 86:
-#line 712 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::object;     }
-#line 1870 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 717 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::boolean;    }
+#line 1874 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 87:
-#line 717 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 718 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::object;     }
+#line 1880 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 88:
+#line 723 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRArrayType > () = corevm::IRArrayType();
             yylhs.value.as< corevm::IRArrayType > ().len = yystack_[3].value.as< int64_t > ();
             yylhs.value.as< corevm::IRArrayType > ().type = std::move(yystack_[1].value.as< corevm::IRIdentifierType > ());
         }
-#line 1880 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
-    break;
-
-  case 88:
-#line 725 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::string; }
-#line 1886 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1890 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 89:
-#line 729 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::spf; }
-#line 1892 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 731 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::string; }
+#line 1896 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 90:
-#line 730 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::dpf; }
-#line 1898 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 735 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::spf; }
+#line 1902 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 91:
-#line 734 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
-#line 1904 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 736 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::dpf; }
+#line 1908 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 92:
-#line 735 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 740 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
-#line 1910 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1914 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 93:
-#line 739 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::i64;  }
-#line 1916 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 741 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
+#line 1920 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 94:
-#line 740 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::ui64; }
-#line 1922 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 745 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::i64;  }
+#line 1926 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 95:
-#line 744 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::i8;   }
-#line 1928 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 746 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::ui64; }
+#line 1932 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 96:
-#line 745 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::ui8;  }
-#line 1934 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 750 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::i8;   }
+#line 1938 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 97:
-#line 746 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::i16;  }
-#line 1940 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 751 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::ui8;  }
+#line 1944 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 98:
-#line 747 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::ui16; }
-#line 1946 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 752 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::i16;  }
+#line 1950 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 99:
-#line 748 "src/ir/ir_parser.yy" // lalr1.cc:859
-    { yylhs.value.as< corevm::IRValueType > () = corevm::i32;  }
-#line 1952 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 753 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::ui16; }
+#line 1956 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 100:
-#line 749 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 754 "src/ir/ir_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< corevm::IRValueType > () = corevm::i32;  }
+#line 1962 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 101:
+#line 755 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::ui32; }
-#line 1958 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1968 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
 
-#line 1962 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
+#line 1972 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -2213,72 +2223,72 @@ namespace yy {
   }
 
 
-  const short int ir_parser::yypact_ninf_ = -160;
+  const short int ir_parser::yypact_ninf_ = -164;
 
   const signed char ir_parser::yytable_ninf_ = -1;
 
   const short int
   ir_parser::yypact_[] =
   {
-    -160,    19,    69,  -160,    32,  -160,    22,    70,   287,   287,
-      72,    73,  -160,  -160,  -160,  -160,  -160,  -160,  -160,  -160,
-    -160,  -160,  -160,  -160,  -160,  -160,  -160,  -160,  -160,  -160,
-      60,    90,    76,    94,   111,  -160,  -160,  -160,  -160,  -160,
-     124,   108,   115,   -16,  -160,   126,  -160,   116,  -160,  -160,
-    -160,    68,  -160,   132,    73,   134,   127,   160,   135,   194,
-      67,  -160,  -160,   136,   287,    -4,   131,   141,    31,    63,
-    -160,   139,  -160,  -160,   112,  -160,  -160,   157,   142,   145,
-    -160,   158,   162,   148,   131,   154,   131,   228,   131,  -160,
-     287,  -160,   159,  -160,  -160,  -160,  -160,   165,   149,   148,
-     161,   155,   148,   175,   117,  -160,   148,  -160,   105,  -160,
-      17,  -160,  -160,   151,   131,   156,   131,   154,   131,   174,
-    -160,  -160,  -160,    -2,  -160,   148,  -160,   148,   178,   148,
-    -160,   186,  -160,  -160,    26,   189,    28,   208,   131,   209,
-      62,     0,  -160,  -160,  -160,  -160,   148,  -160,  -160,   212,
-     172,     0,  -160,   221,   218,    64,    65,   215,    66,   231,
-     258,  -160,  -160,  -160,   238,  -160,  -160,  -160,  -160,  -160,
-     103,   232,   233,    38,   125,  -160,  -160,   214,  -160,   236,
-     251,   253,   226,   102,  -160,  -160,  -160,  -160,  -160,  -160,
-     232,   233,    38,   237,  -160,  -160,   236,   251,   253,   125,
-    -160,  -160,  -160,  -160,  -160,   246,    27,  -160,  -160,   259,
-     237,  -160,  -160,  -160
+    -164,    18,    24,  -164,    22,  -164,   100,    32,   277,   277,
+      37,   106,  -164,  -164,  -164,  -164,  -164,  -164,  -164,  -164,
+    -164,  -164,  -164,  -164,  -164,  -164,  -164,  -164,  -164,  -164,
+      96,   111,   110,   112,   113,  -164,  -164,  -164,  -164,  -164,
+     124,   108,   114,     0,  -164,   125,  -164,   115,  -164,  -164,
+    -164,   -14,  -164,   129,   106,   152,   145,   150,   153,   184,
+      62,  -164,  -164,   159,   277,   109,   154,   138,   140,   142,
+    -164,   162,  -164,  -164,   143,  -164,  -164,   163,   164,   166,
+    -164,   179,   183,   181,   154,   205,   154,   218,   154,  -164,
+     277,  -164,   208,  -164,  -164,  -164,  -164,   217,   202,   181,
+     210,   207,   181,   209,   144,  -164,   181,  -164,    83,  -164,
+       2,  -164,  -164,   226,   154,   228,   154,   205,   154,   229,
+    -164,  -164,  -164,     6,  -164,   181,  -164,   181,   211,   181,
+    -164,   215,  -164,  -164,     9,   230,    39,   232,   154,   233,
+      41,   107,  -164,  -164,  -164,  -164,   181,  -164,  -164,   212,
+     224,   107,  -164,   243,   214,    42,    63,   235,    82,   -11,
+     248,  -164,  -164,  -164,  -164,   258,  -164,  -164,  -164,  -164,
+    -164,   244,   104,    98,  -164,   251,   253,    -7,   103,  -164,
+    -164,   204,  -164,   271,   272,   273,   268,    95,   278,  -164,
+    -164,   260,  -164,  -164,  -164,  -164,  -164,   251,   253,    -7,
+     260,  -164,  -164,   271,   272,   273,   103,  -164,  -164,  -164,
+    -164,  -164,  -164,  -164,  -164
   };
 
   const unsigned char
   ir_parser::yydefact_[] =
   {
        3,     0,     6,     1,     0,     4,     2,     0,     0,     0,
-       0,     0,     7,     9,     8,     5,    95,    96,    97,    98,
-      99,   100,    93,    94,    89,    90,    85,    84,    88,    86,
-       0,    68,     0,    69,    70,    83,    82,    81,    92,    91,
-       0,     0,     0,     0,    12,     0,    71,     0,    72,    73,
+       0,     0,     7,     9,     8,     5,    96,    97,    98,    99,
+     100,   101,    94,    95,    90,    91,    86,    85,    89,    87,
+       0,    69,     0,    70,    71,    84,    83,    82,    93,    92,
+       0,     0,     0,     0,    12,     0,    72,     0,    73,    74,
       20,     0,    15,     0,     0,     0,     0,     0,     0,     0,
        0,    14,    13,     0,     0,     0,    35,     0,     0,     0,
       39,     0,    21,    18,     0,    10,    16,     0,     0,     0,
       38,     0,     0,    30,    35,     0,    35,     0,    35,    41,
-       0,    19,     0,    15,    87,    37,    36,     0,     0,    30,
+       0,    19,     0,    15,    88,    37,    36,     0,     0,    30,
        0,     0,    30,     0,     0,    40,    30,    17,     0,    34,
        0,    32,    42,     0,    35,     0,    35,     0,    35,     0,
       11,    31,    33,     0,    42,    30,    42,    30,     0,    30,
       42,     0,    22,    43,     0,     0,     0,     0,    35,     0,
-       0,     0,    27,    42,    26,    42,    30,    42,    23,    55,
+       0,     0,    27,    42,    26,    42,    30,    42,    23,    56,
        0,    44,    45,     0,     0,     0,     0,     0,     0,     0,
-      49,    67,    46,    48,     0,    28,    25,    42,    24,    57,
-       0,    89,    90,    85,    51,    63,    66,    50,    65,    83,
-      92,    91,     0,     0,    58,    56,    76,    77,    80,    79,
-       0,     0,     0,     0,    52,    64,     0,     0,     0,    53,
-      78,    75,    74,    47,    29,     0,     0,    60,    54,     0,
-       0,    59,    62,    61
+      49,    55,    68,    46,    48,     0,    28,    25,    42,    24,
+      58,     0,     0,     0,    61,    90,    91,    86,    51,    64,
+      67,    50,    66,    84,    93,    92,     0,     0,     0,    59,
+      57,     0,    60,    77,    78,    81,    80,     0,     0,     0,
+       0,    52,    65,     0,     0,     0,    53,    79,    76,    75,
+      47,    29,    63,    62,    54
   };
 
   const short int
   ir_parser::yypgoto_[] =
   {
-    -160,  -160,  -160,  -160,  -160,  -160,  -160,   229,   191,  -160,
-    -160,  -160,  -160,   -93,  -160,   176,   -81,   -71,   195,   245,
-     -27,  -122,  -160,  -160,   137,   121,  -160,  -160,    88,  -160,
-      96,   130,  -159,   -50,    -8,  -160,  -160,  -160,  -150,  -160,
-    -160,  -148,  -130
+    -164,  -164,  -164,  -164,  -164,  -164,  -164,   249,   213,  -164,
+    -164,  -164,  -164,   -93,  -164,   192,   -81,   -75,   220,   245,
+      40,   -85,  -164,  -164,   157,   146,  -164,  -164,  -163,  -164,
+     118,   131,  -162,   -12,    -8,  -164,  -164,  -164,  -158,  -164,
+    -164,  -156,  -152
   };
 
   const short int
@@ -2286,81 +2296,83 @@ namespace yy {
   {
       -1,     1,     2,     5,     6,    12,    43,    44,    60,    76,
       13,    51,    14,    98,   110,   111,    83,    67,    68,    69,
-      70,   123,   133,   151,   152,   153,   160,   170,   194,   206,
-     207,   174,   175,   176,    71,   178,    33,    34,    35,    36,
+      70,   123,   133,   151,   152,   153,   160,   172,   161,   173,
+     174,   178,   179,   180,    71,   182,    33,    34,    35,    36,
       37,    38,    39
   };
 
   const unsigned char
   ir_parser::yytable_[] =
   {
-      32,    40,   134,    99,   136,   102,   113,   106,   140,   115,
-     179,    54,   180,   119,   101,   195,   103,   149,    80,     3,
-     131,   155,    55,   156,   196,   158,   197,   196,    81,   197,
-     181,   150,   135,   125,   137,   127,   139,   129,   132,   109,
-     195,     8,     9,    10,   198,   183,   128,   198,   131,   196,
-     131,   197,    77,   157,   210,   121,    79,   146,    85,    11,
-     105,     7,   188,   105,   189,   211,   142,    86,   144,   198,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    28,    29,   131,    30,   131,   131,   131,    31,
-      87,   154,     4,    15,    41,    42,    58,    45,    47,    88,
-      77,   154,   148,    59,   165,   166,   168,    75,    16,    17,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
-      28,    29,    46,    30,   131,   184,    48,    31,    16,    17,
-      18,    19,    20,    21,    22,    23,   190,   191,   192,    90,
-      28,   185,   204,    49,   117,   120,    50,    52,    91,    53,
-      56,    57,   177,   118,    61,    63,   150,    72,    78,    64,
-      82,    89,   193,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    28,    29,    84,    30,    92,
-      95,    93,    31,    94,    96,    97,   100,   109,   112,   107,
-     124,   114,    65,    81,   161,   126,    66,    16,    17,    18,
+      32,    40,   183,    99,   184,   102,   113,   106,   185,   115,
+     101,   170,   103,   119,    58,   201,   202,   195,     3,   196,
+     203,    59,   204,   203,   109,   204,   205,    54,   131,   205,
+     171,   131,   135,   125,   137,   127,   139,   129,    55,   134,
+     121,   136,   128,   214,   202,   140,   132,     4,   203,   142,
+     204,     7,    77,   157,   205,    15,    79,   146,   155,    41,
+     156,   131,   158,   131,   131,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,   144,
+      30,   148,   166,   187,    31,   131,    16,    17,    18,    19,
+      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
+      77,    30,    75,   167,   131,    31,    16,    17,    18,    19,
+      20,    21,    22,    23,   197,   198,   199,   131,    28,     8,
+       9,    10,   169,   120,   149,   191,   189,   105,    42,   154,
+     105,    80,    47,    45,   150,   211,   192,    11,   150,   154,
+     200,    81,   190,    46,    48,    49,    50,    52,    53,    56,
+      57,    61,   181,    16,    17,    18,    19,    20,    21,    22,
+      23,    24,    25,    26,    27,    28,    29,    85,    30,    87,
+      90,   117,    31,    63,    84,    72,    86,    64,    88,    91,
+     118,    78,    65,    82,    89,    92,    66,    16,    17,    18,
       19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,   116,    30,   130,   138,   141,    31,    16,    17,    18,
-      19,    20,    21,    22,    23,   190,   191,   192,   143,    28,
+      29,    95,    30,    93,    94,    96,    31,    16,    17,    18,
+      19,    20,    21,    22,    23,   197,   198,   199,    97,    28,
       73,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,   150,    30,   145,   147,   159,
-      31,   163,   164,   169,   167,   149,   203,   186,   187,   200,
-      65,    16,    17,    18,    19,    20,    21,    22,    23,   171,
-     172,   173,    27,    28,    29,   201,    30,   202,   205,   209,
-      31,   212,   104,    62,   108,   182,   122,   208,   162,   150,
+      25,    26,    27,    28,    29,   150,    30,   100,   107,   109,
+      31,   112,    81,   114,   141,   116,   162,   138,   165,   159,
+      65,    16,    17,    18,    19,    20,    21,    22,    23,   175,
+     176,   177,    27,    28,    29,   124,    30,   126,   130,   143,
+      31,   145,   147,   164,   168,   149,   193,   188,   194,   150,
       16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    28,    29,    74,    30,   213,   199,     0,    31
+      26,    27,    28,    29,   207,    30,   208,   209,   210,    31,
+     212,   171,   122,    62,    74,     0,   108,   104,   163,   213,
+       0,   186,   206
   };
 
   const short int
   ir_parser::yycheck_[] =
   {
-       8,     9,   124,    84,   126,    86,    99,    88,   130,   102,
-     160,    27,   160,   106,    85,   174,    87,    17,    22,     0,
-      22,   143,    38,   145,   174,   147,   174,   177,    32,   177,
-     160,    31,   125,   114,   127,   116,   129,   118,    40,    22,
-     199,    19,    20,    21,   174,   167,   117,   177,    22,   199,
-      22,   199,    60,   146,    27,    38,    64,   138,    27,    37,
-      87,    29,    24,    90,    26,    38,    40,    36,    40,   199,
-       3,     4,     5,     6,     7,     8,     9,    10,    11,    12,
-      13,    14,    15,    16,    22,    18,    22,    22,    22,    22,
-      27,   141,    23,    23,    22,    22,    28,    37,    22,    36,
-     108,   151,    40,    35,    40,    40,    40,    40,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    32,    18,    22,    22,    32,    22,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13,    27,
-      15,    38,    40,    32,    27,    40,    22,    39,    36,    34,
-      24,    35,   160,    36,    22,    21,    31,    22,    22,    32,
-      29,    22,    37,     3,     4,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,    36,    18,    22,
-      22,    39,    22,    38,    22,    37,    32,    22,    39,    30,
-      39,    36,    32,    32,    22,    39,    36,     3,     4,     5,
+       8,     9,   160,    84,   160,    86,    99,    88,   160,   102,
+      85,    22,    87,   106,    28,   178,   178,    24,     0,    26,
+     178,    35,   178,   181,    22,   181,   178,    27,    22,   181,
+      41,    22,   125,   114,   127,   116,   129,   118,    38,   124,
+      38,   126,   117,   206,   206,   130,    40,    23,   206,    40,
+     206,    29,    60,   146,   206,    23,    64,   138,   143,    22,
+     145,    22,   147,    22,    22,     3,     4,     5,     6,     7,
+       8,     9,    10,    11,    12,    13,    14,    15,    16,    40,
+      18,    40,    40,   168,    22,    22,     3,     4,     5,     6,
+       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
+     108,    18,    40,    40,    22,    22,     3,     4,     5,     6,
+       7,     8,     9,    10,    11,    12,    13,    22,    15,    19,
+      20,    21,    40,    40,    17,    27,    22,    87,    22,   141,
+      90,    22,    22,    37,    31,    40,    38,    37,    31,   151,
+      37,    32,    38,    32,    32,    32,    22,    39,    34,    24,
+      35,    22,   160,     3,     4,     5,     6,     7,     8,     9,
+      10,    11,    12,    13,    14,    15,    16,    27,    18,    27,
+      27,    27,    22,    21,    36,    22,    36,    32,    36,    36,
+      36,    22,    32,    29,    22,    22,    36,     3,     4,     5,
        6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,    36,    18,    39,    36,    29,    22,     3,     4,     5,
-       6,     7,     8,     9,    10,    11,    12,    13,    39,    15,
+      16,    22,    18,    39,    38,    22,    22,     3,     4,     5,
+       6,     7,     8,     9,    10,    11,    12,    13,    37,    15,
       36,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    14,    15,    16,    31,    18,    39,    39,    37,
-      22,    30,    34,    22,    39,    17,    30,    25,    25,    23,
+      12,    13,    14,    15,    16,    31,    18,    32,    30,    22,
+      22,    39,    32,    36,    29,    36,    22,    36,    34,    37,
       32,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    14,    15,    16,    24,    18,    24,    41,    33,
-      22,    22,    87,    54,    93,   164,   110,   199,   151,    31,
+      12,    13,    14,    15,    16,    39,    18,    39,    39,    39,
+      22,    39,    39,    30,    39,    17,    25,    33,    25,    31,
        3,     4,     5,     6,     7,     8,     9,    10,    11,    12,
-      13,    14,    15,    16,    59,    18,   210,   177,    -1,    22
+      13,    14,    15,    16,    23,    18,    24,    24,    30,    22,
+      22,    41,   110,    54,    59,    -1,    93,    87,   151,   191,
+      -1,   165,   181
   };
 
   const unsigned char
@@ -2382,12 +2394,12 @@ namespace yy {
       39,    22,    40,    64,    63,    55,    63,    55,    36,    55,
       63,    29,    40,    39,    40,    39,    58,    39,    40,    17,
       31,    65,    66,    67,    75,    63,    63,    55,    63,    37,
-      68,    22,    66,    30,    34,    40,    40,    39,    40,    22,
-      69,    11,    12,    13,    73,    74,    75,    76,    77,    80,
-      83,    84,    67,    63,    22,    38,    25,    25,    24,    26,
-      11,    12,    13,    37,    70,    74,    80,    83,    84,    73,
-      23,    24,    24,    30,    40,    41,    71,    72,    70,    33,
-      27,    38,    22,    72
+      68,    70,    22,    66,    30,    34,    40,    40,    39,    40,
+      22,    41,    69,    71,    72,    11,    12,    13,    73,    74,
+      75,    76,    77,    80,    83,    84,    67,    63,    33,    22,
+      38,    27,    38,    25,    25,    24,    26,    11,    12,    13,
+      37,    70,    74,    80,    83,    84,    73,    23,    24,    24,
+      30,    40,    22,    72,    70
   };
 
   const unsigned char
@@ -2398,12 +2410,12 @@ namespace yy {
       53,    53,    54,    54,    54,    54,    54,    54,    54,    54,
       55,    55,    56,    56,    57,    58,    58,    59,    60,    61,
       61,    62,    63,    63,    64,    65,    65,    66,    66,    67,
-      67,    67,    67,    67,    67,    68,    68,    69,    69,    70,
-      71,    71,    72,    73,    73,    74,    74,    75,    76,    76,
-      76,    76,    76,    76,    77,    77,    77,    77,    77,    77,
-      77,    78,    78,    78,    78,    78,    78,    79,    80,    81,
-      81,    82,    82,    83,    83,    84,    84,    84,    84,    84,
-      84
+      67,    67,    67,    67,    67,    67,    68,    68,    69,    69,
+      70,    71,    71,    72,    73,    73,    74,    74,    75,    76,
+      76,    76,    76,    76,    76,    77,    77,    77,    77,    77,
+      77,    77,    78,    78,    78,    78,    78,    78,    79,    80,
+      81,    81,    82,    82,    83,    83,    84,    84,    84,    84,
+      84,    84
   };
 
   const unsigned char
@@ -2414,12 +2426,12 @@ namespace yy {
        1,     3,    10,    11,    13,    13,    11,    11,    13,    15,
        0,     3,     1,     2,     1,     0,     2,     3,     2,     1,
        3,     2,     0,     2,     3,     1,     2,     4,     2,     2,
-       3,     3,     4,     4,     5,     0,     3,     1,     2,     3,
-       1,     3,     3,     1,     2,     1,     1,     2,     1,     1,
-       1,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     1,     1,     1,     1,     1,     1,     6,     1,     1,
+       3,     3,     4,     4,     5,     2,     0,     3,     1,     2,
+       3,     1,     3,     3,     1,     2,     1,     1,     2,     1,
+       1,     1,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     1,     1,     1,     1,     1,     1,     6,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1
+       1,     1
   };
 
 
@@ -2462,12 +2474,12 @@ namespace yy {
      256,   260,   270,   279,   289,   300,   311,   321,   331,   342,
      358,   361,   368,   372,   379,   387,   389,   396,   403,   410,
      415,   423,   433,   436,   444,   453,   458,   466,   471,   479,
-     486,   493,   501,   510,   518,   531,   534,   541,   546,   554,
-     561,   566,   574,   582,   587,   595,   601,   610,   617,   624,
-     631,   638,   645,   652,   662,   668,   674,   680,   686,   692,
-     698,   707,   708,   709,   710,   711,   712,   716,   725,   729,
-     730,   734,   735,   739,   740,   744,   745,   746,   747,   748,
-     749
+     486,   493,   501,   510,   518,   527,   537,   540,   547,   552,
+     560,   567,   572,   580,   588,   593,   601,   607,   616,   623,
+     630,   637,   644,   651,   658,   668,   674,   680,   686,   692,
+     698,   704,   713,   714,   715,   716,   717,   718,   722,   731,
+     735,   736,   740,   741,   745,   746,   750,   751,   752,   753,
+     754,   755
   };
 
   // Print the state stack on the debug stream.
@@ -2502,8 +2514,8 @@ namespace yy {
 
 
 } // yy
-#line 2506 "src/ir/ir_parser.tab.cc" // lalr1.cc:1167
-#line 752 "src/ir/ir_parser.yy" // lalr1.cc:1168
+#line 2518 "src/ir/ir_parser.tab.cc" // lalr1.cc:1167
+#line 758 "src/ir/ir_parser.yy" // lalr1.cc:1168
 
 
 void

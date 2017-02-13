@@ -281,6 +281,77 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithDuplicateParameters)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithDuplicatePositionalArgParameter)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "}"
+    ""
+    "def string helloWorld(Person person, *person) {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}";
+
+  check_verification(IR_STRING,
+    "Duplicate parameter \"person\" in function \"helloWorld\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithDuplicateKeywordArgParameter)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "}"
+    ""
+    "def string helloWorld(Person person, **person) {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}";
+
+  check_verification(IR_STRING,
+    "Duplicate parameter \"person\" in function \"helloWorld\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithConflictingPositionalAndKeywordArgParameters)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "}"
+    ""
+    "def string helloWorld(*person, **person) {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}";
+
+  check_verification(IR_STRING,
+    "Duplicate parameter \"person\" in function \"helloWorld\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithValidParameters)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "}"
+    ""
+    "def string helloWorld(Person person, ui8 age, *args, **kwargs) {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithDuplicateBasicBlocks)
 {
   const char* IR_STRING =
@@ -357,6 +428,37 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrLabel)
 
   check_verification(IR_STRING,
     "Invalid label used in instruction \"br\" in function \"helloWorld\" under block \"entry\": \"end\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithBRInstrAndNoOperands)
+{
+  const char* IR_STRING =
+    "def void helloWorld(i32 i) {"
+    "entry:"
+    "    br [ label #end ];"
+    "end:"
+    "    ret void;"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidBRInstrAndNoOperands)
+{
+  const char* IR_STRING =
+    "def void helloWorld(i32 i) {"
+    "entry:"
+    "    br [ label #begin ];"
+    "end:"
+    "    ret void;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid label used in instruction \"br\" in function \"helloWorld\" under block \"entry\": \"begin\"");
 }
 
 // -----------------------------------------------------------------------------

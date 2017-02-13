@@ -45,7 +45,7 @@ set(sources
     jit/verification_pass.cc
     jit/constant_folding_pass.cc
     jit/cse_pass.cc
-    jit/pass_manager.cc
+    jit/static_pass_runner.cc
     jit/runtime_value_type.cc
     jit/util.cc
     jit/jit_compiler_backend.cc

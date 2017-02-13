@@ -991,11 +991,20 @@ Syntax:
 
     br <cond> [ label #iftrue, label #iffalse ]
 
+    br [ label #target ]
+
 Synopsis:
 ---------
 
-Branches to either one of two labels depending on the boolean representation of
-a conditional value.
+Branch instruction that supports the semantics of both conditional and
+unconditional branching.
+
+For conditional branching, described by first syntax above, branches control to
+either one of two labels depending on the boolean representation of a
+conditional value.
+
+For unconditional branching, described by the second syntax above, branches
+control to the specified target block unconditionally.
 
 
 'switch2' Instruction

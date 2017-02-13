@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 #include <unordered_map>
 
+// TODO: [COREVM-601] Optimize IR module index and verifier
+
 namespace corevm {
 namespace ir {
 

@@ -524,6 +524,12 @@ expr
             $$.oprds = std::move($4);
             $$.labels.set_array($5);
         }
+    | OPCODE label_list
+        {
+            $$ = corevm::IRInstruction();
+            $$.opcode = $1;
+            $$.labels.set_array($2);
+        }
     ;
 
 instruction_options

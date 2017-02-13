@@ -214,6 +214,8 @@ TEST_F(IRBuilderUnitTest, TestAddTypeAndAssert)
 
   ir::TypeDecl type_decl = builder.add_type("Person");
 
+  builder.add_type_attribution(type_decl, "objmodel", "cplusplus");
+
   builder.add_type_field(type_decl, ir::ValueTypeInt8,
     ir::ValueRefTypeByValue, "age");
 
@@ -238,6 +240,7 @@ TEST_F(IRBuilderUnitTest, TestAddTypeAndAssert)
     ""
     "type Car {}"
     ""
+    "[objmodel=cplusplus]\n"
     "type Person {"
     "    i8 age;"
     "    Person* friend;"
@@ -300,6 +303,10 @@ TEST_F(IRBuilderUnitTest, TestAddFuncDefinitionWithParameters)
   builder.add_func_parameter(func_defn, "id",
     ir::ValueTypeUInt32, ir::ValueRefTypeByValue);
 
+  builder.add_func_positional_arg(func_defn, "args");
+
+  builder.add_func_keyword_arg(func_defn, "kwargs");
+
   const char* expected_IR_string =
     "module name : N/A"
     "format version : 100"
@@ -308,7 +315,7 @@ TEST_F(IRBuilderUnitTest, TestAddFuncDefinitionWithParameters)
     "timestamp : 100"
     "type Person {"
     "}"
-    "def bool checkPerson(Person person, ui32 id) {"
+    "def bool checkPerson(Person person, ui32 id, *args, **kwargs) {"
     "}";
 
   assert_construction_successful(builder, expected_IR_string); 
