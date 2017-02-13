@@ -53,7 +53,7 @@ endif
 
 .PHONY: all
 ifeq ($(full), 1)
-all: benchmark $(BASE_TARGETS)
+all: $(BASE_TARGETS) benchmark
 else
 all: $(BASE_TARGETS)
 endif
