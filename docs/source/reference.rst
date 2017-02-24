@@ -97,7 +97,7 @@ Development 2
 -------------
 
 **Operating System:**
-`OS X 10.11.6 (15G1108) Darwin 15.6.0 root:xnu-3248.60.11~2/RELEASE_X86_64 x86_64`
+`OS X 10.11.6 (15G1217) Darwin 15.6.0 root:xnu-3248.60.11.2.1~1/RELEASE_X86_64`
 
 **Compiler:**
 `Apple LLVM version 7.3.0 (clang-703.0.31) Target: x86_64-apple-darwin15.6.0 Thread model: posix`
@@ -122,6 +122,9 @@ Development 2
 
 **Sphinx:**
 `Sphinx v1.3.5`
+
+**Doxygen:**
+`1.8.13`
 
 ----
 
@@ -1141,12 +1144,14 @@ Sample Output:
 
   .. code::
 
-    "module name" : "Dummy_IR"
-    "format version" : "1000"
-    "target version" : "10"
-    "path" : "./dummy_ir.ir"
-    "author" : "Yanzheng Li"
     "timestamp" : "1472959465"
+    "author" : "Yanzheng Li"
+    "format version" : "1000"
+    "module name" : "Dummy_IR"
+    "path" : "./dummy_ir.ir"
+    "target version" : "10"
+
+    declare i8 corevm.foundation.memmove(i8* dst, i8* src, i64 num)
 
     type Person {
         string name;
@@ -1156,31 +1161,33 @@ Sample Output:
         array [ 10 * Person ] friends;
     }
 
+    def Person* createPerson(string* name, ui8 age) {
+    entry:
+        %person = alloca [ auto ] Person*;
+        setattr string "age" %age %person;
+        %isOld = gte %age ui8 100;
+        br %isOld [ label #end, label #end ];
+    end:
+        ret Person* %person;
+    }
+
+    [model=cplusplus]
     type Location {
         string street_address;
         string* country;
         string zipcode;
     }
 
-    type NullType {
-    }
-
-    def Person* createPerson(string* name, ui32 age) {
-    entry:
-        %person = alloca [ auto ] Person;
-        setattr string "age" %age %person;
-        br %age [ label #end, label #end ];
-    end:
-        ret Person %person;
-    }
-
-    def string compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf ]* values) : createPerson {
+    def void compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf* ]* values) : createPerson [constexpr inline] {
     entry:
         %sum = add ui64 %lhs_val %rhs_val;
-        putelement ui8 16 %values ui32 2;
+        putelement dpf 3.14 %values ui32 2;
     }
 
-    def void doNothing() {
+    def void doNothing(*args, **kwargs) {
+    }
+
+    type NullType {
     }
 
  

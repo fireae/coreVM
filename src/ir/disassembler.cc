@@ -23,153 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "disassembler.h"
 #include "format.h"
 #include "format_util.h"
-
 #include <iostream>
 
 
 namespace corevm {
 namespace ir {
-
-namespace {
-
-const char*
-ir_value_type_to_string(IRValueType value)
-{
-  switch (value)
-  {
-  case IRValueType::voidtype:
-    return "void";
-  case IRValueType::boolean:
-    return "bool";
-  case IRValueType::i8:
-    return "i8";
-  case IRValueType::ui8:
-    return "ui8";
-  case IRValueType::i16:
-    return "i16";
-  case IRValueType::ui16:
-    return "ui16";
-  case IRValueType::i32:
-    return "i32";
-  case IRValueType::ui32:
-    return "ui32";
-  case IRValueType::i64:
-    return "i64";
-  case IRValueType::ui64:
-    return "ui64";
-  case IRValueType::spf:
-    return "spf";
-  case IRValueType::dpf:
-    return "dpf";
-  case IRValueType::string:
-    return "string";
-  case IRValueType::object:
-    return "object";
-  }
-}
-
-const char*
-ir_value_ref_type_to_string(IRValueRefType val)
-{
-  switch (val)
-  {
-  case IRValueRefType::pointer:
-    return "*";
-  case IRValueRefType::value:
-    break;
-  }
-
-  return "";
-}
-
-const char*
-ir_opcode_to_string(IROpcode val)
-{
-  switch (val)
-  {
-  case IROpcode::alloca:
-    return "alloca";
-  case IROpcode::load:
-    return "load";
-  case IROpcode::store:
-    return "store";
-  case IROpcode::getattr:
-    return "getattr";
-  case IROpcode::setattr:
-    return "setattr";
-  case IROpcode::delattr:
-    return "delattr";
-  case IROpcode::getelement:
-    return "getelement";
-  case IROpcode::putelement:
-    return "putelement";
-  case IROpcode::len:
-    return "len";
-  case IROpcode::ret:
-    return "ret";
-  case IROpcode::br:
-    return "br";
-  case IROpcode::switch2:
-    return "switch2";
-  case IROpcode::pos:
-    return "pos";
-  case IROpcode::neg:
-    return "neg";
-  case IROpcode::inc:
-    return "inc";
-  case IROpcode::dec:
-    return "dec";
-  case IROpcode::add:
-    return "add";
-  case IROpcode::sub:
-    return "sub";
-  case IROpcode::mul:
-    return "mul";
-  case IROpcode::div:
-    return "div";
-  case IROpcode::mod:
-    return "mod";
-  case IROpcode::bnot:
-    return "bnot";
-  case IROpcode::band:
-    return "band";
-  case IROpcode::bor:
-    return "bor";
-  case IROpcode::bxor:
-    return "bxor";
-  case IROpcode::bls:
-    return "bls";
-  case IROpcode::brs:
-    return "brs";
-  case IROpcode::eq:
-    return "eq";
-  case IROpcode::neq:
-    return "neq";
-  case IROpcode::gt:
-    return "gt";
-  case IROpcode::lt:
-    return "lt";
-  case IROpcode::gte:
-    return "gte";
-  case IROpcode::lte:
-    return "lte";
-  case IROpcode::lnot:
-    return "lnot";
-  case IROpcode::land:
-    return "land";
-  case IROpcode::lor:
-    return "lor";
-  case IROpcode::cmp:
-    return "cmp";
-  case IROpcode::call:
-    return "call";
-  }
-
-  assert(0);
-  return "";
-}
-
-} /* end anonymous namespace */
 
 // -----------------------------------------------------------------------------
 
@@ -461,7 +319,7 @@ Disassembler::disassemble(const IRInstruction& instr,
   {
     stream << "%" << instr.target.get_string() << " = ";
   }
-  stream << ir_opcode_to_string(instr.opcode);
+  stream << IROpcode_to_string(instr.opcode);
 
   if (!instr.options.empty())
   {
@@ -529,11 +387,11 @@ Disassembler::disassemble(const IRIdentifierType& identifier_type,
     disassemble(identifier_type.value.get_IRArrayType(), stream);
     break;
   case IdentifierType_ValueType:
-    stream << ir_value_type_to_string(identifier_type.value.get_IRValueType());
+    stream << IRValueType_to_string(identifier_type.value.get_IRValueType());
     break;
   }
 
-  stream << ir_value_ref_type_to_string(identifier_type.ref_type);
+  stream << IRValueRefType_to_string(identifier_type.ref_type);
 }
 
 // -----------------------------------------------------------------------------
@@ -553,7 +411,7 @@ Disassembler::disassemble(const IRArrayType& array_type,
 void
 Disassembler::disassemble(const IRValue& val, std::ostream& stream) const
 {
-  stream << ir_value_type_to_string(val.type) << " ";
+  stream << IRValueType_to_string(val.type) << " ";
 
   switch (val.value.idx())
   {

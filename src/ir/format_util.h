@@ -91,6 +91,16 @@ string_to_IROpcode(const std::string& val);
 const char* IROpcode_to_string(corevm::IROpcode);
 
 /**
+ * Convert an instance of `IRValueType` to its string representation.
+ */
+const char* IRValueType_to_string(IRValueType value);
+
+/**
+ * Convert an instance of `IRValueRefType` to its string representation.
+ */
+const char* IRValueRefType_to_string(IRValueRefType val);
+
+/**
  * Generic type representing an IR definition, it can be either a type
  * or function definition.
  */

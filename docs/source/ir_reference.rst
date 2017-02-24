@@ -1846,7 +1846,7 @@ Below is an example of the textual representation of a sample module.
     "path" : "./dummy_ir.ir"
     "target version" : "10"
 
-    declare i8 corevm.foundation.memove(i8* dst, i8* src, i64 num)
+    declare i8 corevm.foundation.memmove(i8* dst, i8* src, i64 num)
 
     type Person {
         string name;

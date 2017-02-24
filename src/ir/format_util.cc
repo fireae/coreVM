@@ -274,6 +274,62 @@ const char* IROpcode_to_string(corevm::IROpcode val)
 
 // -----------------------------------------------------------------------------
 
+const char* IRValueType_to_string(IRValueType value)
+{
+  switch (value)
+  {
+  case IRValueType::voidtype:
+    return "void";
+  case IRValueType::boolean:
+    return "bool";
+  case IRValueType::i8:
+    return "i8";
+  case IRValueType::ui8:
+    return "ui8";
+  case IRValueType::i16:
+    return "i16";
+  case IRValueType::ui16:
+    return "ui16";
+  case IRValueType::i32:
+    return "i32";
+  case IRValueType::ui32:
+    return "ui32";
+  case IRValueType::i64:
+    return "i64";
+  case IRValueType::ui64:
+    return "ui64";
+  case IRValueType::spf:
+    return "spf";
+  case IRValueType::dpf:
+    return "dpf";
+  case IRValueType::string:
+    return "string";
+  case IRValueType::object:
+    return "object";
+  default:
+    break;
+  }
+
+  return "";
+}
+
+// -----------------------------------------------------------------------------
+
+const char* IRValueRefType_to_string(IRValueRefType val)
+{
+  switch (val)
+  {
+  case IRValueRefType::pointer:
+    return "*";
+  case IRValueRefType::value:
+    break;
+  }
+
+  return ""; 
+}
+
+// -----------------------------------------------------------------------------
+
 void set_metadata(const MetadataPair& pair, corevm::IRModule& module)
 {
   const auto& key = pair.first;
