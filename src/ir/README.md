@@ -16,9 +16,10 @@ Bison:
 `bison (GNU Bison) 3.0.4` ([Link](http://ftp.gnu.org/gnu/bison/bison-3.0.4.tar.gz))
 
 Compiler (Clang):
-`Apple LLVM version 7.3.0 (clang-703.0.31)`
+`Apple LLVM version 8.1.0 (clang-802.0.42)`
 `Target: x86_64-apple-darwin16.6.0`
 `Thread model: posix`
+`InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin`
 
 ### Steps
 

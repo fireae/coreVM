@@ -100,10 +100,10 @@ Development 2
 `macOS 10.12.5 (16F73) Darwin 16.6.0 root:xnu-3789.60.24~6/RELEASE_X86_64`
 
 **Compiler:**
-`Apple LLVM version 7.3.0 (clang-703.0.31) Target: x86_64-apple-darwin16.6.0 Thread model: posix`
+`Apple LLVM version 8.1.0 (clang-802.0.42) Target: x86_64-apple-darwin16.6.0 Thread model: posix`
 
 **Xcode:**
-`Version 7.3.1 (7D1014)`
+`Version 8.3.2 (8E2002)`
 
 **Python:**
 `Python 2.7.10`
