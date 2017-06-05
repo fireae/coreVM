@@ -6,13 +6,13 @@ novel programming language features.
 [![Build status](https://travis-ci.org/yanzhengli/coreVM.svg?branch=dev)](https://travis-ci.org/yanzhengli/coreVM)
 [![Docs build status](https://readthedocs.org/projects/corevm/badge/?version=latest)](http://corevm.readthedocs.io/en/latest/)
 
-* [Overview] (#overview)
-* [Get Started] (#get-started)
-* [Moonshots] (#moonshots)
+* [Overview](#overview)
+* [Get Started](#get-started)
+* [Moonshots](#moonshots)
 * [Contribute](#contribute)
-* [License] (#license)
-* [Updates] (#updates)
-* [Inquiries] (#inquiries)
+* [License](#license)
+* [Updates](#updates)
+* [Inquiries](#inquiries)
 
 ## Overview
 With the proliferation of high-level general purpose programming languages being

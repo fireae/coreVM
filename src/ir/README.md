@@ -7,7 +7,7 @@ representation.
 
 ### Environment
 Operating System:
-`OS X 10.11.6 (15G1217)`
+`macOS 10.12.5 (16F73)`
 
 Flex:
 `flex 2.6.2` ([Link](https://github.com/westes/flex/releases/tag/v2.6.2))
@@ -17,7 +17,7 @@ Bison:
 
 Compiler (Clang):
 `Apple LLVM version 7.3.0 (clang-703.0.31)`
-`Target: x86_64-apple-darwin15.6.0`
+`Target: x86_64-apple-darwin16.6.0`
 `Thread model: posix`
 
 ### Steps

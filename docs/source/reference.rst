@@ -97,10 +97,10 @@ Development 2
 -------------
 
 **Operating System:**
-`OS X 10.11.6 (15G1217) Darwin 15.6.0 root:xnu-3248.60.11.2.1~1/RELEASE_X86_64`
+`macOS 10.12.5 (16F73) Darwin 16.6.0 root:xnu-3789.60.24~6/RELEASE_X86_64`
 
 **Compiler:**
-`Apple LLVM version 7.3.0 (clang-703.0.31) Target: x86_64-apple-darwin15.6.0 Thread model: posix`
+`Apple LLVM version 7.3.0 (clang-703.0.31) Target: x86_64-apple-darwin16.6.0 Thread model: posix`
 
 **Xcode:**
 `Version 7.3.1 (7D1014)`
