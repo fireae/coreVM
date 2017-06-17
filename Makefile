@@ -34,6 +34,7 @@ BOOTSTRAP_TESTS=bootstrap_tests.py
 BOOTSTRAP_TESTS_ARGS=--color
 DOCS_DIR=./docs
 DOCS_BUILD_DIR=$(DOCS_DIR)/build
+DOXYGEN_DOCS_BUILD_DIR=$(DOCS_DIR)/doxygen
 SANITY_TESTS_ARGS=--sanity-test
 DYNAMIC_ANALYSIS_TESTS_ARGS=--dynamic-analysis
 PYTHON=`which python`
@@ -116,6 +117,7 @@ python_tests:
 .PHONY: docs
 docs:
 	$(MAKE) -C docs html
+	doxygen
 
 ## -----------------------------------------------------------------------------
 
@@ -167,12 +169,12 @@ uninstall:
 
 .PHONY: clean
 clean:
-	# TODO: [COREVM-579] Re-enable IR schema compilation during builds
 	# rm -f $(IR_FORMAT_FILEPATH)
 	rm -rf $(BUILD_DIR)
 	rm -rf $(BUILD_GCC_DIR)
 	rm -f $(PYTHON_TESTS_DIR)/*.tmp.py
 	rm -f $(PYTHON_TESTS_DIR)/*.tmp.py.core
 	rm -rf $(DOCS_BUILD_DIR)/*
+	rm -rf $(DOXYGEN_DOCS_BUILD_DIR)/*
 
 ## -----------------------------------------------------------------------------

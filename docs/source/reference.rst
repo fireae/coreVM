@@ -41,13 +41,13 @@ straightforward as possible. Currently, the build system requires
 
   This builds the following binaries:
 
-  ===================  ==========================================
+  =====================  ===========================================
         Binary                        Description
-  ===================  ==========================================
-    libcorevm.a         coreVM static library (release version)
-    libcorevm_dbg.a     coreVM static library (debug version)
-    coreVM              coreVM client (release version)
-  ===================  ==========================================
+  =====================  ===========================================
+    `libcorevm.a`          coreVM static library (release version)
+    `libcorevm_dbg.a`      coreVM static library (debug version)
+    `coreVM`               coreVM client (release version)
+  =====================  ===========================================
 
 3. Optionally, build all targets, including benchmarks, sanity tests, and
    dynamic analysis tests
@@ -96,14 +96,17 @@ Development 1
 Development 2
 -------------
 
+**Machine:**
+`MacBook Pro (Retina, 13-inch, Mid 2014)`
+
 **Operating System:**
-`macOS 10.12.5 (16F73) Darwin 16.6.0 root:xnu-3789.60.24~6/RELEASE_X86_64`
+`macOS 10.12.5 (16F73) Darwin Kernel Version 16.6.0: Fri Apr 14 16:21:16 PDT 2017; root:xnu-3789.60.24~6/RELEASE_X86_64 x86_64`
 
 **Compiler:**
 `Apple LLVM version 8.1.0 (clang-802.0.42) Target: x86_64-apple-darwin16.6.0 Thread model: posix`
 
 **Xcode:**
-`Version 8.3.2 (8E2002)`
+`Version 8.3.3 (8E3004b)`
 
 **Python:**
 `Python 2.7.10`
@@ -121,7 +124,45 @@ Development 2
 `bison (GNU Bison) 3.0.4` `Written by Robert Corbett and Richard Stallman`
 
 **Sphinx:**
-`Sphinx v1.3.5`
+`Sphinx (sphinx-build) 1.3.5`
+
+**Doxygen:**
+`1.8.13`
+
+----
+
+Development 3
+-------------
+
+**Machine:**
+`iMac (Retina 5K, 27-inch, Late 2015)`
+
+**Operating System:**
+`macOS 10.12.5 (16F73) Darwin Kernel Version 16.6.0: Fri Apr 14 16:21:16 PDT 2017; root:xnu-3789.60.24~6/RELEASE_X86_64 x86_64`
+
+**Compiler:**
+`Apple LLVM version 8.1.0 (clang-802.0.42) Target: x86_64-apple-darwin16.6.0 Thread model: posix`
+
+**Xcode:**
+`Version 8.3.3 (8E3004b)`
+
+**Python:**
+`Python 2.7.10`
+
+**CMake:**
+`cmake version 3.8.2`
+
+**GNU Make:**
+`GNU Make 3.81`
+
+**Flex:**
+`flex 2.6.2`
+
+**Bison:**
+`bison (GNU Bison) 3.0.4`
+
+**Sphinx:**
+`Sphinx (sphinx-build) 1.4`
 
 **Doxygen:**
 `1.8.13`

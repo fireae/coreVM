@@ -38,12 +38,12 @@ namespace ir {
 
 // -----------------------------------------------------------------------------
 
-std::array<std::tuple<FuncDefnOption, const char*>, 4> FuncDefnOptionToStrArray {
+std::array<std::tuple<FuncDefnOption, const char*>, 4> FuncDefnOptionToStrArray {{
   std::make_tuple(FuncDefnOption::CONSTEXPR, "constexpr"),
   std::make_tuple(FuncDefnOption::INLINE, "inline"),
   std::make_tuple(FuncDefnOption::TAIL_DUPLICATION, "tailduplication"),
   std::make_tuple(FuncDefnOption::LOOP_SIMPLIFY, "loopsimplify")
-};
+}};
 
 // -----------------------------------------------------------------------------
 
