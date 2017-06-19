@@ -1,4 +1,4 @@
-![logo](/resources/banners/v1/coreVM_banner_v1_RES_LOW.jpg)
+![logo](/resources/corevm_banner.png)
 
 Language runtime framework designed to empower developers devise modern and
 novel programming language features.
