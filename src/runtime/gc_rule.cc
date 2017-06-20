@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "process.h"
 
-
 namespace corevm {
 namespace runtime {
 
@@ -34,12 +33,8 @@ const uint8_t GCRuleMeta::DEFAULT_GC_FLAGS = 1 << GCRuleMeta::GC_ALWAYS;
 
 // -----------------------------------------------------------------------------
 
-GCRule
-GCRuleMeta::gc_rules[GC_RULE_MAX] {
-  gc_rule_always,
-  gc_rule_by_heap_size,
-  gc_rule_by_native_type_pool_size
-};
+GCRule GCRuleMeta::gc_rules[GC_RULE_MAX]{gc_rule_always, gc_rule_by_heap_size,
+                                         gc_rule_by_native_type_pool_size};
 
 // -----------------------------------------------------------------------------
 
@@ -55,9 +50,8 @@ bool
 gc_rule_by_heap_size(const Process& process)
 {
   static const double GC_RULE_BY_HEAP_SIZE_DEFAULT_CUTOFF = 0.75f;
-  return process.heap_size() > (
-    process.max_heap_size() * GC_RULE_BY_HEAP_SIZE_DEFAULT_CUTOFF
-  );
+  return process.heap_size() >
+         (process.max_heap_size() * GC_RULE_BY_HEAP_SIZE_DEFAULT_CUTOFF);
 }
 
 // -----------------------------------------------------------------------------
@@ -66,9 +60,9 @@ bool
 gc_rule_by_native_type_pool_size(const Process& process)
 {
   static const double GC_RULE_BY_NTVHNDL_POOL_SIZE_DEFAULT_CUTOFF = 0.75f;
-  return process.native_type_pool_size() > (
-    process.max_native_type_pool_size() * GC_RULE_BY_NTVHNDL_POOL_SIZE_DEFAULT_CUTOFF
-  );
+  return process.native_type_pool_size() >
+         (process.max_native_type_pool_size() *
+          GC_RULE_BY_NTVHNDL_POOL_SIZE_DEFAULT_CUTOFF);
 }
 
 // -----------------------------------------------------------------------------

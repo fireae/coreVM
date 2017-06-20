@@ -28,25 +28,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <boost/format.hpp>
 
-
 namespace corevm {
 namespace dyobj {
 
 // -----------------------------------------------------------------------------
 
-class ObjectNotFoundError : public RuntimeError
-{
+class ObjectNotFoundError : public RuntimeError {
 public:
-  explicit ObjectNotFoundError(const char* what_arg)
-    :
-    RuntimeError(what_arg)
+  explicit ObjectNotFoundError(const char* what_arg) : RuntimeError(what_arg)
   {
   }
 
   explicit ObjectNotFoundError(corevm::dyobj::dyobj_id_t id_)
-    :
-    RuntimeError(str(boost::format("Object %#x not found") % id_)),
-    id(id_)
+    : RuntimeError(str(boost::format("Object %#x not found") % id_)), id(id_)
   {
   }
 
@@ -55,31 +49,27 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class ObjectAttributeNotFoundError : public RuntimeError
-{
+class ObjectAttributeNotFoundError : public RuntimeError {
 public:
   explicit ObjectAttributeNotFoundError(const char* what_arg)
-    :
-    RuntimeError(what_arg)
+    : RuntimeError(what_arg)
   {
   }
 
   ObjectAttributeNotFoundError(attr_key_t attr_key_, dyobj_id_t id_)
-    :
-    RuntimeError(str(boost::format(
-      "Attribute %#x in object %#x not found") % attr_key_ % id_)),
-    attr_key(attr_key_),
-    id(id_)
+    : RuntimeError(str(boost::format("Attribute %#x in object %#x not found") %
+                       attr_key_ % id_)),
+      attr_key(attr_key_),
+      id(id_)
   {
   }
 
   ObjectAttributeNotFoundError(attr_key_t attr_key_, dyobj_id_t id_,
-    const char* attr_name)
-    :
-    RuntimeError(str(boost::format(
-      "Attribute '%s' in object %#x not found") % attr_name % id_)),
-    attr_key(attr_key_),
-    id(id_)
+                               const char* attr_name)
+    : RuntimeError(str(boost::format("Attribute '%s' in object %#x not found") %
+                       attr_name % id_)),
+      attr_key(attr_key_),
+      id(id_)
   {
   }
 
@@ -89,24 +79,19 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class ObjectCreationError : public RuntimeError
-{
+class ObjectCreationError : public RuntimeError {
 public:
   explicit ObjectCreationError()
-    :
-    RuntimeError("Failed to create dynamic object")
+    : RuntimeError("Failed to create dynamic object")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class InvalidFlagBitError : public RuntimeError
-{
+class InvalidFlagBitError : public RuntimeError {
 public:
-  explicit InvalidFlagBitError()
-    :
-    RuntimeError("Invalid flag bit provided")
+  explicit InvalidFlagBitError() : RuntimeError("Invalid flag bit provided")
   {
   }
 };
@@ -115,6 +100,5 @@ public:
 
 } /* end namespace dyobj */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_DYOBJ_ERRORS_H_ */

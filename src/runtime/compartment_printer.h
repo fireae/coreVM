@@ -27,16 +27,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <iosfwd>
 
-
 namespace corevm {
 namespace runtime {
 
-class CompartmentPrinter
-{
+class CompartmentPrinter {
 public:
   CompartmentPrinter(const Compartment&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
+
 private:
   const Compartment& m_compartment;
   const uint32_t m_opts;
@@ -45,6 +44,4 @@ private:
 } /* end namespace runtime */
 } /* end namespace corevm */
 
-
 #endif /* COREVM_COMPARTMENT_PRINTER_H_ */
-

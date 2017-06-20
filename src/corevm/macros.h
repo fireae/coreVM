@@ -26,24 +26,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdlib>
 #include <iostream>
 
-
 // -----------------------------------------------------------------------------
 
 // Debug mode is off by default.
 // Use compiler option to turn on debug mode.
 #ifndef __DEBUG__
-  #define __DEBUG__ 0
+#define __DEBUG__ 0
 #endif
 
 // -----------------------------------------------------------------------------
 
-#define ASSERT(expr)                                    \
-  if (! (expr) )                                        \
-  {                                                     \
-    std::cerr << "Assertion failed: " << #expr <<       \
-      " (" << __FILE__ << ")" << " [" << __FUNCTION__   \
-      << "() line " << __LINE__ << "]" << std::endl;    \
-    abort();                                            \
+#define ASSERT(expr)                                                           \
+  if (!(expr)) {                                                               \
+    std::cerr << "Assertion failed: " << #expr << " (" << __FILE__ << ")"      \
+              << " [" << __FUNCTION__ << "() line " << __LINE__ << "]"         \
+              << std::endl;                                                    \
+    abort();                                                                   \
   }
 
 // -----------------------------------------------------------------------------
@@ -51,19 +49,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // Special exception throw mode. Off by default.
 // To be turned on by compiler option when needed.
 #ifndef __THROW__
-  #define __THROW__ 0
+#define __THROW__ 0
 #endif
 
 // -----------------------------------------------------------------------------
 
 #if __DEBUG__ && __THROW__
-  #define THROW(expr)                                   \
-    std::cerr << #expr << " (" << __FILE__ << ")" <<    \
-      "[" << __FUNCTION__ << "() line " << __LINE__ <<  \
-      "]" << std::endl;                                 \
-    throw (expr)
+#define THROW(expr)                                                            \
+  std::cerr << #expr << " (" << __FILE__ << ")"                                \
+            << "[" << __FUNCTION__ << "() line " << __LINE__ << "]"            \
+            << std::endl;                                                      \
+  throw(expr)
 #else
-  #define THROW(expr) throw (expr)
+#define THROW(expr) throw(expr)
 #endif
 
 // -----------------------------------------------------------------------------
@@ -72,19 +70,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * Measure cumulative and average runtime of each instruction handler.
  */
 #ifndef INSTRUMENTAL_MEASUREMENT
-  #define INSTRUMENTAL_MEASUREMENT 0
+#define INSTRUMENTAL_MEASUREMENT 0
 #endif
 
 #if __DEBUG__ && INSTRUMENTAL_MEASUREMENT
-  #define __MEASURE_INSTRS__ 1
+#define __MEASURE_INSTRS__ 1
 #else
-  #define __MEASURE_INSTRS__ 0
+#define __MEASURE_INSTRS__ 0
 #endif
 
 // -----------------------------------------------------------------------------
 
 /**
- * TODO: [COREVM-463] Design and implement forward iterator for sequential allocator
+ * TODO: [COREVM-463] Design and implement forward iterator for sequential
+ * allocator
  */
 #define COREVM_463 0
 

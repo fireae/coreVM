@@ -23,10 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_TRANSFORM_PASS_H_
 #define COREVM_TRANSFORM_PASS_H_
 
-#include "pass.h"
 #include "analysis_result.h"
 #include "ir/fwd.h"
-
+#include "pass.h"
 
 namespace corevm {
 namespace jit {
@@ -34,10 +33,11 @@ namespace jit {
 /**
  * Abstraction representing a generic transformation pass in the JIT pipeline.
  */
-class TransformPass : public Pass
-{
+class TransformPass : public Pass {
 public:
-  virtual ~TransformPass() {}
+  virtual ~TransformPass()
+  {
+  }
 
   /**
    * Performs transform operation on the specified IR module.

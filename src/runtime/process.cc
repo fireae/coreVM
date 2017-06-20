@@ -27,24 +27,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include "compartment.h"
 #include "compartment_printer.h"
+#include "corevm/llvm_smallvector.h"
+#include "corevm/macros.h"
+#include "dyobj/common.h"
+#include "dyobj/dynamic_object_heap.h"
 #include "errors.h"
 #include "frame.h"
 #include "frame_cache.h"
+#include "gc/garbage_collector.h"
 #include "gc_rule.h"
 #include "instr.h"
 #include "invocation_ctx.h"
 #include "loc_info.h"
 #include "native_types_pool.h"
-#include "vector.h"
-#include "corevm/macros.h"
-#include "dyobj/common.h"
-#include "dyobj/dynamic_object_heap.h"
-#include "gc/garbage_collector.h"
 #include "types/native_type_value.h"
-#include "corevm/llvm_smallvector.h"
+#include "vector.h"
 
 #if __MEASURE_INSTRS__
-  #include "measurement.h"
+#include "measurement.h"
 #endif
 
 #include <llvm/ADT/SmallString.h>
@@ -52,8 +52,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include <array>
 #include <cstdint>
-#include <list>
 #include <limits>
+#include <list>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_map>
@@ -61,20 +61,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <setjmp.h>
 
-
 namespace corevm {
 namespace runtime {
 namespace internal {
 
 // -----------------------------------------------------------------------------
 
-class TypeValueCollectorGcCallback :
-  public gc::GarbageCollector<Process::garbage_collection_scheme>::Callback
-{
+class TypeValueCollectorGcCallback
+  : public gc::GarbageCollector<Process::garbage_collection_scheme>::Callback {
 public:
   virtual void operator()(const dynamic_object_type& obj);
 
-  const std::vector<const types::NativeTypeValue*>& list() const
+  const std::vector<const types::NativeTypeValue*>&
+  list() const
   {
     return m_type_values;
   }
@@ -89,8 +88,7 @@ private:
 void
 TypeValueCollectorGcCallback::operator()(const dynamic_object_type& obj)
 {
-  if (obj.has_type_value())
-  {
+  if (obj.has_type_value()) {
     m_type_values.push_back(&obj.type_value());
   }
 }
@@ -98,7 +96,6 @@ TypeValueCollectorGcCallback::operator()(const dynamic_object_type& obj)
 // -----------------------------------------------------------------------------
 
 } /* end namespace internal */
-
 
 // -----------------------------------------------------------------------------
 
@@ -118,34 +115,28 @@ const size_t DEFAULT_COMPARTMENTS_TABLE_CAPACITY = 10;
 
 // -----------------------------------------------------------------------------
 
-static_assert(
-  std::numeric_limits<runtime::Vector::size_type>::max() >=
-  std::numeric_limits<instr_addr_t>::max(),
-  "Vector size incompatibility"
-);
+static_assert(std::numeric_limits<runtime::Vector::size_type>::max() >=
+                std::numeric_limits<instr_addr_t>::max(),
+              "Vector size incompatibility");
 
 // -----------------------------------------------------------------------------
 
-static_assert(
-  std::numeric_limits<std::vector<Compartment>::size_type>::max() >=
-  std::numeric_limits<compartment_id_t>::max(),
-  "Compartment ID incompatibility"
-);
+static_assert(std::numeric_limits<std::vector<Compartment>::size_type>::max() >=
+                std::numeric_limits<compartment_id_t>::max(),
+              "Compartment ID incompatibility");
 
 // -----------------------------------------------------------------------------
 
 Process::Options::Options()
-  :
-  heap_alloc_size(dyobj::COREVM_DEFAULT_HEAP_SIZE),
-  pool_alloc_size(COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE),
-  gc_flag(GCRuleMeta::DEFAULT_GC_FLAGS)
+  : heap_alloc_size(dyobj::COREVM_DEFAULT_HEAP_SIZE),
+    pool_alloc_size(COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE),
+    gc_flag(GCRuleMeta::DEFAULT_GC_FLAGS)
 {
 }
 
 // -----------------------------------------------------------------------------
 
-class Process::Impl
-{
+class Process::Impl {
 public:
   typedef Process::dynamic_object_type dynamic_object_type;
   typedef Process::dynamic_object_heap_type dynamic_object_heap_type;
@@ -282,7 +273,8 @@ private:
   void set_parent_for_top_frame();
 
   typedef llvm::SmallString<16> AttributeNameType;
-  typedef std::unordered_map<dyobj::attr_key_t, AttributeNameType> AttributeNameStore;
+  typedef std::unordered_map<dyobj::attr_key_t, AttributeNameType>
+    AttributeNameStore;
   typedef llvm::SmallVector<dyobj_ptr, 20> DynamicObjectStack;
   typedef llvm::SmallVector<Frame, 20> CallStack;
   typedef llvm::SmallVector<InvocationCtx, 20> InvocationCtxStack;
@@ -306,19 +298,18 @@ private:
 // -----------------------------------------------------------------------------
 
 Process::Impl::Impl(Process* owner)
-  :
-  m_execution_status(Process::EXECUTION_STATUS_IDLE),
-  m_do_gc(false),
-  m_gc_flag(0),
-  m_dynamic_object_heap(),
-  m_dyobj_stack(),
-  m_call_stack(),
-  m_invocation_ctx_stack(),
-  m_native_type_pool(),
-  m_compartments(),
-  m_frame_cache(),
-  m_attr_name_store(),
-  m_owner(owner)
+  : m_execution_status(Process::EXECUTION_STATUS_IDLE),
+    m_do_gc(false),
+    m_gc_flag(0),
+    m_dynamic_object_heap(),
+    m_dyobj_stack(),
+    m_call_stack(),
+    m_invocation_ctx_stack(),
+    m_native_type_pool(),
+    m_compartments(),
+    m_frame_cache(),
+    m_attr_name_store(),
+    m_owner(owner)
 {
   init();
 }
@@ -326,20 +317,19 @@ Process::Impl::Impl(Process* owner)
 // -----------------------------------------------------------------------------
 
 Process::Impl::Impl(Process* owner, uint64_t heap_alloc_size,
-  uint64_t pool_alloc_size)
-  :
-  m_execution_status(Process::EXECUTION_STATUS_IDLE),
-  m_do_gc(false),
-  m_gc_flag(0),
-  m_dynamic_object_heap(heap_alloc_size),
-  m_dyobj_stack(),
-  m_call_stack(),
-  m_invocation_ctx_stack(),
-  m_native_type_pool(pool_alloc_size),
-  m_compartments(),
-  m_frame_cache(),
-  m_attr_name_store(),
-  m_owner(owner)
+                    uint64_t pool_alloc_size)
+  : m_execution_status(Process::EXECUTION_STATUS_IDLE),
+    m_do_gc(false),
+    m_gc_flag(0),
+    m_dynamic_object_heap(heap_alloc_size),
+    m_dyobj_stack(),
+    m_call_stack(),
+    m_invocation_ctx_stack(),
+    m_native_type_pool(pool_alloc_size),
+    m_compartments(),
+    m_frame_cache(),
+    m_attr_name_store(),
+    m_owner(owner)
 {
   init();
 }
@@ -347,19 +337,18 @@ Process::Impl::Impl(Process* owner, uint64_t heap_alloc_size,
 // -----------------------------------------------------------------------------
 
 Process::Impl::Impl(Process* owner, const Process::Options& options)
-  :
-  m_execution_status(Process::EXECUTION_STATUS_IDLE),
-  m_do_gc(false),
-  m_gc_flag(options.gc_flag),
-  m_dynamic_object_heap(options.heap_alloc_size),
-  m_dyobj_stack(),
-  m_call_stack(),
-  m_invocation_ctx_stack(),
-  m_native_type_pool(options.pool_alloc_size),
-  m_compartments(),
-  m_frame_cache(),
-  m_attr_name_store(),
-  m_owner(owner)
+  : m_execution_status(Process::EXECUTION_STATUS_IDLE),
+    m_do_gc(false),
+    m_gc_flag(options.gc_flag),
+    m_dynamic_object_heap(options.heap_alloc_size),
+    m_dyobj_stack(),
+    m_call_stack(),
+    m_invocation_ctx_stack(),
+    m_native_type_pool(options.pool_alloc_size),
+    m_compartments(),
+    m_frame_cache(),
+    m_attr_name_store(),
+    m_owner(owner)
 {
   init();
 }
@@ -424,8 +413,7 @@ Process::Impl::has_frame() const
 Frame&
 Process::Impl::top_frame()
 {
-  if (m_call_stack.empty())
-  {
+  if (m_call_stack.empty()) {
     THROW(FrameNotFoundError());
   }
 
@@ -453,8 +441,7 @@ Process::Impl::top_frame(Frame** frame_ptr)
 Frame&
 Process::Impl::top_nth_frame(size_t n)
 {
-  if (n >= m_call_stack.size())
-  {
+  if (n >= m_call_stack.size()) {
     THROW(FrameNotFoundError());
   }
 
@@ -472,16 +459,10 @@ Process::Impl::pop_frame()
   auto invisible_objs = frame.get_invisible_objs();
 
   std::for_each(visible_objs.begin(), visible_objs.end(),
-    [this](Process::dyobj_ptr ptr) {
-      ptr->manager().on_exit();
-    }
-  );
+                [this](Process::dyobj_ptr ptr) { ptr->manager().on_exit(); });
 
   std::for_each(invisible_objs.begin(), invisible_objs.end(),
-    [this](Process::dyobj_ptr ptr) {
-      ptr->manager().on_exit();
-    }
-  );
+                [this](Process::dyobj_ptr ptr) { ptr->manager().on_exit(); });
 
   m_frame_cache.erase_parent_frame(&frame);
 
@@ -508,11 +489,9 @@ Process::Impl::check_call_stack_capacity()
   // on frames. If memories for frames are ever relocated here, we need to
   // reset the pointers.
   size_t current_size = m_call_stack.size();
-  if (current_size == m_call_stack.capacity())
-  {
+  if (current_size == m_call_stack.capacity()) {
     size_t new_size = current_size << 1;
-    if (new_size > current_size)
-    {
+    if (new_size > current_size) {
       m_call_stack.reserve(new_size);
     }
   }
@@ -533,7 +512,7 @@ Process::Impl::push_frame(Frame& frame)
 
 void
 Process::Impl::emplace_frame(const ClosureCtx& ctx, Compartment* compartment,
-  Closure* closure)
+                             Closure* closure)
 {
   ASSERT(compartment);
   ASSERT(closure);
@@ -547,7 +526,7 @@ Process::Impl::emplace_frame(const ClosureCtx& ctx, Compartment* compartment,
 
 void
 Process::Impl::emplace_frame(const ClosureCtx& ctx, Compartment* compartment,
-  Closure* closure, instr_addr_t return_addr)
+                             Closure* closure, instr_addr_t return_addr)
 {
   ASSERT(compartment);
   ASSERT(closure);
@@ -568,11 +547,9 @@ Process::Impl::set_parent_for_top_frame()
 
   parent = m_frame_cache.parent_frame_of(frame->closure_ctx());
 
-  if (!parent)
-  {
+  if (!parent) {
     parent = find_parent_frame_in_process(frame);
-    if (parent)
-    {
+    if (parent) {
       m_frame_cache.insert_parent_frame(frame->closure_ctx(), parent);
     }
   }
@@ -593,8 +570,7 @@ Process::Impl::stack_size() const
 InvocationCtx&
 Process::Impl::top_invocation_ctx()
 {
-  if (m_invocation_ctx_stack.empty())
-  {
+  if (m_invocation_ctx_stack.empty()) {
     THROW(InvocationCtxNotFoundError());
   }
 
@@ -615,11 +591,9 @@ void
 Process::Impl::check_invk_ctx_stack_capacity()
 {
   size_t current_size = m_invocation_ctx_stack.size();
-  if (current_size == m_invocation_ctx_stack.capacity())
-  {
+  if (current_size == m_invocation_ctx_stack.capacity()) {
     size_t new_size = current_size << 1;
-    if (new_size > current_size)
-    {
+    if (new_size > current_size) {
       m_invocation_ctx_stack.reserve(new_size);
     }
   }
@@ -638,8 +612,8 @@ Process::Impl::push_invocation_ctx(const InvocationCtx& invk_ctx)
 
 void
 Process::Impl::emplace_invocation_ctx(const ClosureCtx& ctx,
-  Compartment* compartment,
-  Closure* closure)
+                                      Compartment* compartment,
+                                      Closure* closure)
 {
   ASSERT(compartment);
   ASSERT(closure);
@@ -652,8 +626,7 @@ Process::Impl::emplace_invocation_ctx(const ClosureCtx& ctx,
 void
 Process::Impl::pop_invocation_ctx()
 {
-  if (m_invocation_ctx_stack.empty())
-  {
+  if (m_invocation_ctx_stack.empty()) {
     THROW(InvocationCtxNotFoundError());
   }
 
@@ -665,8 +638,7 @@ Process::Impl::pop_invocation_ctx()
 Process::dyobj_ptr
 Process::Impl::top_stack()
 {
-  if (m_dyobj_stack.empty())
-  {
+  if (m_dyobj_stack.empty()) {
     THROW(ObjectStackEmptyError());
   }
 
@@ -679,11 +651,9 @@ void
 Process::Impl::push_stack(dyobj_ptr obj)
 {
   size_t current_size = m_dyobj_stack.size();
-  if (current_size == m_dyobj_stack.capacity())
-  {
+  if (current_size == m_dyobj_stack.capacity()) {
     size_t new_size = current_size << 1;
-    if (new_size > current_size)
-    {
+    if (new_size > current_size) {
       m_dyobj_stack.reserve(new_size);
     }
   }
@@ -696,8 +666,7 @@ Process::Impl::push_stack(dyobj_ptr obj)
 Process::dyobj_ptr
 Process::Impl::pop_stack()
 {
-  if (m_dyobj_stack.empty())
-  {
+  if (m_dyobj_stack.empty()) {
     THROW(ObjectStackEmptyError());
   }
 
@@ -712,10 +681,8 @@ Process::Impl::pop_stack()
 void
 Process::Impl::swap_stack()
 {
-  if (m_dyobj_stack.size() < 2)
-  {
-    THROW(InvalidOperationError(
-      "Cannot swap top of object stack"));
+  if (m_dyobj_stack.size() < 2) {
+    THROW(InvalidOperationError("Cannot swap top of object stack"));
   }
 
   auto& a = m_dyobj_stack[m_dyobj_stack.size() - 1];
@@ -782,22 +749,24 @@ Process::Impl::erase_type_value(const types::NativeTypeValue* ptr)
 // -----------------------------------------------------------------------------
 
 void
-Process::Impl::insert_attr_name(dyobj::attr_key_t attr_key, const char* attr_name)
+Process::Impl::insert_attr_name(dyobj::attr_key_t attr_key,
+                                const char* attr_name)
 {
-  m_attr_name_store.insert(std::make_pair(attr_key, AttributeNameType(attr_name)));
+  m_attr_name_store.insert(
+    std::make_pair(attr_key, AttributeNameType(attr_name)));
 }
 
 // -----------------------------------------------------------------------------
 
 bool
-Process::Impl::get_attr_name(dyobj::attr_key_t attr_key, const char** attr_name) const
+Process::Impl::get_attr_name(dyobj::attr_key_t attr_key,
+                             const char** attr_name) const
 {
   auto itr = m_attr_name_store.find(attr_key);
 
   const bool key_found = itr != m_attr_name_store.end();
 
-  if (key_found)
-  {
+  if (key_found) {
     *attr_name = const_cast<AttributeNameType&>(itr->second).c_str();
   }
 
@@ -817,8 +786,7 @@ Process::Impl::execution_status() const
 void
 Process::Impl::pause_exec()
 {
-  if (m_execution_status == Process::EXECUTION_STATUS_ACTIVE)
-  {
+  if (m_execution_status == Process::EXECUTION_STATUS_ACTIVE) {
     m_execution_status = Process::EXECUTION_STATUS_PAUSED;
   }
 }
@@ -828,8 +796,7 @@ Process::Impl::pause_exec()
 void
 Process::Impl::resume_exec()
 {
-  if (m_execution_status == Process::EXECUTION_STATUS_PAUSED)
-  {
+  if (m_execution_status == Process::EXECUTION_STATUS_PAUSED) {
     m_execution_status = Process::EXECUTION_STATUS_ACTIVE;
   }
 }
@@ -840,8 +807,8 @@ inline bool
 Process::Impl::can_execute() const
 {
   return (m_execution_status == Process::EXECUTION_STATUS_ACTIVE ||
-          m_execution_status == Process::EXECUTION_STATUS_PAUSED)
-    && has_frame() && top_frame().can_execute();
+          m_execution_status == Process::EXECUTION_STATUS_PAUSED) &&
+         has_frame() && top_frame().can_execute();
 }
 
 // -----------------------------------------------------------------------------
@@ -849,8 +816,7 @@ Process::Impl::can_execute() const
 bool
 Process::Impl::start()
 {
-  if (m_compartments.empty())
-  {
+  if (m_compartments.empty()) {
     return false;
   }
 
@@ -861,8 +827,7 @@ Process::Impl::start()
 
   // If we found the starting compartment and closure, create a frame with the
   // closure context, and loads and vector into the process.
-  if (res)
-  {
+  if (res) {
 #if __DEBUG__
     ASSERT(closure);
 #endif
@@ -890,8 +855,7 @@ Process::Impl::start()
 void
 Process::Impl::run()
 {
-  if (!start())
-  {
+  if (!start()) {
     return;
   }
 
@@ -911,9 +875,9 @@ Process::Impl::run()
   boost::timer::cpu_timer t;
 #endif
 
-  while (can_execute())
-  {
-    while (m_execution_status == Process::EXECUTION_STATUS_PAUSED) {}
+  while (can_execute()) {
+    while (m_execution_status == Process::EXECUTION_STATUS_PAUSED) {
+    }
 
     const Instr& instr = top_frame().current_instr();
 
@@ -921,11 +885,10 @@ Process::Impl::run()
     t.start();
 #endif
 
-    InstrHandlerMeta::instr_handlers[instr.code](
-      instr, *m_owner, frame_ptr, invk_ctx_ptr);
+    InstrHandlerMeta::instr_handlers[instr.code](instr, *m_owner, frame_ptr,
+                                                 invk_ctx_ptr);
 
-    if (m_do_gc)
-    {
+    if (m_do_gc) {
       do_gc();
       m_do_gc = false;
     }
@@ -971,12 +934,8 @@ Process::Impl::do_gc()
   garbage_collector.gc(&callback);
 
   std::for_each(
-    callback.list().begin(),
-    callback.list().end(),
-    [&](const types::NativeTypeValue* ptr) {
-      this->erase_type_value(ptr);
-    }
-  );
+    callback.list().begin(), callback.list().end(),
+    [&](const types::NativeTypeValue* ptr) { this->erase_type_value(ptr); });
 
   resume_exec();
 }
@@ -1002,8 +961,7 @@ Process::Impl::set_gc_flag(uint8_t gc_flag)
 instr_addr_t
 Process::Impl::pc() const
 {
-  if (!m_call_stack.empty())
-  {
+  if (!m_call_stack.empty()) {
     return m_call_stack.back().pc();
   }
 
@@ -1021,18 +979,15 @@ Process::Impl::set_pc(instr_addr_t addr)
 // -----------------------------------------------------------------------------
 
 bool
-Process::Impl::get_frame_by_closure_ctx(ClosureCtx& closure_ctx, Frame** frame_ptr)
+Process::Impl::get_frame_by_closure_ctx(ClosureCtx& closure_ctx,
+                                        Frame** frame_ptr)
 {
-  auto itr = std::find_if(
-    m_call_stack.begin(),
-    m_call_stack.end(),
-    [&closure_ctx](const Frame& frame) -> bool {
-      return frame.closure_ctx() == closure_ctx;
-    }
-  );
+  auto itr = std::find_if(m_call_stack.begin(), m_call_stack.end(),
+                          [&closure_ctx](const Frame& frame) -> bool {
+                            return frame.closure_ctx() == closure_ctx;
+                          });
 
-  if (itr != m_call_stack.end())
-  {
+  if (itr != m_call_stack.end()) {
     *frame_ptr = &(*itr);
     return true;
   }
@@ -1045,10 +1000,8 @@ Process::Impl::get_frame_by_closure_ctx(ClosureCtx& closure_ctx, Frame** frame_p
 bool
 Process::Impl::should_gc() const
 {
-  for (size_t i = 0; i < GCRuleMeta::GC_RULE_MAX; ++i)
-  {
-    if (m_gc_flag & (1 << i) && GCRuleMeta::gc_rules[i](*m_owner))
-    {
+  for (size_t i = 0; i < GCRuleMeta::GC_RULE_MAX; ++i) {
+    if (m_gc_flag & (1 << i) && GCRuleMeta::gc_rules[i](*m_owner)) {
       return true;
     }
   }
@@ -1089,8 +1042,7 @@ Process::Impl::insert_compartment(const Compartment&& compartment)
 void
 Process::Impl::get_compartment(compartment_id_t id, Compartment** ptr)
 {
-  if (id < static_cast<compartment_id_t>(m_compartments.size()))
-  {
+  if (id < static_cast<compartment_id_t>(m_compartments.size())) {
     *ptr = &m_compartments[static_cast<size_t>(id)];
   }
 }
@@ -1118,19 +1070,17 @@ Process::Impl::find_frame_by_ctx(ClosureCtx ctx, Compartment* compartment)
 
   Frame* frame = nullptr;
 
-  while (!frame)
-  {
+  while (!frame) {
     bool res = get_frame_by_closure_ctx(ctx, &frame);
 
-    if (res)
-    {
+    if (res) {
 #if __DEBUG__
       ASSERT(frame);
 #endif
       break;
     }
 
-    Closure *closure = nullptr;
+    Closure* closure = nullptr;
     compartment->get_closure_by_id(ctx.closure_id, &closure);
 
 #if __DEBUG__
@@ -1139,8 +1089,7 @@ Process::Impl::find_frame_by_ctx(ClosureCtx ctx, Compartment* compartment)
 
     ctx.closure_id = closure->parent_id;
 
-    if (ctx.closure_id == NONESET_CLOSURE_ID)
-    {
+    if (ctx.closure_id == NONESET_CLOSURE_ID) {
 #if __DEBUG__
       ASSERT(!frame);
 #endif
@@ -1168,8 +1117,7 @@ Process::Impl::find_parent_frame_in_process(Frame* frame_ptr)
 
   closure_id_t parent_closure_id = closure->parent_id;
 
-  if (parent_closure_id == NONESET_CLOSURE_ID)
-  {
+  if (parent_closure_id == NONESET_CLOSURE_ID) {
     return nullptr;
   }
 
@@ -1188,15 +1136,13 @@ Process::Impl::find_parent_frame_in_process(Frame* frame_ptr)
 
 // -----------------------------------------------------------------------------
 
-struct LocInfoPred
-{
-  LocInfoPred(int64_t index)
-    :
-    m_index(index)
+struct LocInfoPred {
+  LocInfoPred(int64_t index) : m_index(index)
   {
   }
 
-  bool operator()(const LocInfo& loc_info) const
+  bool
+  operator()(const LocInfo& loc_info) const
   {
     return loc_info.index == m_index;
   }
@@ -1213,20 +1159,19 @@ Process::Impl::unwind_stack(size_t limit)
   size_t unwind_count = 0;
   std::vector<std::string> output_lines;
 
-  if (limit)
-  {
+  if (limit) {
     output_lines.reserve(limit);
   }
 
-  while (has_frame())
-  {
+  while (has_frame()) {
     std::stringstream line_ss;
 
     Frame& frame = top_frame();
 
     const Compartment* compartment = frame.compartment();
 
-    line_ss << "    " << "File " << '\"' << compartment->path() << '\"';
+    line_ss << "    "
+            << "File " << '\"' << compartment->path() << '\"';
 
     const Closure* closure = frame.closure();
 
@@ -1235,11 +1180,11 @@ Process::Impl::unwind_stack(size_t limit)
     int64_t index = pc() - frame.return_addr();
 
     auto itr = std::find_if(locs.begin(), locs.end(), LocInfoPred(index));
-    if (itr != locs.end())
-    {
+    if (itr != locs.end()) {
       const LocInfo& loc = *itr;
 
-      line_ss << " (" << "line " << loc.lineno << " col " << loc.col_offset << ')';
+      line_ss << " ("
+              << "line " << loc.lineno << " col " << loc.col_offset << ')';
     }
 
     line_ss << " in " << closure->name;
@@ -1250,8 +1195,7 @@ Process::Impl::unwind_stack(size_t limit)
 
     ++unwind_count;
 
-    if (limit && unwind_count >= limit)
-    {
+    if (limit && unwind_count >= limit) {
       break;
     }
   }
@@ -1260,8 +1204,7 @@ Process::Impl::unwind_stack(size_t limit)
 
   // Dump output.
   std::cerr << "Trackback:" << std::endl;
-  for (auto itr = output_lines.crbegin(); itr != output_lines.crend(); ++itr)
-  {
+  for (auto itr = output_lines.crbegin(); itr != output_lines.crend(); ++itr) {
     const std::string& line_str = *itr;
     std::cerr << line_str << std::endl;
   }
@@ -1271,28 +1214,22 @@ Process::Impl::unwind_stack(size_t limit)
 
 // -----------------------------------------------------------------------------
 
-Process::Process()
-  :
-  Loggable(),
-  m_impl(new Process::Impl(this))
+Process::Process() : Loggable(), m_impl(new Process::Impl(this))
 {
 }
 
 // -----------------------------------------------------------------------------
 
 Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
-  :
-  Loggable(),
-  m_impl(new Process::Impl(this, heap_alloc_size, pool_alloc_size))
+  : Loggable(),
+    m_impl(new Process::Impl(this, heap_alloc_size, pool_alloc_size))
 {
 }
 
 // -----------------------------------------------------------------------------
 
 Process::Process(const Process::Options& options)
-  :
-  Loggable(),
-  m_impl(new Process::Impl(this, options))
+  : Loggable(), m_impl(new Process::Impl(this, options))
 {
 }
 
@@ -1403,7 +1340,7 @@ Process::push_frame(Frame& frame)
 
 void
 Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment,
-  Closure* closure)
+                       Closure* closure)
 {
   m_impl->emplace_frame(ctx, compartment, closure);
 }
@@ -1412,7 +1349,7 @@ Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment,
 
 void
 Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment,
-  Closure* closure, instr_addr_t return_addr)
+                       Closure* closure, instr_addr_t return_addr)
 {
   m_impl->emplace_frame(ctx, compartment, closure, return_addr);
 }
@@ -1452,9 +1389,8 @@ Process::push_invocation_ctx(const InvocationCtx& invk_ctx)
 // -----------------------------------------------------------------------------
 
 void
-Process::emplace_invocation_ctx(const ClosureCtx& ctx,
-  Compartment* compartment,
-  Closure* closure)
+Process::emplace_invocation_ctx(const ClosureCtx& ctx, Compartment* compartment,
+                                Closure* closure)
 {
   m_impl->emplace_invocation_ctx(ctx, compartment, closure);
 }
@@ -1734,9 +1670,7 @@ Process::unwind_stack(size_t limit)
 // -----------------------------------------------------------------------------
 
 Process::Printer::Printer(const Process& process, uint32_t opts)
-  :
-  m_process(process),
-  m_opts(opts)
+  : m_process(process), m_opts(opts)
 {
 }
 
@@ -1751,12 +1685,13 @@ Process::Printer::operator()(std::ostream& ost) const
 
   ost << "Heap size: " << m_process.heap_size() << std::endl;
   ost << "Max heap size: " << m_process.max_heap_size() << std::endl;
-  ost << "Native types pool size: " << m_process.native_type_pool_size() << std::endl;
-  ost << "Max native types pool size: " << m_process.max_native_type_pool_size() << std::endl;
+  ost << "Native types pool size: " << m_process.native_type_pool_size()
+      << std::endl;
+  ost << "Max native types pool size: " << m_process.max_native_type_pool_size()
+      << std::endl;
   ost << "Compartments: " << m_process.compartment_count() << std::endl;
 
-  for (const auto& compartment : m_process.m_impl.get()->m_compartments)
-  {
+  for (const auto& compartment : m_process.m_impl.get()->m_compartments) {
     CompartmentPrinter printer(compartment, m_opts);
     printer(ost) << std::endl;
   }

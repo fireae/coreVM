@@ -22,7 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "constant_folding_pass.h"
 
-
 namespace corevm {
 namespace jit {
 
@@ -37,7 +36,8 @@ const Pass::PassType ConstantFoldingPass::Type = PassType_Module;
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool ConstantFoldingPass::run(IRModule&, const AnalysisResult*)
+bool
+ConstantFoldingPass::run(IRModule&, const AnalysisResult*)
 {
   // TODO: [COREVM-582] Implement IR strength reduction passes
   return true;
@@ -46,7 +46,8 @@ bool ConstantFoldingPass::run(IRModule&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool ConstantFoldingPass::run(IRTypeDecl&, const AnalysisResult*)
+bool
+ConstantFoldingPass::run(IRTypeDecl&, const AnalysisResult*)
 {
   // TODO: [COREVM-582] Implement IR strength reduction passes
   return true;
@@ -55,7 +56,8 @@ bool ConstantFoldingPass::run(IRTypeDecl&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool ConstantFoldingPass::run(IRClosure&, const AnalysisResult*)
+bool
+ConstantFoldingPass::run(IRClosure&, const AnalysisResult*)
 {
   // TODO: [COREVM-582] Implement IR strength reduction passes
   return true;
@@ -64,7 +66,8 @@ bool ConstantFoldingPass::run(IRClosure&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool ConstantFoldingPass::run(IRBasicBlock&, const AnalysisResult*)
+bool
+ConstantFoldingPass::run(IRBasicBlock&, const AnalysisResult*)
 {
   // TODO: [COREVM-582] Implement IR strength reduction passes
   return true;
@@ -73,7 +76,8 @@ bool ConstantFoldingPass::run(IRBasicBlock&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool ConstantFoldingPass::run(IRInstruction&, const AnalysisResult*)
+bool
+ConstantFoldingPass::run(IRInstruction&, const AnalysisResult*)
 {
   // TODO: [COREVM-582] Implement IR strength reduction passes
   return true;

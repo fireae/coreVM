@@ -23,12 +23,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_DYNAMIC_OBJECT_MANAGER_H_
 #define COREVM_DYNAMIC_OBJECT_MANAGER_H_
 
-
 namespace corevm {
 namespace dyobj {
 
-class DynamicObjectManager
-{
+class DynamicObjectManager {
 public:
   virtual bool garbage_collectible() const noexcept = 0;
 
@@ -76,6 +74,5 @@ protected:
 
 } /* end namespace dyobj */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_DYNAMIC_OBJECT_MANAGER_H_ */

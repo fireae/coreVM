@@ -27,15 +27,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/invocation_ctx.h"
 #include "runtime/process.h"
 
-
 namespace corevm {
-
 
 namespace benchmarks {
 
-
-class InstrBenchmarksFixture
-{
+class InstrBenchmarksFixture {
 public:
   InstrBenchmarksFixture();
 
@@ -49,11 +45,8 @@ protected:
   corevm::runtime::Process m_process;
 };
 
-
-} /* endnamespace benchmarks */
-
+} // namespace benchmarks
 
 } /* end namespace corevm */
-
 
 #endif /* COREVM_INSTR_BENCHMARKS_FIXTURE_H_ */

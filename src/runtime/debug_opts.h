@@ -25,17 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 
-
 namespace corevm {
 namespace runtime {
 
-enum DebugOptions : uint32_t
-{
-  OPT_SHOW_CANONICAL_FORM = (1 << 0)
-};
+enum DebugOptions : uint32_t { OPT_SHOW_CANONICAL_FORM = (1 << 0) };
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_DEBUG_OPTIONS_H_ */

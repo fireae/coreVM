@@ -24,10 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_NATIVE_TYPES_POOL_H_
 
 #include "common.h"
-#include "errors.h"
 #include "dyobj/common.h"
-#include "memory/allocator.h"
+#include "errors.h"
 #include "memory/allocation_policy.h"
+#include "memory/allocator.h"
 #include "memory/block_allocator.h"
 #include "memory/object_container.h"
 #include "types/fwd.h"
@@ -39,43 +39,41 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 #include <type_traits>
 
-
 namespace corevm {
 namespace runtime {
 
 using sneaker::allocator::object_traits;
 
-
-class NativeTypesPool
-{
+class NativeTypesPool {
 public:
   typedef types::NativeTypeValue value_type;
 
-  template<typename T>
-  class allocator : public memory::AllocationPolicy<T, memory::BlockAllocator<T>>, public object_traits<T>
-  {
-    private:
-      using AllocationPolicyType = typename memory::AllocationPolicy<T, memory::BlockAllocator<T>>;
+  template <typename T>
+  class allocator
+    : public memory::AllocationPolicy<T, memory::BlockAllocator<T>>,
+      public object_traits<T> {
+  private:
+    using AllocationPolicyType =
+      typename memory::AllocationPolicy<T, memory::BlockAllocator<T>>;
 
-    public:
-      using value_type      = typename AllocationPolicyType::value_type;
-      using pointer         = typename AllocationPolicyType::pointer;
-      using const_pointer   = typename AllocationPolicyType::const_pointer;
-      using reference       = typename AllocationPolicyType::reference;
-      using const_reference = typename AllocationPolicyType::const_reference;
-      using size_type       = typename AllocationPolicyType::size_type;
-      using difference_type = typename AllocationPolicyType::difference_type;
+  public:
+    using value_type = typename AllocationPolicyType::value_type;
+    using pointer = typename AllocationPolicyType::pointer;
+    using const_pointer = typename AllocationPolicyType::const_pointer;
+    using reference = typename AllocationPolicyType::reference;
+    using const_reference = typename AllocationPolicyType::const_reference;
+    using size_type = typename AllocationPolicyType::size_type;
+    using difference_type = typename AllocationPolicyType::difference_type;
 
-      explicit allocator(uint64_t total_size)
-        :
-        AllocationPolicyType(total_size)
-      {
-      }
+    explicit allocator(uint64_t total_size) : AllocationPolicyType(total_size)
+    {
+    }
   };
 
   typedef allocator<value_type> allocator_type;
 
-  using container_type = typename memory::ObjectContainer<types::NativeTypeValue, allocator_type>;
+  using container_type =
+    typename memory::ObjectContainer<types::NativeTypeValue, allocator_type>;
 
   typedef value_type& reference;
   typedef value_type* pointer;
@@ -114,6 +112,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_NATIVE_TYPES_POOL_H_ */

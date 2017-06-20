@@ -28,7 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iosfwd>
 #include <vector>
 
-
 namespace corevm {
 namespace runtime {
 
@@ -42,8 +41,7 @@ typedef std::vector<Closure> ClosureTable;
 
 // -----------------------------------------------------------------------------
 
-struct ClosurePrinter
-{
+struct ClosurePrinter {
   ClosurePrinter(const Closure&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
@@ -57,6 +55,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_CLOSURE_H_ */

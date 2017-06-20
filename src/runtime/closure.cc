@@ -27,23 +27,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <limits>
 #include <ostream>
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-static_assert(
-  std::numeric_limits<ClosureTable::size_type>::max() >=
-  std::numeric_limits<closure_id_t>::max(),
-  "Closure ID incompatibility");
+static_assert(std::numeric_limits<ClosureTable::size_type>::max() >=
+                std::numeric_limits<closure_id_t>::max(),
+              "Closure ID incompatibility");
 
 // -----------------------------------------------------------------------------
 
 ClosurePrinter::ClosurePrinter(const Closure& closure, uint32_t opts)
-  :
-  m_closure(closure),
-  m_opts(opts)
+  : m_closure(closure), m_opts(opts)
 {
 }
 
@@ -59,8 +55,7 @@ ClosurePrinter::operator()(std::ostream& ost) const
   ost << "Parent ID: " << m_closure.parent_id << std::endl;
   ost << "Vector:" << std::endl;
 
-  for (const auto& instr : m_closure.vector)
-  {
+  for (const auto& instr : m_closure.vector) {
     InstrPrinter instr_printer(instr, m_opts);
     instr_printer(ost) << std::endl;
   }

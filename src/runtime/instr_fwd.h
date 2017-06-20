@@ -27,20 +27,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 
-
 namespace corevm {
 namespace runtime {
 
 typedef corevm::instr Instr;
-
 
 // -----------------------------------------------------------------------------
 
 /**
  * coreVM instruction set.
  */
-enum InstrEnum : uint32_t
-{
+enum InstrEnum : uint32_t {
 
   /* -------------------------- Object instructions ------------------------- */
 
@@ -339,7 +336,6 @@ enum InstrEnum : uint32_t
    * A value of `1` sets the flag, `0` otherwise.
    */
   SETFLMUTE,
-
 
   /* ------------------------ Control instructions -------------------------- */
 
@@ -945,9 +941,9 @@ enum InstrEnum : uint32_t
 
   /**
    * <slice, _, _>
-   * Computes the portion of the element on the top 3rd element of the eval stack
-   * as a sequence, using the 2nd and 1st top elements as the `start` and `stop`
-   * values as the indices range [start, stop).
+   * Computes the portion of the element on the top 3rd element of the eval
+   * stack as a sequence, using the 2nd and 1st top elements as the `start` and
+   * `stop` values as the indices range [start, stop).
    */
   SLICE,
 
@@ -1274,6 +1270,5 @@ enum InstrEnum : uint32_t
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_INSTR_FWD_H_ */

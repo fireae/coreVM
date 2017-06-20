@@ -25,14 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "bytecode_loader.h"
 
-
 namespace corevm {
 namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-class BinaryBytecodeLoader : public BytecodeLoader
-{
+class BinaryBytecodeLoader : public BytecodeLoader {
 public:
   virtual void load(const std::string&, runtime::Process&);
 };
@@ -41,6 +39,5 @@ public:
 
 } /* end namespace frontend */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_BINARY_BYTECODE_LOADER_H_ */

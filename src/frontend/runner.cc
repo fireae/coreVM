@@ -22,10 +22,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "runner.h"
 
-#include "errors.h"
 #include "binary_bytecode_loader.h"
 #include "corevm/macros.h"
 #include "dyobj/errors.h"
+#include "errors.h"
 #include "runtime/process.h"
 #include "runtime/process_runner.h"
 
@@ -38,7 +38,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstring>
 #include <iostream>
 
-
 namespace corevm {
 namespace frontend {
 
@@ -49,17 +48,16 @@ static void
 print_stack_trace()
 {
   static const unsigned int DEFAULT_STACK_LEVEL = 5;
-  sneaker::utility::stack_trace::print_stack_trace(std::cerr, DEFAULT_STACK_LEVEL);
+  sneaker::utility::stack_trace::print_stack_trace(std::cerr,
+                                                   DEFAULT_STACK_LEVEL);
 }
 #endif
 
 // -----------------------------------------------------------------------------
 
 Runner::Runner(const std::string& path,
-  const api::core::Configuration& configuration)
-  :
-  m_path(path),
-  m_configuration(configuration)
+               const api::core::Configuration& configuration)
+  : m_path(path), m_configuration(configuration)
 {
 }
 
@@ -68,23 +66,22 @@ Runner::Runner(const std::string& path,
 int
 Runner::run() const noexcept
 {
-  const uint32_t gc_interval = m_configuration.gc_interval() ? \
-    m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL_MILLISECOND;
+  const uint32_t gc_interval =
+    m_configuration.gc_interval()
+      ? m_configuration.gc_interval()
+      : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL_MILLISECOND;
 
   runtime::Process::Options options;
 
-  if (m_configuration.heap_alloc_size())
-  {
+  if (m_configuration.heap_alloc_size()) {
     options.heap_alloc_size = m_configuration.heap_alloc_size();
   }
 
-  if (m_configuration.pool_alloc_size())
-  {
+  if (m_configuration.pool_alloc_size()) {
     options.pool_alloc_size = m_configuration.pool_alloc_size();
   }
 
-  if (m_configuration.has_gc_flag())
-  {
+  if (m_configuration.has_gc_flag()) {
     options.gc_flag = m_configuration.gc_flag();
   }
 
@@ -95,14 +92,12 @@ Runner::run() const noexcept
 
   BinaryBytecodeLoader loader;
 
-  try
-  {
+  try {
     loader.load(m_path, process);
 
     const bool res = runtime::ProcessRunner(process, gc_interval).run();
 
-    if (!res)
-    {
+    if (!res) {
       std::cerr << "Run failed: " << strerror(errno) << std::endl;
 
 #if __DEBUG__
@@ -113,9 +108,7 @@ Runner::run() const noexcept
 
       return -1;
     }
-  }
-  catch (const corevm::RuntimeError& ex)
-  {
+  } catch (const corevm::RuntimeError& ex) {
     std::cerr << "Runtime error: " << ex.what() << std::endl;
     std::cerr << "Abort" << std::endl;
 
@@ -126,9 +119,7 @@ Runner::run() const noexcept
     process.unwind_stack();
 
     return -1;
-  }
-  catch (const std::exception& ex)
-  {
+  } catch (const std::exception& ex) {
     std::cerr << "Error: " << ex.what() << std::endl;
     std::cerr << "Abort" << std::endl;
 
@@ -139,9 +130,7 @@ Runner::run() const noexcept
     process.unwind_stack();
 
     return -1;
-  }
-  catch (...)
-  {
+  } catch (...) {
     std::cerr << "Unknown error" << std::endl;
     std::cerr << "Abort" << std::endl;
 

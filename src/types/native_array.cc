@@ -22,55 +22,47 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "native_array.h"
 
-#include "errors.h"
 #include "corevm/macros.h"
+#include "errors.h"
 
 #include <cstdint>
 #include <iterator>
 #include <stdexcept>
 #include <utility>
 
-
 namespace corevm {
 namespace types {
 
 // -----------------------------------------------------------------------------
 
-native_array::native_array()
-  :
-  native_array_base()
+native_array::native_array() : native_array_base()
 {
 }
 
 // -----------------------------------------------------------------------------
 
 native_array::native_array(const native_array_base& other)
-  :
-  native_array_base(other)
+  : native_array_base(other)
 {
 }
 
 // -----------------------------------------------------------------------------
 
 native_array::native_array(native_array_base&& other)
-  :
-  native_array_base(std::forward<native_array_base>(other))
+  : native_array_base(std::forward<native_array_base>(other))
 {
 }
 
 // -----------------------------------------------------------------------------
 
 native_array::native_array(std::initializer_list<value_type> il)
-  :
-  native_array_base(il)
+  : native_array_base(il)
 {
 }
 
 // -----------------------------------------------------------------------------
 
-native_array::native_array(int8_t)
-  :
-  native_array_base()
+native_array::native_array(int8_t) : native_array_base()
 {
   THROW(ConversionError("int8", "array"));
 }
@@ -100,32 +92,28 @@ native_array::operator-() const
 
 // -----------------------------------------------------------------------------
 
-native_array&
-native_array::operator++() const
+native_array& native_array::operator++() const
 {
   THROW(InvalidOperatorError("++", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-native_array&
-native_array::operator--() const
+native_array& native_array::operator--() const
 {
   THROW(InvalidOperatorError("--", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-native_array&
-native_array::operator!() const
+native_array& native_array::operator!() const
 {
   THROW(InvalidOperatorError("!", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-native_array&
-native_array::operator~() const
+native_array& native_array::operator~() const
 {
   THROW(InvalidOperatorError("~", "array"));
 }
@@ -148,8 +136,7 @@ native_array::operator-(const native_array&) const
 
 // -----------------------------------------------------------------------------
 
-native_array&
-native_array::operator*(const native_array&) const
+native_array& native_array::operator*(const native_array&)const
 {
   THROW(InvalidOperatorError("*", "array"));
 }
@@ -188,8 +175,7 @@ native_array::operator||(const native_array&) const
 
 // -----------------------------------------------------------------------------
 
-native_array&
-native_array::operator&(const native_array&) const
+native_array& native_array::operator&(const native_array&)const
 {
   THROW(InvalidOperatorError("&", "array"));
 }
@@ -231,12 +217,9 @@ native_array::operator>>(const native_array&) const
 native_array::reference
 native_array::at(size_type n)
 {
-  try
-  {
+  try {
     return native_array_base::at(n);
-  }
-  catch (const std::out_of_range&)
-  {
+  } catch (const std::out_of_range&) {
     THROW(OutOfRangeError("Array index out of range"));
   }
 }
@@ -246,12 +229,9 @@ native_array::at(size_type n)
 native_array::const_reference
 native_array::at(size_type n) const
 {
-  try
-  {
+  try {
     return native_array_base::at(n);
-  }
-  catch (const std::out_of_range&)
-  {
+  } catch (const std::out_of_range&) {
     THROW(OutOfRangeError("Array index out of range"));
   }
 }
@@ -261,8 +241,7 @@ native_array::at(size_type n) const
 void
 native_array::erase(size_t n)
 {
-  if (n >= size())
-  {
+  if (n >= size()) {
     THROW(OutOfRangeError("Array index out of range"));
   }
 

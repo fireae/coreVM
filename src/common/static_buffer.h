@@ -24,36 +24,39 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_STATIC_BUFFER_H_
 
 #include <cstdlib>
-#include <utility>
 #include <cstring>
+#include <utility>
 
 namespace corevm {
 namespace common {
 
-template<typename T, size_t capacity>
-class static_buffer
-{
+template <typename T, size_t capacity> class static_buffer {
 public:
-  explicit static_buffer(void* ptr)
-    :
-    m_ptr(ptr),
-    m_size(0)
+  explicit static_buffer(void* ptr) : m_ptr(ptr), m_size(0)
   {
   }
 
-  inline size_t size() const {
+  inline size_t
+  size() const
+  {
     return m_size;
   }
 
-  inline bool empty() const {
+  inline bool
+  empty() const
+  {
     return m_size == 0;
   }
 
-  inline bool full() const {
+  inline bool
+  full() const
+  {
     return m_size == capacity;
   }
 
-  T* push(const T& val) {
+  T*
+  push(const T& val)
+  {
     if (full()) {
       return nullptr;
     }
@@ -66,7 +69,9 @@ public:
     return slot;
   }
 
-  T* push(T&& val) {
+  T*
+  push(T&& val)
+  {
     if (full()) {
       return nullptr;
     }
@@ -79,11 +84,15 @@ public:
     return slot;
   }
 
-  T* back() const {
-    return reinterpret_cast<T*>(m_ptr) + sizeof(T) * (m_size-1);
+  T*
+  back() const
+  {
+    return reinterpret_cast<T*>(m_ptr) + sizeof(T) * (m_size - 1);
   }
 
-  T* pop() {
+  T*
+  pop()
+  {
     if (empty()) {
       return nullptr;
     }
@@ -92,7 +101,9 @@ public:
     return popped;
   }
 
-  void swap_top_two() {
+  void
+  swap_top_two()
+  {
     T* ptr = (reinterpret_cast<T*>(m_ptr) + sizeof(T) * m_size);
     ptr -= sizeof(T);
     T* ptr1 = ptr;
@@ -101,7 +112,9 @@ public:
     std::swap(*ptr1, *ptr2);
   }
 
-  T* element_at(size_t i) {
+  T*
+  element_at(size_t i)
+  {
     return reinterpret_cast<T*>(m_ptr) + sizeof(T) * i;
   }
 

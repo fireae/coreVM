@@ -22,8 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "binary_bytecode_loader.h"
 
-#include "errors.h"
 #include "corevm/corevm_bytecode_schema.h" // Compiled.
+#include "errors.h"
 #include "runtime/catch_site.h"
 #include "runtime/closure.h"
 #include "runtime/compartment.h"
@@ -33,7 +33,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/vector.h"
 
 #include <avro/DataFile.hh>
-
 
 namespace corevm {
 namespace frontend {

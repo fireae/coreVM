@@ -28,16 +28,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <string>
 
-
 namespace corevm {
 namespace api {
 namespace core {
 
 /**
- * An encapsulation of a set of configuration parameters for coreVM's operations.
+ * An encapsulation of a set of configuration parameters for coreVM's
+ * operations.
  */
-class Configuration
-{
+class Configuration {
 public:
   /**
    * Default constructor.
@@ -122,6 +121,5 @@ private:
 } /* end namespace core */
 } /* end namespace api */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_API_CONFIGURATION_H_ */

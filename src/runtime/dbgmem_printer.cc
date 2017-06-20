@@ -26,15 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <iostream>
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-DbgMemPrinter::DbgMemPrinter(uint32_t opts)
-  :
-  m_opts(opts)
+DbgMemPrinter::DbgMemPrinter(uint32_t opts) : m_opts(opts)
 {
 }
 
@@ -56,8 +53,7 @@ DbgMemPrinter::operator()(std::ostream& ost) const
 
   const std::string unit(in_bytes ? "bytes" : "kB");
 
-  if (in_bytes)
-  {
+  if (in_bytes) {
     vm_peak *= 1024;
     vm_size *= 1024;
     vm_hwm *= 1024;
@@ -67,8 +63,7 @@ DbgMemPrinter::operator()(std::ostream& ost) const
   ost << "VmSize: " << vm_size << " " << unit << std::endl;
   ost << "VmRSS: " << vm_rss << " " << unit << std::endl;
 
-  if (m_opts & DbgMemPrinter::OPTS_SHOW_PEAK)
-  {
+  if (m_opts & DbgMemPrinter::OPTS_SHOW_PEAK) {
     ost << "VmPeak: " << vm_peak << " " << unit << std::endl;
     ost << "VmHWM: " << vm_hwm << " " << unit << std::endl;
   }

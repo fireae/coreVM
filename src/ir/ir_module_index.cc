@@ -23,17 +23,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ir_module_index.h"
 #include "format_util.h"
 
-
 namespace corevm {
 namespace ir {
 
 // -----------------------------------------------------------------------------
 
 IRModuleIndex::IRModuleIndex(const IRModule& module)
-  :
-  module_indexed(&module),
-  type_index(),
-  function_index()
+  : module_indexed(&module), type_index(), function_index()
 {
   init(module);
 }
@@ -52,10 +48,9 @@ IRModuleIndex::init(const IRModule& module)
 void
 IRModuleIndex::init_type_index(const IRModule& module)
 {
-  for (const auto& type_decl : module.types)
-  {
+  for (const auto& type_decl : module.types) {
     type_index.insert(std::make_pair(type_decl.name, &type_decl));
-  } 
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -63,8 +58,7 @@ IRModuleIndex::init_type_index(const IRModule& module)
 void
 IRModuleIndex::init_function_index(const IRModule& module)
 {
-  for (const auto& closure : module.closures)
-  {
+  for (const auto& closure : module.closures) {
     function_index.insert(
       std::make_pair(closure.name, create_func_def_index(closure)));
   }
@@ -90,20 +84,16 @@ IRModuleIndex::create_identifier_type_index(const IRClosure& closure) const
 {
   FunctionDefIndex::IdentifierTypeIndex identifier_type_index;
 
-  for (const auto& parameter : closure.parameters)
-  {
+  for (const auto& parameter : closure.parameters) {
     identifier_type_index.insert(
       std::make_pair(parameter.identifier, parameter.type));
   }
 
-  for (const auto& bb : closure.blocks)
-  {
-    for (const auto& instr : bb.body)
-    {
-      if (!instr.target.is_null())
-      {
-        identifier_type_index.insert(std::make_pair(instr.target.get_string(),
-          get_type_of_instr(instr)));
+  for (const auto& bb : closure.blocks) {
+    for (const auto& instr : bb.body) {
+      if (!instr.target.is_null()) {
+        identifier_type_index.insert(
+          std::make_pair(instr.target.get_string(), get_type_of_instr(instr)));
       }
     }
   }
@@ -118,10 +108,8 @@ IRModuleIndex::create_parameter_index(const IRClosure& closure) const
 {
   FunctionDefIndex::ParameterIndex parameter_index;
 
-  for (const auto& parameter : closure.parameters)
-  {
-    parameter_index.insert(
-      std::make_pair(parameter.identifier, &parameter));
+  for (const auto& parameter : closure.parameters) {
+    parameter_index.insert(std::make_pair(parameter.identifier, &parameter));
   }
 
   return parameter_index;
@@ -134,10 +122,8 @@ IRModuleIndex::create_bb_index(const IRClosure& closure) const
 {
   FunctionDefIndex::BasicBlockIndex bb_index;
 
-  for (const auto& bb : closure.blocks)
-  {
-    bb_index.insert(
-      std::make_pair(bb.label, create_instr_index(bb)));
+  for (const auto& bb : closure.blocks) {
+    bb_index.insert(std::make_pair(bb.label, create_instr_index(bb)));
   }
 
   return bb_index;
@@ -150,10 +136,8 @@ IRModuleIndex::create_instr_index(const IRBasicBlock& bb) const
 {
   IRModuleIndex::FunctionDefIndex::InstructionIndex index;
 
-  for (const auto& instr : bb.body)
-  {
-    if (!instr.target.is_null())
-    {
+  for (const auto& instr : bb.body) {
+    if (!instr.target.is_null()) {
       index.insert(std::make_pair(instr.target.get_string(), &instr));
     }
   }
@@ -163,7 +147,8 @@ IRModuleIndex::create_instr_index(const IRBasicBlock& bb) const
 
 // -----------------------------------------------------------------------------
 
-bool IRModuleIndex::has_func_def(const std::string& func_name) const
+bool
+IRModuleIndex::has_func_def(const std::string& func_name) const
 {
   return function_index.find(func_name) != function_index.end();
 }

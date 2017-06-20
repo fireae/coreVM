@@ -28,11 +28,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <string>
 
-
 namespace corevm {
 
-class Program : public sneaker::utility::cmdline_program
-{
+class Program : public sneaker::utility::cmdline_program {
 public:
   Program();
 
@@ -54,6 +52,5 @@ private:
 };
 
 } /* end namespace corevm */
-
 
 #endif /* COREVM_PROGRAM_H_ */

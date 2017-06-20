@@ -25,14 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "types.h"
 
-
 namespace corevm {
 
 namespace common {
 namespace variant {
 
-template<typename... Types>
-class variant;
+template <typename... Types> class variant;
 
 } /* end namespace variant */
 } /* end namespace common */
@@ -41,27 +39,14 @@ namespace types {
 
 // -----------------------------------------------------------------------------
 
-typedef common::variant::variant<
-  int8,
-  uint8,
-  int16,
-  uint16,
-  int32,
-  uint32,
-  int64,
-  uint64,
-  boolean,
-  decimal,
-  decimal2,
-  string,
-  array,
-  map
-> NativeTypeValue;
+typedef common::variant::variant<int8, uint8, int16, uint16, int32, uint32,
+                                 int64, uint64, boolean, decimal, decimal2,
+                                 string, array, map>
+  NativeTypeValue;
 
 // -----------------------------------------------------------------------------
 
 } /* end namespace types */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_TYPES_FWD_H_ */

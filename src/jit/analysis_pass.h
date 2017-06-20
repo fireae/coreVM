@@ -23,11 +23,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_ANALYSIS_PASS_H_
 #define COREVM_ANALYSIS_PASS_H_
 
-#include "pass.h"
 #include "analysis_result.h"
 #include "ir/fwd.h"
+#include "pass.h"
 #include <memory>
-
 
 namespace corevm {
 namespace jit {
@@ -35,13 +34,14 @@ namespace jit {
 /**
  * Abstraction representing a generic analysis pass in the JIT pipeline.
  */
-class AnalysisPass : public Pass
-{
+class AnalysisPass : public Pass {
 public:
   /**
    * Default destructor.
    */
-  virtual ~AnalysisPass() {}
+  virtual ~AnalysisPass()
+  {
+  }
 
   /**
    * Gets the result of this analysis pass.

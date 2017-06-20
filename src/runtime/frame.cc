@@ -25,33 +25,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "closure.h"
 #include "common.h"
 #include "compartment.h"
-#include "errors.h"
 #include "corevm/macros.h"
+#include "errors.h"
 #include "types/native_type_value.h"
 
 #include <cstdint>
-
 
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-Frame::Frame(const runtime::ClosureCtx& closure_ctx,
-  Compartment* compartment,
-  Closure* closure,
-  instr_addr_t return_addr)
-  :
-  m_pc(corevm::runtime::NONESET_INSTR_ADDR),
-  m_closure_ctx(closure_ctx),
-  m_compartment(compartment),
-  m_closure(closure),
-  m_parent(nullptr),
-  m_return_addr(return_addr),
-  m_visible_vars(),
-  m_invisible_vars(),
-  m_eval_stack(),
-  m_exc_obj(NULL)
+Frame::Frame(const runtime::ClosureCtx& closure_ctx, Compartment* compartment,
+             Closure* closure, instr_addr_t return_addr)
+  : m_pc(corevm::runtime::NONESET_INSTR_ADDR),
+    m_closure_ctx(closure_ctx),
+    m_compartment(compartment),
+    m_closure(closure),
+    m_parent(nullptr),
+    m_return_addr(return_addr),
+    m_visible_vars(),
+    m_invisible_vars(),
+    m_eval_stack(),
+    m_exc_obj(NULL)
 {
   // Do nothing here.
 }
@@ -84,9 +80,8 @@ Frame::pc() const
 void
 Frame::set_pc(instr_addr_t addr)
 {
-  if ( addr != corevm::runtime::NONESET_INSTR_ADDR &&
-      (addr < 0 || static_cast<size_t>(addr) >= m_closure->vector.size()) )
-  {
+  if (addr != corevm::runtime::NONESET_INSTR_ADDR &&
+      (addr < 0 || static_cast<size_t>(addr) >= m_closure->vector.size())) {
     THROW(InvalidInstrAddrError());
   }
 
@@ -154,8 +149,7 @@ Frame::push_eval_stack(const types::NativeTypeValue& operand)
 void
 Frame::push_eval_stack(types::NativeTypeValue&& operand)
 {
-  m_eval_stack.push_back(
-    std::forward<types::NativeTypeValue>(operand));
+  m_eval_stack.push_back(std::forward<types::NativeTypeValue>(operand));
 }
 
 // -----------------------------------------------------------------------------
@@ -163,8 +157,7 @@ Frame::push_eval_stack(types::NativeTypeValue&& operand)
 types::NativeTypeValue
 Frame::pop_eval_stack()
 {
-  if (m_eval_stack.empty())
-  {
+  if (m_eval_stack.empty()) {
     THROW(EvaluationStackEmptyError());
   }
 
@@ -178,8 +171,7 @@ Frame::pop_eval_stack()
 types::NativeTypeValue&
 Frame::top_eval_stack()
 {
-  if (m_eval_stack.empty())
-  {
+  if (m_eval_stack.empty()) {
     THROW(EvaluationStackEmptyError());
   }
 
@@ -193,10 +185,8 @@ Frame::swap_eval_stack()
 {
   const size_t eval_stack_size = m_eval_stack.size();
 
-  if (eval_stack_size < 2u)
-  {
-    THROW(InvalidOperationError(
-      "Cannot swap eval stack"));
+  if (eval_stack_size < 2u) {
+    THROW(InvalidOperationError("Cannot swap eval stack"));
   }
 
   auto& a = m_eval_stack[eval_stack_size - 1];
@@ -226,8 +216,7 @@ Frame::dyobj_ptr
 Frame::get_visible_var_with_index(size_t idx) const
 {
   auto itr = m_visible_vars.at_index(idx);
-  if (itr == m_visible_vars.end())
-  {
+  if (itr == m_visible_vars.end()) {
     return nullptr;
   }
 
@@ -240,10 +229,10 @@ Frame::dyobj_ptr
 Frame::get_visible_var(variable_key_t var_key) const
 {
   auto itr = m_visible_vars.find(var_key);
-  if (itr == m_visible_vars.end())
-  {
+  if (itr == m_visible_vars.end()) {
     std::string name;
-    compartment()->get_string_literal(static_cast<encoding_key_t>(var_key), &name);
+    compartment()->get_string_literal(static_cast<encoding_key_t>(var_key),
+                                      &name);
     THROW(NameNotFoundError(name.c_str()));
   }
 
@@ -256,8 +245,7 @@ bool
 Frame::get_visible_var_fast(variable_key_t var_key, dyobj_ptr* obj_ptr) const
 {
   auto itr = m_visible_vars.find(var_key);
-  if (itr == m_visible_vars.end())
-  {
+  if (itr == m_visible_vars.end()) {
     return false;
   }
 
@@ -273,24 +261,20 @@ Frame::get_visible_var_through_ancestry(variable_key_t key, dyobj_ptr* obj_ptr)
 {
   dyobj_ptr obj = NULL;
 
-  if (get_visible_var_fast(key, &obj))
-  {
+  if (get_visible_var_fast(key, &obj)) {
     *obj_ptr = obj;
     return true;
   }
 
   Frame* frame = parent();
-  if (!frame)
-  {
+  if (!frame) {
     return false;
   }
 
-  while (!frame->get_visible_var_fast(key, &obj))
-  {
+  while (!frame->get_visible_var_fast(key, &obj)) {
     frame = frame->parent();
 
-    if (!frame)
-    {
+    if (!frame) {
       return false;
     }
   }
@@ -332,8 +316,7 @@ Frame::dyobj_ptr
 Frame::get_invisible_var_with_index(size_t idx) const
 {
   auto itr = m_invisible_vars.at_index(idx);
-  if (itr == m_invisible_vars.end())
-  {
+  if (itr == m_invisible_vars.end()) {
     return nullptr;
   }
 
@@ -346,10 +329,10 @@ Frame::dyobj_ptr
 Frame::get_invisible_var(variable_key_t var_key) const
 {
   auto itr = m_invisible_vars.find(var_key);
-  if (itr == m_invisible_vars.end())
-  {
+  if (itr == m_invisible_vars.end()) {
     std::string name;
-    compartment()->get_string_literal(static_cast<encoding_key_t>(var_key), &name);
+    compartment()->get_string_literal(static_cast<encoding_key_t>(var_key),
+                                      &name);
     THROW(NameNotFoundError(name.c_str()));
   }
 
@@ -362,8 +345,7 @@ bool
 Frame::get_invisible_var_fast(variable_key_t var_key, dyobj_ptr* obj_ptr) const
 {
   auto itr = m_invisible_vars.find(var_key);
-  if (itr == m_invisible_vars.end())
-  {
+  if (itr == m_invisible_vars.end()) {
     return false;
   }
 
@@ -375,28 +357,25 @@ Frame::get_invisible_var_fast(variable_key_t var_key, dyobj_ptr* obj_ptr) const
 // -----------------------------------------------------------------------------
 
 bool
-Frame::get_invisible_var_through_ancestry(variable_key_t key, dyobj_ptr* obj_ptr)
+Frame::get_invisible_var_through_ancestry(variable_key_t key,
+                                          dyobj_ptr* obj_ptr)
 {
   dyobj_ptr obj = NULL;
 
-  if (get_invisible_var_fast(key, &obj))
-  {
+  if (get_invisible_var_fast(key, &obj)) {
     *obj_ptr = obj;
     return true;
   }
 
   Frame* frame = parent();
-  if (!frame)
-  {
+  if (!frame) {
     return false;
   }
 
-  while (!frame->get_invisible_var_fast(key, &obj))
-  {
+  while (!frame->get_invisible_var_fast(key, &obj)) {
     frame = frame->parent();
 
-    if (!frame)
-    {
+    if (!frame) {
       return false;
     }
   }
@@ -432,8 +411,7 @@ Frame::visible_var_keys() const
   std::vector<variable_key_t> keys;
   keys.reserve(m_visible_vars.size());
 
-  for (const auto& pair : m_visible_vars)
-  {
+  for (const auto& pair : m_visible_vars) {
     keys.push_back(pair.first);
   }
 
@@ -448,8 +426,7 @@ Frame::invisible_var_keys() const
   std::vector<variable_key_t> keys;
   keys.reserve(m_invisible_vars.size());
 
-  for (const auto& pair : m_invisible_vars)
-  {
+  for (const auto& pair : m_invisible_vars) {
     keys.push_back(pair.first);
   }
 
@@ -464,8 +441,7 @@ Frame::get_visible_objs() const
   std::vector<dyobj_ptr> obj_ptrs;
   obj_ptrs.reserve(m_visible_vars.size());
 
-  for (auto itr = m_visible_vars.begin(); itr != m_visible_vars.end(); ++itr)
-  {
+  for (auto itr = m_visible_vars.begin(); itr != m_visible_vars.end(); ++itr) {
     auto obj_ptr = itr->second;
     obj_ptrs.push_back(obj_ptr);
   }
@@ -481,8 +457,8 @@ Frame::get_invisible_objs() const
   std::vector<dyobj_ptr> obj_ptrs;
   obj_ptrs.reserve(m_invisible_vars.size());
 
-  for (auto itr = m_invisible_vars.begin(); itr != m_invisible_vars.end(); ++itr)
-  {
+  for (auto itr = m_invisible_vars.begin(); itr != m_invisible_vars.end();
+       ++itr) {
     auto obj_ptr = itr->second;
     obj_ptrs.push_back(obj_ptr);
   }

@@ -25,8 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "fwd.h"
 #include "ir/ir_module_index.h"
-#include <string>
 #include <memory>
+#include <string>
 #include <unordered_set>
 
 // TODO: [COREVM-601] Optimize IR module index and verifier
@@ -39,8 +39,7 @@ namespace ir {
  * Class encapsulating logic that validates the well-formedness and correctness
  * of an IR module.
  */
-class Verifier
-{
+class Verifier {
 public:
   /**
    * Constructor. Takes reference of an instance of the module to be verified.
@@ -66,7 +65,7 @@ public:
 
 private:
   /**
-   * Checks type definitions in the module. 
+   * Checks type definitions in the module.
    */
   bool check_type_decls();
 
@@ -83,8 +82,7 @@ private:
   /**
    * Context of a function definition check.
    */
-  struct FuncDefCheckContext
-  {
+  struct FuncDefCheckContext {
     const IRClosure* closure;
     const IRBasicBlock* bb;
     std::unordered_set<std::string> target_set;
@@ -108,110 +106,110 @@ private:
    * check.
    */
   bool check_instruction_dispatch(const IRInstruction&,
-    const FuncDefCheckContext&);
+                                  const FuncDefCheckContext&);
 
   /**
    * Check whether an instruction has the correct number of options.
    */
-  bool check_instruction_options_count(
-    const IRInstruction&, size_t, const FuncDefCheckContext&);
+  bool check_instruction_options_count(const IRInstruction&, size_t,
+                                       const FuncDefCheckContext&);
 
   /**
    * Check whether an instruction has the correct number of operands.
    */
-  bool check_instruction_operands_count(
-    const IRInstruction&, size_t, const FuncDefCheckContext&);
+  bool check_instruction_operands_count(const IRInstruction&, size_t,
+                                        const FuncDefCheckContext&);
 
   /**
    * Check whether an instruction has the correct number of labels.
    */
-  bool check_instruction_labels_count(
-    const IRInstruction&, size_t, const FuncDefCheckContext&);
+  bool check_instruction_labels_count(const IRInstruction&, size_t,
+                                      const FuncDefCheckContext&);
 
   /**
    * Check whether an instruction has a type.
    */
   bool check_instruction_has_type(const IRInstruction&,
-    const FuncDefCheckContext&);
+                                  const FuncDefCheckContext&);
 
   /**
    * Check whether the presence of instruction's target is valid.
    */
-  bool check_instruction_target_presence(
-    const IRInstruction&, const FuncDefCheckContext&, bool);
+  bool check_instruction_target_presence(const IRInstruction&,
+                                         const FuncDefCheckContext&, bool);
 
   /**
    * Check whether an instruction operand is valid.
    */
   bool check_operand(const IROperand&, const IRInstruction&,
-    FuncDefCheckContext&);
+                     FuncDefCheckContext&);
 
   /**
    * Determines whether two operands in the same instruction have the same
    * identifier type.
    */
   bool are_operands_of_same_type(const IROperand&, const IROperand&,
-    const FuncDefCheckContext&) const;
+                                 const FuncDefCheckContext&) const;
 
   /**
    * Get the identifier type of an operand.
    */
   const IRIdentifierType get_operand_type(const IROperand&,
-    const FuncDefCheckContext&) const;
+                                          const FuncDefCheckContext&) const;
 
   /**
    * Determines whether an operand is of integer type.
    */
   bool is_operand_integer_type(const IROperand&,
-    const FuncDefCheckContext&) const;
+                               const FuncDefCheckContext&) const;
 
   /**
    * Determines whether an operand is of numeric type.
    */
   bool is_operand_numeric_type(const IROperand&,
-    const FuncDefCheckContext&) const;
+                               const FuncDefCheckContext&) const;
 
   /**
    * Determines whether an operand is of numeric or boolean type.
    */
   bool is_operand_numeric_or_boolean_type(const IROperand&,
-    const FuncDefCheckContext&) const;
+                                          const FuncDefCheckContext&) const;
 
   /**
    * Determines whether an operand is of boolean type.
    */
   bool is_operand_boolean_type(const IROperand&,
-    const FuncDefCheckContext&) const;
+                               const FuncDefCheckContext&) const;
 
   /**
    * Determines whether an operand is of array type.
    */
   bool is_operand_array_type(const IROperand&,
-    const FuncDefCheckContext&) const;
+                             const FuncDefCheckContext&) const;
 
   /**
    * Determines whether an operand is of string type.
    */
   bool is_operand_string_type(const IROperand&,
-    const FuncDefCheckContext&) const;
+                              const FuncDefCheckContext&) const;
 
   /**
    * Determines whether an operand is of struct type.
    */
   bool is_operand_struct_type(const IROperand&,
-    const FuncDefCheckContext&) const;
+                              const FuncDefCheckContext&) const;
 
   /**
    * Determines whether an operand is of object type.
-   */   
+   */
   bool is_operand_object_type(const IROperand&,
-    const FuncDefCheckContext&) const;
+                              const FuncDefCheckContext&) const;
 
   /**
    * Determines whether an operand is of struct or object type.
    */
   bool is_operand_struct_or_object_type(const IROperand&,
-    const FuncDefCheckContext&) const;
+                                        const FuncDefCheckContext&) const;
 
   /**
    * Checks whether an identifier type is valid.
@@ -227,40 +225,63 @@ private:
    * Checks whether the attribute of an struct operand is valid.
    */
   bool check_type_attribute(const IROperand& attr_oprd,
-    const IROperand& object_oprd, const IRInstruction&,
-    const FuncDefCheckContext&);
+                            const IROperand& object_oprd, const IRInstruction&,
+                            const FuncDefCheckContext&);
 
   /**
    * Checks whether the attribute of an struct operand is valid.
    */
   bool check_type_attribute(const IROperand& attr_name_oprd,
-    const IROperand& attr_value_oprd, const IROperand& object_oprd,
-    const IRInstruction&, const FuncDefCheckContext&);
+                            const IROperand& attr_value_oprd,
+                            const IROperand& object_oprd, const IRInstruction&,
+                            const FuncDefCheckContext&);
 
 private:
   /** Opcode specific checks. */
-  bool check_instr_with_OPCODE_ALLOCA(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_LOAD(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_STORE(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_GETATTR(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_SETATTR(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_DELATTR(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_GETELEMENT(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_PUTELEMENT(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_LEN(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_RET(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_BR(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_SWITCH2(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_UNARY_ARITHMETIC_OPCODE(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_BINARY_ARITHMETIC_OPCODE(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_BNOT(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_BINARY_BITWISE_OPCODE(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_BITSHIFT_OPCODE(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_EQUALITY_OPCODE(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_LNOT(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_BINARY_LOGICAL_OPCODE(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_CMP(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_OPCODE_CALL(const IRInstruction&, const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_ALLOCA(const IRInstruction&,
+                                      const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_LOAD(const IRInstruction&,
+                                    const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_STORE(const IRInstruction&,
+                                     const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_GETATTR(const IRInstruction&,
+                                       const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_SETATTR(const IRInstruction&,
+                                       const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_DELATTR(const IRInstruction&,
+                                       const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_GETELEMENT(const IRInstruction&,
+                                          const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_PUTELEMENT(const IRInstruction&,
+                                          const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_LEN(const IRInstruction&,
+                                   const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_RET(const IRInstruction&,
+                                   const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_BR(const IRInstruction&,
+                                  const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_SWITCH2(const IRInstruction&,
+                                       const FuncDefCheckContext&);
+  bool check_instr_with_UNARY_ARITHMETIC_OPCODE(const IRInstruction&,
+                                                const FuncDefCheckContext&);
+  bool check_instr_with_BINARY_ARITHMETIC_OPCODE(const IRInstruction&,
+                                                 const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_BNOT(const IRInstruction&,
+                                    const FuncDefCheckContext&);
+  bool check_instr_with_BINARY_BITWISE_OPCODE(const IRInstruction&,
+                                              const FuncDefCheckContext&);
+  bool check_instr_with_BITSHIFT_OPCODE(const IRInstruction&,
+                                        const FuncDefCheckContext&);
+  bool check_instr_with_EQUALITY_OPCODE(const IRInstruction&,
+                                        const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_LNOT(const IRInstruction&,
+                                    const FuncDefCheckContext&);
+  bool check_instr_with_BINARY_LOGICAL_OPCODE(const IRInstruction&,
+                                              const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_CMP(const IRInstruction&,
+                                   const FuncDefCheckContext&);
+  bool check_instr_with_OPCODE_CALL(const IRInstruction&,
+                                    const FuncDefCheckContext&);
 
 private:
   const IRModule& m_module;

@@ -27,14 +27,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 
-
 namespace corevm {
 namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-class BytecodeLoader
-{
+class BytecodeLoader {
 public:
   virtual void load(const std::string&, runtime::Process&) = 0;
 
@@ -45,6 +43,5 @@ public:
 
 } /* end namespace frontend */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_BYTECODE_LOADER_H_ */

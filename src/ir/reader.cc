@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <exception>
 
-
 namespace corevm {
 namespace ir {
 
@@ -38,19 +37,14 @@ read_module_from_file(const char* filepath, IRModule& module, std::string& err)
 {
   bool res = false;
 
-  try
-  {
+  try {
     avro::DataFileReader<corevm::IRModule> reader(filepath);
     res = reader.read(module);
     reader.close();
-  }
-  catch (const std::exception& ex)
-  {
+  } catch (const std::exception& ex) {
     res = false;
     err = ex.what();
-  }
-  catch (...)
-  {
+  } catch (...) {
     res = false;
   }
 
@@ -61,4 +55,3 @@ read_module_from_file(const char* filepath, IRModule& module, std::string& err)
 
 } /* end namespace ir */
 } /* end namespace corevm */
-

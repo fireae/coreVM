@@ -21,18 +21,15 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "static_pass_runner.h"
-#include "verification_pass.h"
 #include "transform_pass.h"
-
+#include "verification_pass.h"
 
 namespace corevm {
 namespace jit {
 
 // -----------------------------------------------------------------------------
 
-StaticPassRunner::StaticPassRunner()
-  :
-  m_run_result({"", true, nullptr})
+StaticPassRunner::StaticPassRunner() : m_run_result({"", true, nullptr})
 {
 }
 
@@ -46,7 +43,8 @@ StaticPassRunner::has_failed() const
 
 // -----------------------------------------------------------------------------
 
-bool StaticPassRunner::success() const
+bool
+StaticPassRunner::success() const
 {
   return m_run_result.success;
 }

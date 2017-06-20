@@ -28,7 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <llvm/ExecutionEngine/GenericValue.h>
 
-
 namespace corevm {
 namespace jit {
 
@@ -36,16 +35,15 @@ namespace jit {
  * Convert an instance of `RuntimeValue` to the `llvm::GenericValue` equivalent,
  * given its type specification.
  */
-llvm::GenericValue convert_to_llvm_generic_value(
-  const RuntimeValue&, const RuntimeValueType&);
-
+llvm::GenericValue convert_to_llvm_generic_value(const RuntimeValue&,
+                                                 const RuntimeValueType&);
 
 /**
  * Convert an instance of `llvm::GenericValue` to the `RuntimeValue` equivalent,
  * given its type specification.
  */
-RuntimeValue convert_to_runtime_value(
-  const llvm::GenericValue&, const RuntimeValueType&);
+RuntimeValue convert_to_runtime_value(const llvm::GenericValue&,
+                                      const RuntimeValueType&);
 
 } /* end namespace jit */
 } /* end namespace corevm */

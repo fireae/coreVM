@@ -29,203 +29,162 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <boost/format.hpp>
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-class InvalidOperationError : public RuntimeError
-{
+class InvalidOperationError : public RuntimeError {
 public:
   explicit InvalidOperationError(const char* what_arg)
-    :
-    RuntimeError(
-      str(boost::format("Invalid operation: %s") % what_arg))
+    : RuntimeError(str(boost::format("Invalid operation: %s") % what_arg))
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class FrameNotFoundError : public RuntimeError
-{
+class FrameNotFoundError : public RuntimeError {
 public:
-  FrameNotFoundError()
-    :
-    RuntimeError("Expected frame not found")
+  FrameNotFoundError() : RuntimeError("Expected frame not found")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class InvocationCtxNotFoundError : public RuntimeError
-{
+class InvocationCtxNotFoundError : public RuntimeError {
 public:
-  InvocationCtxNotFoundError()
-    :
-    RuntimeError("Invocation context not found")
+  InvocationCtxNotFoundError() : RuntimeError("Invocation context not found")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class EvaluationStackEmptyError : public RuntimeError
-{
+class EvaluationStackEmptyError : public RuntimeError {
 public:
-  EvaluationStackEmptyError()
-    :
-    RuntimeError("Evaluation stack is empty")
+  EvaluationStackEmptyError() : RuntimeError("Evaluation stack is empty")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class NameNotFoundError : public RuntimeError
-{
+class NameNotFoundError : public RuntimeError {
 public:
   NameNotFoundError(const char* name)
-    :
-    RuntimeError(str(boost::format("Local variable '%s' not found") % name))
+    : RuntimeError(str(boost::format("Local variable '%s' not found") % name))
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class ObjectStackEmptyError : public RuntimeError
-{
+class ObjectStackEmptyError : public RuntimeError {
 public:
-  ObjectStackEmptyError()
-    :
-    RuntimeError("Process's object stack is empty")
+  ObjectStackEmptyError() : RuntimeError("Process's object stack is empty")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeValueNotFoundError : public RuntimeError
-{
+class NativeTypeValueNotFoundError : public RuntimeError {
 public:
-  NativeTypeValueNotFoundError()
-    :
-    RuntimeError("Native type value not found")
+  NativeTypeValueNotFoundError() : RuntimeError("Native type value not found")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class ObjectDeletionError : public RuntimeError
-{
+class ObjectDeletionError : public RuntimeError {
 public:
   explicit ObjectDeletionError(dyobj::dyobj_id_t id)
-    :
-    RuntimeError(
-      str(boost::format("Cannot delete object %#x") % id))
+    : RuntimeError(str(boost::format("Cannot delete object %#x") % id))
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class InvocationError : public RuntimeError
-{
+class InvocationError : public RuntimeError {
 public:
   explicit InvocationError(dyobj::dyobj_id_t id)
-    :
-    RuntimeError(str(boost::format("Cannot invoke call on object %#x") % id))
+    : RuntimeError(str(boost::format("Cannot invoke call on object %#x") % id))
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class MissingParameterError : public RuntimeError
-{
+class MissingParameterError : public RuntimeError {
 public:
-  MissingParameterError()
-    :
-    RuntimeError("Missing parameter")
+  MissingParameterError() : RuntimeError("Missing parameter")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class InvalidInstrAddrError : public RuntimeError
-{
+class InvalidInstrAddrError : public RuntimeError {
 public:
-  InvalidInstrAddrError()
-    :
-    RuntimeError("Invalid instruction address")
+  InvalidInstrAddrError() : RuntimeError("Invalid instruction address")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeValueInsertionError : public RuntimeError
-{
+class NativeTypeValueInsertionError : public RuntimeError {
 public:
   explicit NativeTypeValueInsertionError(const char* what_arg)
-    :
-    RuntimeError(str(boost::format(
-      "Cannot insert native type value: %s") % what_arg))
+    : RuntimeError(
+        str(boost::format("Cannot insert native type value: %s") % what_arg))
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class StringLiteralNotFoundError : public RuntimeError
-{
+class StringLiteralNotFoundError : public RuntimeError {
 public:
   explicit StringLiteralNotFoundError(encoding_key_t key)
-    :
-    RuntimeError(str(boost::format(
-      "Cannot find string literal for key: %llu") % key))
+    : RuntimeError(
+        str(boost::format("Cannot find string literal for key: %llu") % key))
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class FptLiteralNotFoundError : public RuntimeError
-{
+class FptLiteralNotFoundError : public RuntimeError {
 public:
   explicit FptLiteralNotFoundError(encoding_key_t key)
-    :
-    RuntimeError(str(boost::format(
-      "Cannot find floating-point literal for key: %llu") % key))
+    : RuntimeError(
+        str(boost::format("Cannot find floating-point literal for key: %llu") %
+            key))
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class CompartmentNotFoundError : public RuntimeError
-{
+class CompartmentNotFoundError : public RuntimeError {
 public:
   explicit CompartmentNotFoundError(compartment_id_t id)
-    :
-    RuntimeError(str(boost::format("Cannot find compartment %llu") % id))
+    : RuntimeError(str(boost::format("Cannot find compartment %llu") % id))
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class ClosureNotFoundError : public RuntimeError
-{
+class ClosureNotFoundError : public RuntimeError {
 public:
   explicit ClosureNotFoundError(closure_id_t id)
-    :
-    RuntimeError(str(boost::format("Cannot find closure %lld") % id))
+    : RuntimeError(str(boost::format("Cannot find closure %lld") % id))
   {
   }
 };
@@ -234,6 +193,5 @@ public:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_RUNTIME_ERRORS_H_ */

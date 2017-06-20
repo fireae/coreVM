@@ -26,15 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include <string>
 
-
 namespace corevm {
 namespace dyobj {
 
-attr_key_t
-hash_attr_str(const std::string&);
+attr_key_t hash_attr_str(const std::string&);
 
 } /* end namespace dyobj */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_DYOBJ_UTIL_H_ */

@@ -26,12 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdlib>
 #include <sys/types.h>
 
-
 namespace corevm {
 namespace memory {
 
-class AllocationScheme
-{
+class AllocationScheme {
 public:
   virtual ssize_t malloc(size_t) noexcept = 0;
   virtual ssize_t calloc(size_t, size_t) noexcept = 0;
@@ -43,6 +41,5 @@ protected:
 
 } /* end namespace memory */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_ALLOCATION_SCHEME_H_ */

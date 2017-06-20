@@ -26,20 +26,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/macros.h"
 
 #include <cstddef>
-#include <cstdlib>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <new>
 
 #include <sys/types.h>
 
-
 namespace corevm {
 namespace memory {
 
-template<class AllocationScheme>
-class Allocator
-{
+template <class AllocationScheme> class Allocator {
 public:
   explicit Allocator(uint64_t);
 
@@ -72,20 +69,18 @@ private:
   AllocationScheme m_allocation_scheme;
 };
 
-
 // -----------------------------------------------------------------------------
 
-template<class AllocationScheme>
-Allocator<AllocationScheme>::Allocator(uint64_t total_size):
-  m_total_size(total_size),
-  m_allocated_size(0),
-  m_heap(nullptr),
-  m_allocation_scheme(AllocationScheme(m_total_size))
+template <class AllocationScheme>
+Allocator<AllocationScheme>::Allocator(uint64_t total_size)
+  : m_total_size(total_size),
+    m_allocated_size(0),
+    m_heap(nullptr),
+    m_allocation_scheme(AllocationScheme(m_total_size))
 {
   void* mem = malloc(m_total_size);
 
-  if (!mem)
-  {
+  if (!mem) {
     THROW(std::bad_alloc());
   }
 
@@ -94,11 +89,9 @@ Allocator<AllocationScheme>::Allocator(uint64_t total_size):
 
 // -----------------------------------------------------------------------------
 
-template<class AllocationScheme>
-Allocator<AllocationScheme>::~Allocator()
+template <class AllocationScheme> Allocator<AllocationScheme>::~Allocator()
 {
-  if (m_heap)
-  {
+  if (m_heap) {
     free(m_heap);
     m_heap = nullptr;
   }
@@ -106,7 +99,7 @@ Allocator<AllocationScheme>::~Allocator()
 
 // -----------------------------------------------------------------------------
 
-template<class AllocationScheme>
+template <class AllocationScheme>
 uint64_t
 Allocator<AllocationScheme>::base_addr() const noexcept
 {
@@ -115,7 +108,7 @@ Allocator<AllocationScheme>::base_addr() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class AllocationScheme>
+template <class AllocationScheme>
 uint64_t
 Allocator<AllocationScheme>::total_size() const noexcept
 {
@@ -124,26 +117,23 @@ Allocator<AllocationScheme>::total_size() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class AllocationScheme>
+template <class AllocationScheme>
 void*
 Allocator<AllocationScheme>::allocate(size_t size) noexcept
 {
   void* ptr = nullptr;
 
-  if (size > m_total_size)
-  {
+  if (size > m_total_size) {
     return ptr;
   }
 
-  if (!(size > 0))
-  {
+  if (!(size > 0)) {
     return ptr;
   }
 
   ssize_t offset = m_allocation_scheme.malloc(size);
 
-  if (offset >= 0)
-  {
+  if (offset >= 0) {
     uint8_t* base = static_cast<uint8_t*>(m_heap);
     ptr = base + static_cast<uint32_t>(offset);
     m_allocated_size += static_cast<uint64_t>(size);
@@ -158,7 +148,7 @@ Allocator<AllocationScheme>::allocate(size_t size) noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class AllocationScheme>
+template <class AllocationScheme>
 void*
 Allocator<AllocationScheme>::allocate_n(size_t num, size_t size) noexcept
 {
@@ -166,20 +156,17 @@ Allocator<AllocationScheme>::allocate_n(size_t num, size_t size) noexcept
 
   size_t alloc_size = size * num;
 
-  if (alloc_size > m_total_size)
-  {
+  if (alloc_size > m_total_size) {
     return ptr;
   }
 
-  if (!(alloc_size > 0))
-  {
+  if (!(alloc_size > 0)) {
     return ptr;
   }
 
   ssize_t offset = m_allocation_scheme.calloc(num, size);
 
-  if (offset >= 0)
-  {
+  if (offset >= 0) {
     uint8_t* base = static_cast<uint8_t*>(m_heap);
     ptr = base + static_cast<uint32_t>(offset);
     m_allocated_size += static_cast<uint64_t>(alloc_size);
@@ -194,14 +181,13 @@ Allocator<AllocationScheme>::allocate_n(size_t num, size_t size) noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class AllocationScheme>
+template <class AllocationScheme>
 int
 Allocator<AllocationScheme>::deallocate(void* ptr) noexcept
 {
   int res = -1;
 
-  if (ptr == nullptr)
-  {
+  if (ptr == nullptr) {
     return res;
   }
 
@@ -211,8 +197,7 @@ Allocator<AllocationScheme>::deallocate(void* ptr) noexcept
   size_t offset = static_cast<size_t>(ptr_ - heap_);
   ssize_t size = m_allocation_scheme.free(offset);
 
-  if (size > 0)
-  {
+  if (size > 0) {
     memset(ptr, 0, static_cast<uint32_t>(size));
     m_allocated_size -= static_cast<uint64_t>(size);
 
@@ -228,7 +213,7 @@ Allocator<AllocationScheme>::deallocate(void* ptr) noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class AllocationScheme>
+template <class AllocationScheme>
 void
 Allocator<AllocationScheme>::debug_print() const noexcept
 {
@@ -240,6 +225,5 @@ Allocator<AllocationScheme>::debug_print() const noexcept
 
 } /* end namespace memory */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_MEMORY_ALLOCATOR_H_ */

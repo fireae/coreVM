@@ -29,7 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 
-
 namespace corevm {
 namespace types {
 
@@ -50,6 +49,5 @@ typedef native_map map;
 
 } /* end namespace types */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_TYPES_H_ */

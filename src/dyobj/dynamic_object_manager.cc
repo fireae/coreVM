@@ -22,15 +22,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "dynamic_object_manager.h"
 
-
 namespace corevm {
 namespace dyobj {
 
 // -----------------------------------------------------------------------------
 
-DynamicObjectManager::DynamicObjectManager()
-  :
-  m_locked(false)
+DynamicObjectManager::DynamicObjectManager() : m_locked(false)
 {
 }
 

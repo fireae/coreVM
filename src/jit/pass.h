@@ -26,12 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ir/fwd.h"
 #include <cstdint>
 
-
 namespace corevm {
 namespace jit {
 
 /**
- * Abstraction of a generic "pass" used in the just-in-time compilation pipeline.
+ * Abstraction of a generic "pass" used in the just-in-time compilation
+ * pipeline.
  *
  * A "pass" is an entity that encapsulates the logic for performing a certain
  * type of operation on an input IR module, or any of its constituent entities.
@@ -52,15 +52,13 @@ namespace jit {
  * chain transformations in the right order in the JIT pipeline
  * (by using `PassManager`) for optimal results.
  */
-class Pass
-{
+class Pass {
 public:
   /**
    * Types of passes. Denotes the granularity of the level of entities
    * that a particular pass may operate on.
    */
-  enum PassType : uint32_t
-  {
+  enum PassType : uint32_t {
     PassType_Module = 0x01,
     PassType_Function,
     PassType_BasicBlock,
@@ -70,7 +68,9 @@ public:
   /**
    * Default destructor.
    */
-  virtual ~Pass() {}
+  virtual ~Pass()
+  {
+  }
 
   /**
    * Initialization steps before a pass gets run.

@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <vector>
 
-
 namespace corevm {
 namespace runtime {
 
@@ -39,6 +38,5 @@ typedef std::vector<Instr> Vector;
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_VECTOR_H_ */

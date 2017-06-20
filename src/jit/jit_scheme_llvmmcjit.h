@@ -23,9 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_JIT_SCHEME_LLVM_MCJIT_H_
 #define COREVM_JIT_SCHEME_LLVM_MCJIT_H_
 
+#include "ir/format.h"
 #include "jit_compiler_llvmmcjit_backend.h"
 #include "lowering_pass_target_llvm_ir.h"
-#include "ir/format.h"
 
 namespace corevm {
 namespace jit {
@@ -33,13 +33,12 @@ namespace jit {
 /**
  * JIT scheme based on LLVM's MCJIT framework.
  */
-struct JITSchemeLLVMMCJIT
-{
-typedef JITCompilerLLVMMCJITBackend BackendType;
-typedef IRModule InputModuleType;
-typedef llvm::Module TargetModuleType;
-typedef LoweringPassTargetLLVMIR TargetLoweringPassType;
-typedef LLVMModuleAnalysisResult TargetLoweringPassAnalysisResultType;
+struct JITSchemeLLVMMCJIT {
+  typedef JITCompilerLLVMMCJITBackend BackendType;
+  typedef IRModule InputModuleType;
+  typedef llvm::Module TargetModuleType;
+  typedef LoweringPassTargetLLVMIR TargetLoweringPassType;
+  typedef LLVMModuleAnalysisResult TargetLoweringPassAnalysisResultType;
 };
 
 } /* end namespace jit */

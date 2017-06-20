@@ -21,9 +21,9 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "ir_builder.h"
+#include "api/ir/version.h"
 #include "format.h"
 #include "verifier.h"
-#include "api/ir/version.h"
 
 #include <boost/optional.hpp>
 
@@ -31,10 +31,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <utility>
 #include <vector>
 
-
 #if defined(__clang__) and __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wcovered-switch-default"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcovered-switch-default"
 #endif
 
 namespace corevm {
@@ -42,17 +41,13 @@ namespace ir {
 
 // -----------------------------------------------------------------------------
 
-FuncParam::FuncParam(FuncParamType value_)
-  :
-  value(value_)
+FuncParam::FuncParam(FuncParamType value_) : value(value_)
 {
 }
 
 // -----------------------------------------------------------------------------
 
-SSAVariable::SSAVariable(SSAVariableImpl value_)
-  :
-  value(value_)
+SSAVariable::SSAVariable(SSAVariableImpl value_) : value(value_)
 {
 }
 
@@ -65,8 +60,7 @@ typedef uint64_t type_id_t;
 /**
  * Abstraction representing an identifiable type in an IR module.
  */
-struct IdentifierType
-{
+struct IdentifierType {
   typedef common::variant::variant<ValueType, ArrayType, TypeDecl> Value;
 
   ValueRefType ref_type;
@@ -75,10 +69,10 @@ struct IdentifierType
 
 // -----------------------------------------------------------------------------
 
-IRValueRefType translate_ValueRefType(ValueRefType ref_type)
+IRValueRefType
+translate_ValueRefType(ValueRefType ref_type)
 {
-  switch (ref_type)
-  {
+  switch (ref_type) {
   case ValueRefTypeByValue:
     return corevm::value;
   case ValueRefTypeByReference:
@@ -92,10 +86,10 @@ IRValueRefType translate_ValueRefType(ValueRefType ref_type)
 
 // -----------------------------------------------------------------------------
 
-IRValueType translate_ValueType(ValueType value_type)
+IRValueType
+translate_ValueType(ValueType value_type)
 {
-  switch (value_type)
-  {
+  switch (value_type) {
   case ValueTypeVoid:
     return corevm::voidtype;
   case ValueTypeBoolean:
@@ -131,10 +125,10 @@ IRValueType translate_ValueType(ValueType value_type)
 
 // -----------------------------------------------------------------------------
 
-IROpcode translate_InstrOpcode(InstrOpcode opcode)
+IROpcode
+translate_InstrOpcode(InstrOpcode opcode)
 {
-  switch (opcode)
-  {
+  switch (opcode) {
   case InstrOpcodeALLOCA:
     return corevm::alloca;
   case InstrOpcodeLOAD:
@@ -192,7 +186,7 @@ IROpcode translate_InstrOpcode(InstrOpcode opcode)
   case InstrOpcodeEQ:
     return corevm::eq;
   case InstrOpcodeNEQ:
-    return corevm::neq; 
+    return corevm::neq;
   case InstrOpcodeGT:
     return corevm::gt;
   case InstrOpcodeLT:
@@ -218,15 +212,11 @@ IROpcode translate_InstrOpcode(InstrOpcode opcode)
 
 // -----------------------------------------------------------------------------
 
-static const char* ALLOCA_OPTIONS[] {
-  "static",
-  "auto"
-};
+static const char* ALLOCA_OPTIONS[]{"static", "auto"};
 
 // -----------------------------------------------------------------------------
 
-struct _TypeDecl
-{
+struct _TypeDecl {
   type_id_t id;
 };
 
@@ -236,11 +226,9 @@ struct _TypeDecl
  * Class that encapsulates the logic and data needed for a single aggregate
  * type declaration used during IR construction.
  */
-struct TypeDeclImpl
-{
+struct TypeDeclImpl {
   std::string name;
-  struct TypeDeclField
-  {
+  struct TypeDeclField {
     std::string name;
     IdentifierType type;
   };
@@ -257,8 +245,7 @@ struct TypeDeclImpl
   add_field(const std::string& field_name, const IdentifierType& field_type)
   {
     auto itr = fields_map.find(field_name);
-    if (itr != fields_map.end())
-    {
+    if (itr != fields_map.end()) {
       return;
     }
 
@@ -275,7 +262,6 @@ struct TypeDeclImpl
   }
 
   // ---------------------------------------------------------------------------
-
 };
 
 // -----------------------------------------------------------------------------
@@ -284,8 +270,7 @@ struct TypeDeclImpl
  * Class that encapsulates the logic and data needed for a single array
  * type declaration used during IR construction.
  */
-struct ArrayTypeImpl
-{
+struct ArrayTypeImpl {
   size_t len;
   IdentifierType type;
 };
@@ -296,26 +281,28 @@ struct ArrayTypeImpl
  * Encapsulation that implements the storage mechanisms of aggregate
  * type declarations used during IR construction.
  */
-struct TypeDeclStore
-{
+struct TypeDeclStore {
   type_id_t type_id;
   std::vector<TypeDeclImpl> storage;
   std::unordered_map<std::string, _TypeDecl> type_decls_map;
 
-  TypeDeclStore() : type_id(0), storage(), type_decls_map() {}
+  TypeDeclStore() : type_id(0), storage(), type_decls_map()
+  {
+  }
 
   // ---------------------------------------------------------------------------
 
-  TypeDecl add_type(const std::string& type_name)
+  TypeDecl
+  add_type(const std::string& type_name)
   {
     const auto itr = type_decls_map.find(type_name);
-    if (itr != type_decls_map.cend())
-    {
+    if (itr != type_decls_map.cend()) {
       return &itr->second;
     }
 
     storage.push_back(TypeDeclImpl{type_name, TypeDeclImpl::FieldSet(),
-      TypeDeclImpl::FieldSetMap(), TypeDeclImpl::AttributeSet()});
+                                   TypeDeclImpl::FieldSetMap(),
+                                   TypeDeclImpl::AttributeSet()});
     type_decls_map.insert(std::make_pair(type_name, _TypeDecl{type_id}));
     ++type_id;
 
@@ -324,7 +311,8 @@ struct TypeDeclStore
 
   // ---------------------------------------------------------------------------
 
-  const char* get_type_decl_name(TypeDecl type_decl) const
+  const char*
+  get_type_decl_name(TypeDecl type_decl) const
   {
     const auto& type_decl_impl = storage.at(type_decl->id);
     return type_decl_impl.name.c_str();
@@ -332,15 +320,17 @@ struct TypeDeclStore
 
   // ---------------------------------------------------------------------------
 
-  TypeDecl get_type_decl_by_name(const std::string& type_decl_name)
+  TypeDecl
+  get_type_decl_by_name(const std::string& type_decl_name)
   {
     return &type_decls_map.at(type_decl_name);
   }
 
   // ---------------------------------------------------------------------------
 
-  void add_type_attribution(TypeDecl type_decl, const std::string& attr_key,
-    const std::string& attr_val)
+  void
+  add_type_attribution(TypeDecl type_decl, const std::string& attr_key,
+                       const std::string& attr_val)
   {
     auto& type_decl_impl = storage.at(type_decl->id);
     type_decl_impl.add_type_attribution(attr_key, attr_val);
@@ -348,8 +338,9 @@ struct TypeDeclStore
 
   // ---------------------------------------------------------------------------
 
-  void add_type_field(TypeDecl type_decl, IdentifierType field_type,
-    const std::string& field_name)
+  void
+  add_type_field(TypeDecl type_decl, IdentifierType field_type,
+                 const std::string& field_name)
   {
     auto& type_decl_impl = storage.at(type_decl->id);
     type_decl_impl.add_field(field_name, field_type);
@@ -357,16 +348,16 @@ struct TypeDeclStore
 
   // ---------------------------------------------------------------------------
 
-  bool has_field(TypeDecl type_decl, const std::string& field_name)
+  bool
+  has_field(TypeDecl type_decl, const std::string& field_name)
   {
-    if (type_decl->id >= storage.size())
-    {
+    if (type_decl->id >= storage.size()) {
       return false;
     }
 
     auto& type_decl_impl = storage.at(type_decl->id);
     return type_decl_impl.fields_map.find(field_name) !=
-      type_decl_impl.fields_map.end();
+           type_decl_impl.fields_map.end();
   }
 
   // ---------------------------------------------------------------------------
@@ -379,16 +370,18 @@ struct TypeDeclStore
  * Encapsulation that implements the storage mechanisms of array type
  * declarations used during IR construction.
  */
-struct ArrayTypeStore
-{
+struct ArrayTypeStore {
   type_id_t type_id;
   std::vector<ArrayTypeImpl> store;
 
-  ArrayTypeStore() : type_id(0), store(0) {}
+  ArrayTypeStore() : type_id(0), store(0)
+  {
+  }
 
   // ---------------------------------------------------------------------------
 
-  ArrayType add_array_type(const ArrayTypeImpl& array_type)
+  ArrayType
+  add_array_type(const ArrayTypeImpl& array_type)
   {
     store.push_back(array_type);
     ArrayType val = type_id;
@@ -398,7 +391,8 @@ struct ArrayTypeStore
 
   // ---------------------------------------------------------------------------
 
-  bool has_array_type(ArrayType array_type)
+  bool
+  has_array_type(ArrayType array_type)
   {
     return array_type < store.size();
   }
@@ -413,20 +407,13 @@ struct ArrayTypeStore
  * Encapsulation that implements the storage mechanisms of function
  * parameters of a single function definition used during IR construction.
  */
-struct FuncParamStore
-{
+struct FuncParamStore {
   /**
    * Class that encapsulates the logic and data needed for a function parameter
    * used during IR construction.
    */
-  struct FuncParamImpl
-  {
-    enum FunctionParamType
-    {
-      REGULAR_PARAM,
-      POSITIONAL_ARG,
-      KEYWORD_ARG
-    };
+  struct FuncParamImpl {
+    enum FunctionParamType { REGULAR_PARAM, POSITIONAL_ARG, KEYWORD_ARG };
 
     std::string name;
     IdentifierType type;
@@ -439,16 +426,17 @@ struct FuncParamStore
 
   // ---------------------------------------------------------------------------
 
-  FuncParamStore() : type_id(0), storage(), params_map() {}
+  FuncParamStore() : type_id(0), storage(), params_map()
+  {
+  }
 
   // ---------------------------------------------------------------------------
 
-  FuncParamType add_func_parameter(const std::string& param_name,
-    IdentifierType param_type)
+  FuncParamType
+  add_func_parameter(const std::string& param_name, IdentifierType param_type)
   {
     const auto itr = params_map.find(param_name);
-    if (itr != params_map.cend())
-    {
+    if (itr != params_map.cend()) {
       return itr->second;
     }
 
@@ -462,16 +450,16 @@ struct FuncParamStore
 
   // ---------------------------------------------------------------------------
 
-  FuncParamType add_func_positional_arg(const std::string& param_name)
+  FuncParamType
+  add_func_positional_arg(const std::string& param_name)
   {
     const auto itr = params_map.find(param_name);
-    if (itr != params_map.cend())
-    {
+    if (itr != params_map.cend()) {
       return itr->second;
     }
 
-    storage.push_back(
-      FuncParamImpl{param_name, IdentifierType(), FuncParamImpl::POSITIONAL_ARG});
+    storage.push_back(FuncParamImpl{param_name, IdentifierType(),
+                                    FuncParamImpl::POSITIONAL_ARG});
     params_map.insert(std::make_pair(param_name, type_id));
     ++type_id;
 
@@ -480,11 +468,11 @@ struct FuncParamStore
 
   // ---------------------------------------------------------------------------
 
-  FuncParamType add_func_keyword_arg(const std::string& param_name)
+  FuncParamType
+  add_func_keyword_arg(const std::string& param_name)
   {
     const auto itr = params_map.find(param_name);
-    if (itr != params_map.cend())
-    {
+    if (itr != params_map.cend()) {
       return itr->second;
     }
 
@@ -496,7 +484,7 @@ struct FuncParamStore
     return params_map.at(param_name);
   }
 
-  // --------------------------------------------------------------------------- 
+  // ---------------------------------------------------------------------------
 
 }; /* end `struct FuncParamStore` */
 
@@ -506,8 +494,7 @@ struct FuncParamStore
  * Class that encapsulates the logic and data needed for an instruction
  * used during IR construction.
  */
-struct InstructionImpl
-{
+struct InstructionImpl {
   SSAVariableImpl target;
   InstrOpcode opcode;
   boost::optional<IdentifierType> type;
@@ -516,107 +503,84 @@ struct InstructionImpl
   std::vector<BasicBlock> labels;
 
   InstructionImpl(InstrOpcode opcode_, const IdentifierType& type_)
-    :
-    target(0),
-    opcode(opcode_),
-    type(type_),
-    options(),
-    oprds(),
-    labels()
+    : target(0), opcode(opcode_), type(type_), options(), oprds(), labels()
   {
   }
 
   InstructionImpl(InstrOpcode opcode_, const std::vector<std::string>& options_,
-    const IdentifierType& type_, SSAVariableImpl target_)
-    :
-    target(target_),
-    opcode(opcode_),
-    type(type_),
-    options(options_),
-    oprds(),
-    labels()
+                  const IdentifierType& type_, SSAVariableImpl target_)
+    : target(target_),
+      opcode(opcode_),
+      type(type_),
+      options(options_),
+      oprds(),
+      labels()
   {
   }
 
   InstructionImpl(InstrOpcode opcode_, const IdentifierType& type_,
-    SSAVariableImpl target_)
-    :
-    target(target_),
-    opcode(opcode_),
-    type(type_),
-    options(),
-    oprds(),
-    labels()
+                  SSAVariableImpl target_)
+    : target(target_),
+      opcode(opcode_),
+      type(type_),
+      options(),
+      oprds(),
+      labels()
   {
   }
 
   InstructionImpl(InstrOpcode opcode_, const IdentifierType& type_,
-    SSAVariableImpl target_, const std::vector<OperandValue>& oprds_)
-    :
-    target(target_),
-    opcode(opcode_),
-    type(type_),
-    options(),
-    oprds(oprds_),
-    labels()
+                  SSAVariableImpl target_,
+                  const std::vector<OperandValue>& oprds_)
+    : target(target_),
+      opcode(opcode_),
+      type(type_),
+      options(),
+      oprds(oprds_),
+      labels()
   {
   }
 
   InstructionImpl(InstrOpcode opcode_, const IdentifierType& type_,
-    const std::vector<OperandValue>& oprds_)
-    :
-    target(0),
-    opcode(opcode_),
-    type(type_),
-    options(),
-    oprds(oprds_),
-    labels()
+                  const std::vector<OperandValue>& oprds_)
+    : target(0),
+      opcode(opcode_),
+      type(type_),
+      options(),
+      oprds(oprds_),
+      labels()
   {
   }
 
   InstructionImpl(InstrOpcode opcode_, SSAVariableImpl target_,
-    const std::vector<OperandValue>& oprds_)
-    :
-    target(target_),
-    opcode(opcode_),
-    type(),
-    options(),
-    oprds(oprds_),
-    labels()
+                  const std::vector<OperandValue>& oprds_)
+    : target(target_),
+      opcode(opcode_),
+      type(),
+      options(),
+      oprds(oprds_),
+      labels()
   {
   }
 
   InstructionImpl(InstrOpcode opcode_, const std::vector<OperandValue>& oprds_)
-    :
-    target(0),
-    opcode(opcode_),
-    type(),
-    options(),
-    oprds(oprds_),
-    labels()
+    : target(0), opcode(opcode_), type(), options(), oprds(oprds_), labels()
   {
   }
 
   InstructionImpl(InstrOpcode opcode_, const std::vector<OperandValue>& oprds_,
-    const std::vector<BasicBlock>& labels_)
-    :
-    target(0),
-    opcode(opcode_),
-    type(),
-    options(),
-    oprds(oprds_),
-    labels(labels_)
+                  const std::vector<BasicBlock>& labels_)
+    : target(0),
+      opcode(opcode_),
+      type(),
+      options(),
+      oprds(oprds_),
+      labels(labels_)
   {
   }
 
   InstructionImpl(InstrOpcode opcode_, const std::vector<BasicBlock>& labels_)
-    :
-    target(0),
-    opcode(opcode_),
-    type(),
-    options(),
-    oprds(),
-    labels(labels_)
+    : target(0), opcode(opcode_), type(), options(), oprds(), labels(labels_)
   {
   }
 };
@@ -627,10 +591,8 @@ struct InstructionImpl
  * Encapsulation that implements the storage mechanisms of basic blocks
  * of a single function definition used during IR construction.
  */
-struct BasicBlockStore
-{
-  struct BasicBlockImpl
-  {
+struct BasicBlockStore {
+  struct BasicBlockImpl {
     std::string name;
     typedef std::vector<InstructionImpl> InstructionStore;
     InstructionStore instr_store;
@@ -647,97 +609,109 @@ struct BasicBlockStore
 
   // ---------------------------------------------------------------------------
 
-  BasicBlock create_block()
+  BasicBlock
+  create_block()
   {
-    const static std::string bb_name_prefix("label"); 
-    storage.push_back(BasicBlockImpl{
-      bb_name_prefix + std::to_string(storage.size()),
-      BasicBlockImpl::InstructionStore()});
+    const static std::string bb_name_prefix("label");
+    storage.push_back(
+      BasicBlockImpl{bb_name_prefix + std::to_string(storage.size()),
+                     BasicBlockImpl::InstructionStore()});
     return storage.size() - 1;
   }
 
   // ---------------------------------------------------------------------------
 
-  SSAVariableImpl add_instruction_with_target(BasicBlock basic_block,
-    InstrOpcode opcode, const IdentifierType& type)
+  SSAVariableImpl
+  add_instruction_with_target(BasicBlock basic_block, InstrOpcode opcode,
+                              const IdentifierType& type)
   {
-    storage.at(basic_block).instr_store.push_back(InstructionImpl{opcode, type,
-      ++var_id});
+    storage.at(basic_block)
+      .instr_store.push_back(InstructionImpl{opcode, type, ++var_id});
 
     return var_id;
-  } 
+  }
 
   // ---------------------------------------------------------------------------
 
-  SSAVariableImpl add_instruction_with_target_and_options(
+  SSAVariableImpl
+  add_instruction_with_target_and_options(
     BasicBlock basic_block, InstrOpcode opcode,
     const std::vector<std::string>& options, const IdentifierType& type)
   {
-    storage.at(basic_block).instr_store.push_back(InstructionImpl{
-      opcode, options, type, ++var_id});
-
-    return var_id;
-  } 
-
-  // ---------------------------------------------------------------------------
-
-  SSAVariableImpl add_instruction_with_target_and_oprds(BasicBlock basic_block,
-    InstrOpcode opcode, const IdentifierType& type,
-    const std::vector<OperandValue>& oprds)
-  {
-    storage.at(basic_block).instr_store.push_back(InstructionImpl{opcode, type,
-      ++var_id, oprds});
+    storage.at(basic_block)
+      .instr_store.push_back(InstructionImpl{opcode, options, type, ++var_id});
 
     return var_id;
   }
 
   // ---------------------------------------------------------------------------
 
-  SSAVariableImpl add_instruction_with_target_and_oprds(BasicBlock basic_block,
-    InstrOpcode opcode, const std::vector<OperandValue>& oprds)
+  SSAVariableImpl
+  add_instruction_with_target_and_oprds(BasicBlock basic_block,
+                                        InstrOpcode opcode,
+                                        const IdentifierType& type,
+                                        const std::vector<OperandValue>& oprds)
   {
-    storage.at(basic_block).instr_store.push_back(InstructionImpl{opcode,
-      ++var_id, oprds});
+    storage.at(basic_block)
+      .instr_store.push_back(InstructionImpl{opcode, type, ++var_id, oprds});
 
     return var_id;
   }
 
   // ---------------------------------------------------------------------------
 
-  void add_instruction_with_oprds(BasicBlock basic_block,
-    InstrOpcode opcode, const std::vector<OperandValue>& oprds)
+  SSAVariableImpl
+  add_instruction_with_target_and_oprds(BasicBlock basic_block,
+                                        InstrOpcode opcode,
+                                        const std::vector<OperandValue>& oprds)
   {
-    storage.at(basic_block).instr_store.push_back(
-      InstructionImpl{opcode, oprds});
+    storage.at(basic_block)
+      .instr_store.push_back(InstructionImpl{opcode, ++var_id, oprds});
+
+    return var_id;
   }
 
   // ---------------------------------------------------------------------------
 
-  void add_instruction_with_oprds(BasicBlock basic_block,
-    InstrOpcode opcode, IdentifierType value_type,
-    const std::vector<OperandValue>& oprds)
+  void
+  add_instruction_with_oprds(BasicBlock basic_block, InstrOpcode opcode,
+                             const std::vector<OperandValue>& oprds)
   {
-    storage.at(basic_block).instr_store.push_back(
-      InstructionImpl{opcode, value_type, oprds});
+    storage.at(basic_block)
+      .instr_store.push_back(InstructionImpl{opcode, oprds});
   }
 
   // ---------------------------------------------------------------------------
 
-  void add_instruction_with_oprds_and_labels(BasicBlock basic_block,
-    InstrOpcode opcode, const std::vector<OperandValue>& oprds,
-    const std::vector<BasicBlock>& labels)
+  void
+  add_instruction_with_oprds(BasicBlock basic_block, InstrOpcode opcode,
+                             IdentifierType value_type,
+                             const std::vector<OperandValue>& oprds)
   {
-    storage.at(basic_block).instr_store.push_back(
-      InstructionImpl{opcode, oprds, labels});
+    storage.at(basic_block)
+      .instr_store.push_back(InstructionImpl{opcode, value_type, oprds});
   }
 
   // ---------------------------------------------------------------------------
 
-  void add_instruction_with_labels(BasicBlock basic_block,
-    InstrOpcode opcode, const std::vector<BasicBlock>& labels)
+  void
+  add_instruction_with_oprds_and_labels(BasicBlock basic_block,
+                                        InstrOpcode opcode,
+                                        const std::vector<OperandValue>& oprds,
+                                        const std::vector<BasicBlock>& labels)
   {
-    storage.at(basic_block).instr_store.push_back(
-      InstructionImpl{opcode, labels});
+    storage.at(basic_block)
+      .instr_store.push_back(InstructionImpl{opcode, oprds, labels});
+  }
+
+  // ---------------------------------------------------------------------------
+
+  void
+  add_instruction_with_labels(BasicBlock basic_block, InstrOpcode opcode,
+                              const std::vector<BasicBlock>& labels)
+  {
+    storage.at(basic_block)
+      .instr_store.push_back(InstructionImpl{opcode, labels});
   }
 
   // ---------------------------------------------------------------------------
@@ -750,25 +724,22 @@ struct BasicBlockStore
  * Encapsulation that implements the storage mechanisms of function definitions
  * in an IR module used during IR construction.
  */
-struct FuncDefnStore
-{
+struct FuncDefnStore {
   /**
    * Class encapsulating the logic and data needed to represent and store
    * a single function definition in an IR module used during IR construction.
    */
-  struct FuncDefnImpl
-  {
+  struct FuncDefnImpl {
     IdentifierType ret_type;
     FuncParamStore param_store;
     BasicBlockStore bb_store;
     std::string parent;
 
     FuncDefnImpl(IdentifierType ret_type_, const char* parent_)
-      :
-      ret_type(ret_type_),
-      param_store(),
-      bb_store(),
-      parent(parent_ ? parent_ : "")
+      : ret_type(ret_type_),
+        param_store(),
+        bb_store(),
+        parent(parent_ ? parent_ : "")
     {
     }
   };
@@ -785,17 +756,17 @@ struct FuncDefnStore
 
   // ---------------------------------------------------------------------------
 
-  FuncDefn create_func_defn(const std::string& func_name,
-    IdentifierType ret_type, const char* parent)
+  FuncDefn
+  create_func_defn(const std::string& func_name, IdentifierType ret_type,
+                   const char* parent)
   {
     const auto itr = func_defns_map.find(func_name);
-    if (itr != func_defns_map.cend())
-    {
+    if (itr != func_defns_map.cend()) {
       return itr->second;
     }
 
-    func_defns_store.insert(std::make_pair(++type_id,
-      FuncDefnImpl{ret_type, parent}));
+    func_defns_store.insert(
+      std::make_pair(++type_id, FuncDefnImpl{ret_type, parent}));
     func_defns_map.insert(std::make_pair(func_name, type_id));
 
     return func_defns_map.at(func_name);
@@ -803,18 +774,19 @@ struct FuncDefnStore
 
   // ---------------------------------------------------------------------------
 
-  FuncParamType add_func_parameter(FuncDefn func_defn,
-    const std::string& param_name, IdentifierType param_type)
+  FuncParamType
+  add_func_parameter(FuncDefn func_defn, const std::string& param_name,
+                     IdentifierType param_type)
   {
     auto& func_defn_impl = func_defns_store.at(func_defn);
     return func_defn_impl.param_store.add_func_parameter(param_name,
-      param_type);
+                                                         param_type);
   }
 
   // ---------------------------------------------------------------------------
 
-  FuncParamType add_func_positional_arg(FuncDefn func_defn,
-    const std::string& param_name)
+  FuncParamType
+  add_func_positional_arg(FuncDefn func_defn, const std::string& param_name)
   {
     auto& func_defn_impl = func_defns_store.at(func_defn);
     return func_defn_impl.param_store.add_func_positional_arg(param_name);
@@ -822,8 +794,8 @@ struct FuncDefnStore
 
   // ---------------------------------------------------------------------------
 
-  FuncParamType add_func_keyword_arg(FuncDefn func_defn,
-    const std::string& param_name)
+  FuncParamType
+  add_func_keyword_arg(FuncDefn func_defn, const std::string& param_name)
   {
     auto& func_defn_impl = func_defns_store.at(func_defn);
     return func_defn_impl.param_store.add_func_keyword_arg(param_name);
@@ -831,7 +803,8 @@ struct FuncDefnStore
 
   // ---------------------------------------------------------------------------
 
-  FuncDefnImpl& get_func_defn(FuncDefn func_defn)
+  FuncDefnImpl&
+  get_func_defn(FuncDefn func_defn)
   {
     return func_defns_store.at(func_defn);
   }
@@ -846,8 +819,7 @@ struct FuncDefnStore
  * Class encapsulating the logic and data needed to implement whole-module
  * IR construction.
  */
-struct IRBuilderImpl
-{
+struct IRBuilderImpl {
   IRBuilderImpl();
 
   /**
@@ -920,7 +892,7 @@ struct IRBuilderImpl
    * NOTE: currently function definitions with the same name are not allowed.
    */
   FuncDefn create_func_defn(const std::string&, IdentifierType,
-    const char* parent);
+                            const char* parent);
 
   /**
    * Add a function parameter with the specified parameter name, type and value
@@ -958,49 +930,48 @@ struct IRBuilderImpl
    * initialization of an aggregate type.
    */
   SSAVariable add_alloca(FuncDefn, BasicBlock, AllocaType, const std::string&,
-    ValueRefType);
+                         ValueRefType);
 
   /**
    * Insert 'load' instruction.
    */
-  SSAVariable add_load(FuncDefn, BasicBlock, IdentifierType,
-    OperandValue);
+  SSAVariable add_load(FuncDefn, BasicBlock, IdentifierType, OperandValue);
 
   /**
    * Insert 'store' instruction.
    */
-  void add_store(FuncDefn, BasicBlock, IdentifierType,
-    OperandValue, OperandValue);
+  void add_store(FuncDefn, BasicBlock, IdentifierType, OperandValue,
+                 OperandValue);
 
   /**
    * Insert "attribute getting" instruction, a.k.a. 'getattr'.
    */
   SSAVariable add_get_attribute(FuncDefn, BasicBlock, OperandValue,
-    const std::string&);
+                                const std::string&);
 
   /**
    * Insert "attribute setting" instruction, a.k.a. 'setattr'.
    */
   void add_set_attribute(FuncDefn, BasicBlock, OperandValue, OperandValue,
-    const std::string&);
+                         const std::string&);
 
   /**
    * Insert "attribute deletion" instruction, a.k.a. 'delattr'.
    */
   void add_delete_attribute(FuncDefn, BasicBlock, OperandValue,
-    const std::string&);
+                            const std::string&);
 
   /**
    * Insert "get element" instruction, a.k.a. 'getelement'.
    */
   SSAVariable add_get_element(FuncDefn, BasicBlock, IdentifierType,
-    OperandValue, OperandValue);
+                              OperandValue, OperandValue);
 
   /**
    * Insert 'putelement' instruction.
    */
   void add_put_element(FuncDefn, BasicBlock, OperandValue, OperandValue,
-    OperandValue);
+                       OperandValue);
 
   /**
    * Insert 'len' instruction.
@@ -1015,20 +986,20 @@ struct IRBuilderImpl
   /**
    * Insert an instruction for unary expressions.
    */
-  SSAVariable add_unary_instr(FuncDefn, BasicBlock, InstrOpcode,
-    ValueType, OperandValue);
+  SSAVariable add_unary_instr(FuncDefn, BasicBlock, InstrOpcode, ValueType,
+                              OperandValue);
 
   /**
    * Insert an instruction for binary expressions.
    */
-  SSAVariable add_binary_instr(FuncDefn, BasicBlock, InstrOpcode,
-    ValueType, OperandValue, OperandValue);
+  SSAVariable add_binary_instr(FuncDefn, BasicBlock, InstrOpcode, ValueType,
+                               OperandValue, OperandValue);
 
   /**
    * Insert an instruction for equality comparison expression.
    */
   SSAVariable add_equality_instr(FuncDefn, BasicBlock, InstrOpcode,
-    OperandValue, OperandValue);
+                                 OperandValue, OperandValue);
 
   /**
    * Insert equality comparison instruction 'cmp', for
@@ -1039,14 +1010,14 @@ struct IRBuilderImpl
   /**
    * Insert 'call' instruction.
    */
-  SSAVariable add_call(FuncDefn, BasicBlock, IdentifierType,
-    const std::string&, const std::vector<OperandValue>&);
+  SSAVariable add_call(FuncDefn, BasicBlock, IdentifierType, const std::string&,
+                       const std::vector<OperandValue>&);
 
   /**
    * Add a conditional statement inside the current basic block.
    */
   void add_conditional_branch(FuncDefn, BasicBlock, OperandValue, BasicBlock,
-    BasicBlock);
+                              BasicBlock);
 
   /**
    * Add a unconditional branch statement inside the current basic block.
@@ -1059,8 +1030,8 @@ struct IRBuilderImpl
    * Note that the number of cases and target blocks must equal.
    */
   void add_switch(FuncDefn, BasicBlock, OperandValue predicate,
-    const std::vector<OperandValue>& cases,
-    const std::vector<BasicBlock>& target_blocks);
+                  const std::vector<OperandValue>& cases,
+                  const std::vector<BasicBlock>& target_blocks);
 
   /**
    * Finalizes module construction.
@@ -1080,12 +1051,12 @@ private:
   IRTypeDecl finalize_type_decl(const TypeDeclImpl&);
 
   IRClosure finalize_func_defn(const std::string&,
-    const FuncDefnStore::FuncDefnImpl&);
+                               const FuncDefnStore::FuncDefnImpl&);
 
   void translate_IdentifierType(const IdentifierType&, IRIdentifierType&) const;
 
-  IRInstruction translate_InstructionImpl(
-    const FuncDefnStore::FuncDefnImpl&, const InstructionImpl&) const;
+  IRInstruction translate_InstructionImpl(const FuncDefnStore::FuncDefnImpl&,
+                                          const InstructionImpl&) const;
 
 private:
   std::string module_name;
@@ -1101,14 +1072,13 @@ private:
 // -----------------------------------------------------------------------------
 
 IRBuilderImpl::IRBuilderImpl()
-  :
-  module_name(),
-  author_name(),
-  target_version(0),
-  timestamp(0),
-  type_decl_store(),
-  array_type_store(),
-  func_defn_store()
+  : module_name(),
+    author_name(),
+    target_version(0),
+    timestamp(0),
+    type_decl_store(),
+    array_type_store(),
+    func_defn_store()
 {
 }
 
@@ -1122,21 +1092,24 @@ IRBuilderImpl::add_module_name(const char* name)
 
 // -----------------------------------------------------------------------------
 
-void IRBuilderImpl::add_author(const char* name)
+void
+IRBuilderImpl::add_author(const char* name)
 {
   author_name.assign(name);
 }
 
 // -----------------------------------------------------------------------------
 
-void IRBuilderImpl::add_target_version(uint64_t val)
+void
+IRBuilderImpl::add_target_version(uint64_t val)
 {
   target_version = val;
 }
 
 // -----------------------------------------------------------------------------
 
-void IRBuilderImpl::add_timestamp(uint64_t val)
+void
+IRBuilderImpl::add_timestamp(uint64_t val)
 {
   timestamp = val;
 }
@@ -1161,7 +1134,8 @@ IRBuilderImpl::get_type_decl_name(TypeDecl type_decl) const
 
 void
 IRBuilderImpl::add_type_attribution(TypeDecl type_decl,
-  const std::string& attr_key, const std::string& attr_val)
+                                    const std::string& attr_key,
+                                    const std::string& attr_val)
 {
   type_decl_store.add_type_attribution(type_decl, attr_key, attr_val);
 }
@@ -1170,7 +1144,7 @@ IRBuilderImpl::add_type_attribution(TypeDecl type_decl,
 
 void
 IRBuilderImpl::add_type_field(TypeDecl type_decl, IdentifierType field_type,
-  const std::string& field_name)
+                              const std::string& field_name)
 {
   type_decl_store.add_type_field(type_decl, field_type, field_name);
 }
@@ -1203,7 +1177,7 @@ IRBuilderImpl::has_array_type(ArrayType array_type)
 
 FuncDefn
 IRBuilderImpl::create_func_defn(const std::string& func_name,
-  IdentifierType rettype, const char* parent)
+                                IdentifierType rettype, const char* parent)
 {
   return func_defn_store.create_func_defn(func_name, rettype, parent);
 }
@@ -1212,7 +1186,8 @@ IRBuilderImpl::create_func_defn(const std::string& func_name,
 
 FuncParam
 IRBuilderImpl::add_func_parameter(FuncDefn func_defn,
-  const std::string& param_name, IdentifierType param_type)
+                                  const std::string& param_name,
+                                  IdentifierType param_type)
 {
   return func_defn_store.add_func_parameter(func_defn, param_name, param_type);
 }
@@ -1221,7 +1196,7 @@ IRBuilderImpl::add_func_parameter(FuncDefn func_defn,
 
 FuncParam
 IRBuilderImpl::add_func_positional_arg(FuncDefn func_defn,
-  const std::string& param_name)
+                                       const std::string& param_name)
 {
   return func_defn_store.add_func_positional_arg(func_defn, param_name);
 }
@@ -1230,7 +1205,7 @@ IRBuilderImpl::add_func_positional_arg(FuncDefn func_defn,
 
 FuncParam
 IRBuilderImpl::add_func_keyword_arg(FuncDefn func_defn,
-  const std::string& param_name)
+                                    const std::string& param_name)
 {
   return func_defn_store.add_func_keyword_arg(func_defn, param_name);
 }
@@ -1246,30 +1221,30 @@ IRBuilderImpl::create_basic_block(FuncDefn func_defn)
 
 // -----------------------------------------------------------------------------
 
-
 SSAVariable
 IRBuilderImpl::add_alloca(FuncDefn func_defn, BasicBlock basic_block,
-  AllocaType alloca_type, IdentifierType target_type)
+                          AllocaType alloca_type, IdentifierType target_type)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
   return func_defn_impl.bb_store.add_instruction_with_target_and_options(
     basic_block, InstrOpcodeALLOCA,
-    std::vector<std::string> { ALLOCA_OPTIONS[alloca_type] }, target_type);
+    std::vector<std::string>{ALLOCA_OPTIONS[alloca_type]}, target_type);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilderImpl::add_alloca(FuncDefn func_defn, BasicBlock basic_block,
-  AllocaType alloca_type, const std::string& target_type_name,
-  ValueRefType ref_type)
+                          AllocaType alloca_type,
+                          const std::string& target_type_name,
+                          ValueRefType ref_type)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
-  auto target_type_decl = type_decl_store.get_type_decl_by_name(
-    target_type_name);
+  auto target_type_decl =
+    type_decl_store.get_type_decl_by_name(target_type_name);
   return func_defn_impl.bb_store.add_instruction_with_target_and_options(
     basic_block, InstrOpcodeALLOCA,
-    std::vector<std::string> { ALLOCA_OPTIONS[alloca_type] },
+    std::vector<std::string>{ALLOCA_OPTIONS[alloca_type]},
     IdentifierType{ref_type, target_type_decl});
 }
 
@@ -1277,164 +1252,176 @@ IRBuilderImpl::add_alloca(FuncDefn func_defn, BasicBlock basic_block,
 
 SSAVariable
 IRBuilderImpl::add_load(FuncDefn func_defn, BasicBlock basic_block,
-  IdentifierType value_type, OperandValue oprd)
+                        IdentifierType value_type, OperandValue oprd)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
   return func_defn_impl.bb_store.add_instruction_with_target_and_oprds(
-    basic_block, InstrOpcodeLOAD, value_type,
-    std::vector<OperandValue>{oprd});
+    basic_block, InstrOpcodeLOAD, value_type, std::vector<OperandValue>{oprd});
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilderImpl::add_store(FuncDefn func_defn, BasicBlock basic_block,
-  IdentifierType value_type, OperandValue src, OperandValue dst)
+                         IdentifierType value_type, OperandValue src,
+                         OperandValue dst)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
-  func_defn_impl.bb_store.add_instruction_with_oprds(basic_block,
-    InstrOpcodeSTORE, value_type, std::vector<OperandValue>{src,dst});
+  func_defn_impl.bb_store.add_instruction_with_oprds(
+    basic_block, InstrOpcodeSTORE, value_type,
+    std::vector<OperandValue>{src, dst});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilderImpl::add_get_attribute(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue source, const std::string& attr_name)
+                                 OperandValue source,
+                                 const std::string& attr_name)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
   return func_defn_impl.bb_store.add_instruction_with_target_and_oprds(
     basic_block, InstrOpcodeGETATTR,
-    std::vector<OperandValue> {attr_name, source});
+    std::vector<OperandValue>{attr_name, source});
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilderImpl::add_set_attribute(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue target, OperandValue source, const std::string& attr_name)
+                                 OperandValue target, OperandValue source,
+                                 const std::string& attr_name)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
-  func_defn_impl.bb_store.add_instruction_with_oprds(basic_block,
-    InstrOpcodeSETATTR, std::vector<OperandValue> {attr_name, source, target});
+  func_defn_impl.bb_store.add_instruction_with_oprds(
+    basic_block, InstrOpcodeSETATTR,
+    std::vector<OperandValue>{attr_name, source, target});
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilderImpl::add_delete_attribute(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue source, const std::string& attr_name)
+                                    OperandValue source,
+                                    const std::string& attr_name)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
-  func_defn_impl.bb_store.add_instruction_with_oprds(basic_block,
-    InstrOpcodeDELATTR, std::vector<OperandValue> {attr_name, source });
+  func_defn_impl.bb_store.add_instruction_with_oprds(
+    basic_block, InstrOpcodeDELATTR,
+    std::vector<OperandValue>{attr_name, source});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilderImpl::add_get_element(FuncDefn func_defn, BasicBlock basic_block,
-  IdentifierType value_type, OperandValue source, OperandValue idx)
+                               IdentifierType value_type, OperandValue source,
+                               OperandValue idx)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
   return func_defn_impl.bb_store.add_instruction_with_target_and_oprds(
     basic_block, InstrOpcodeGETELEMENT, value_type,
-    std::vector<OperandValue> {source, idx});
+    std::vector<OperandValue>{source, idx});
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilderImpl::add_put_element(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue src, OperandValue dst, OperandValue idx)
+                               OperandValue src, OperandValue dst,
+                               OperandValue idx)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
-  return func_defn_impl.bb_store.add_instruction_with_oprds(basic_block,
-    InstrOpcodePUTELEMENT, std::vector<OperandValue> {src, dst, idx});
+  return func_defn_impl.bb_store.add_instruction_with_oprds(
+    basic_block, InstrOpcodePUTELEMENT,
+    std::vector<OperandValue>{src, dst, idx});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilderImpl::add_len(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue oprd)
+                       OperandValue oprd)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
   return func_defn_impl.bb_store.add_instruction_with_target_and_oprds(
     basic_block, InstrOpcodeLEN,
     IdentifierType{ValueRefTypeByValue, ValueTypeUInt64},
-    std::vector<OperandValue> {oprd});
+    std::vector<OperandValue>{oprd});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilderImpl::add_ret(FuncDefn func_defn, BasicBlock basic_block,
-  IdentifierType value_type, OperandValue value)
+                       IdentifierType value_type, OperandValue value)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
   return func_defn_impl.bb_store.add_instruction_with_target_and_oprds(
-    basic_block, InstrOpcodeRET, value_type, std::vector<OperandValue> {value});
+    basic_block, InstrOpcodeRET, value_type, std::vector<OperandValue>{value});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilderImpl::add_unary_instr(FuncDefn func_defn, BasicBlock basic_block,
-  InstrOpcode opcode, ValueType value_type, OperandValue source)
+                               InstrOpcode opcode, ValueType value_type,
+                               OperandValue source)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
   return func_defn_impl.bb_store.add_instruction_with_target_and_oprds(
     basic_block, opcode, IdentifierType{ValueRefTypeByValue, value_type},
-    std::vector<OperandValue> {source});
+    std::vector<OperandValue>{source});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilderImpl::add_binary_instr(FuncDefn func_defn, BasicBlock basic_block,
-  InstrOpcode opcode, ValueType value_type, OperandValue lhs, OperandValue rhs)
+                                InstrOpcode opcode, ValueType value_type,
+                                OperandValue lhs, OperandValue rhs)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
   return func_defn_impl.bb_store.add_instruction_with_target_and_oprds(
     basic_block, opcode, IdentifierType{ValueRefTypeByValue, value_type},
-    std::vector<OperandValue> {lhs, rhs});
+    std::vector<OperandValue>{lhs, rhs});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilderImpl::add_equality_instr(FuncDefn func_defn, BasicBlock basic_block,
-  InstrOpcode opcode, OperandValue lhs, OperandValue rhs)
+                                  InstrOpcode opcode, OperandValue lhs,
+                                  OperandValue rhs)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
   return func_defn_impl.bb_store.add_instruction_with_target_and_oprds(
     basic_block, opcode, IdentifierType{ValueRefTypeByValue, ValueTypeBoolean},
-    std::vector<OperandValue> {lhs, rhs});
+    std::vector<OperandValue>{lhs, rhs});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilderImpl::add_cmp(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue lhs, OperandValue rhs)
+                       OperandValue lhs, OperandValue rhs)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
   return func_defn_impl.bb_store.add_instruction_with_target_and_oprds(
     basic_block, InstrOpcodeCMP,
     IdentifierType{ValueRefTypeByValue, ValueTypeInt32},
-    std::vector<OperandValue> {lhs, rhs});
+    std::vector<OperandValue>{lhs, rhs});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilderImpl::add_call(FuncDefn func_defn, BasicBlock basic_block,
-  IdentifierType ret_type, const std::string& callee,
-  const std::vector<OperandValue>& args)
+                        IdentifierType ret_type, const std::string& callee,
+                        const std::vector<OperandValue>& args)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
-  std::vector<OperandValue> oprds {callee};
+  std::vector<OperandValue> oprds{callee};
   oprds.insert(oprds.end(), args.begin(), args.end());
   return func_defn_impl.bb_store.add_instruction_with_target_and_oprds(
     basic_block, InstrOpcodeCALL, ret_type, oprds);
@@ -1444,50 +1431,49 @@ IRBuilderImpl::add_call(FuncDefn func_defn, BasicBlock basic_block,
 
 void
 IRBuilderImpl::add_conditional_branch(FuncDefn func_defn,
-  BasicBlock basic_block, OperandValue predicate, BasicBlock bb1,
-  BasicBlock bb2)
+                                      BasicBlock basic_block,
+                                      OperandValue predicate, BasicBlock bb1,
+                                      BasicBlock bb2)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
 
   // Add instruction to branch to either blocks.
-  func_defn_impl.bb_store.add_instruction_with_oprds_and_labels(basic_block,
-    InstrOpcodeBR,
-    std::vector<OperandValue> {predicate},
-    std::vector<BasicBlock> {bb1, bb2});
+  func_defn_impl.bb_store.add_instruction_with_oprds_and_labels(
+    basic_block, InstrOpcodeBR, std::vector<OperandValue>{predicate},
+    std::vector<BasicBlock>{bb1, bb2});
 
   // Add unconditional branch in each block to go back to current block.
-  func_defn_impl.bb_store.add_instruction_with_oprds_and_labels(bb1,
-    InstrOpcodeBR,
-    std::vector<OperandValue> {bool(true)},
-    std::vector<BasicBlock> {basic_block, basic_block});
+  func_defn_impl.bb_store.add_instruction_with_oprds_and_labels(
+    bb1, InstrOpcodeBR, std::vector<OperandValue>{bool(true)},
+    std::vector<BasicBlock>{basic_block, basic_block});
 
   // Add unconditional branch in each block to go back to current block.
-  func_defn_impl.bb_store.add_instruction_with_oprds_and_labels(bb2,
-    InstrOpcodeBR,
-    std::vector<OperandValue> {bool(true)},
-    std::vector<BasicBlock> {basic_block, basic_block});
+  func_defn_impl.bb_store.add_instruction_with_oprds_and_labels(
+    bb2, InstrOpcodeBR, std::vector<OperandValue>{bool(true)},
+    std::vector<BasicBlock>{basic_block, basic_block});
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilderImpl::add_unconditional_branch(FuncDefn func_defn,
-  BasicBlock basic_block, BasicBlock target_block)
+                                        BasicBlock basic_block,
+                                        BasicBlock target_block)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
 
   // Add unconditional branch.
-  func_defn_impl.bb_store.add_instruction_with_labels(basic_block,
-    InstrOpcodeBR,
-    std::vector<BasicBlock> {target_block});
+  func_defn_impl.bb_store.add_instruction_with_labels(
+    basic_block, InstrOpcodeBR, std::vector<BasicBlock>{target_block});
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilderImpl::add_switch(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue predicate, const std::vector<OperandValue>& cases,
-  const std::vector<BasicBlock>& target_blocks)
+                          OperandValue predicate,
+                          const std::vector<OperandValue>& cases,
+                          const std::vector<BasicBlock>& target_blocks)
 {
   auto& func_defn_impl = func_defn_store.get_func_defn(func_defn);
 
@@ -1498,16 +1484,14 @@ IRBuilderImpl::add_switch(FuncDefn func_defn, BasicBlock basic_block,
   oprds.insert(oprds.end(), cases.begin(), cases.end());
 
   // Add instruction to branch to either blocks.
-  func_defn_impl.bb_store.add_instruction_with_oprds_and_labels(basic_block,
-    InstrOpcodeSWITCH2, oprds, target_blocks);
+  func_defn_impl.bb_store.add_instruction_with_oprds_and_labels(
+    basic_block, InstrOpcodeSWITCH2, oprds, target_blocks);
 
   // Add unconditional branch in each block to go back to current block.
-  for (const auto& target_block : target_blocks)
-  {
-    func_defn_impl.bb_store.add_instruction_with_oprds_and_labels(target_block,
-      InstrOpcodeBR,
-      std::vector<OperandValue> {bool(true)},
-      std::vector<BasicBlock> {basic_block, basic_block});
+  for (const auto& target_block : target_blocks) {
+    func_defn_impl.bb_store.add_instruction_with_oprds_and_labels(
+      target_block, InstrOpcodeBR, std::vector<OperandValue>{bool(true)},
+      std::vector<BasicBlock>{basic_block, basic_block});
   }
 }
 
@@ -1515,7 +1499,7 @@ IRBuilderImpl::add_switch(FuncDefn func_defn, BasicBlock basic_block,
 
 bool
 IRBuilderImpl::finalize(std::unique_ptr<IRModule>& module, std::string& msg,
-  bool verify)
+                        bool verify)
 {
   std::unique_ptr<IRModule> constructed_module(new IRModule);
 
@@ -1523,12 +1507,10 @@ IRBuilderImpl::finalize(std::unique_ptr<IRModule>& module, std::string& msg,
   finalize_type_decls(constructed_module);
   finalize_func_defns(constructed_module);
 
-  if (verify)
-  {
+  if (verify) {
     Verifier verifier(*constructed_module);
     std::string err;
-    if (!verifier.run(err))
-    {
+    if (!verifier.run(err)) {
       msg.assign("Module verification failed: ");
       msg += err;
       return false;
@@ -1550,8 +1532,8 @@ IRBuilderImpl::finalize_metadata(std::unique_ptr<IRModule>& module)
   module->meta.target_version = target_version;
   module->meta.format_version = api::ir::IR_VERSION;
 
-  const int64_t timestamp_val = timestamp ?
-    timestamp : static_cast<int64_t>(std::time(nullptr));
+  const int64_t timestamp_val =
+    timestamp ? timestamp : static_cast<int64_t>(std::time(nullptr));
   module->meta.timestamp = timestamp_val;
 }
 
@@ -1561,8 +1543,7 @@ void
 IRBuilderImpl::finalize_type_decls(std::unique_ptr<IRModule>& module)
 {
   module->types.reserve(type_decl_store.storage.size());
-  for (const auto& type_decl_impl : type_decl_store.storage)
-  {
+  for (const auto& type_decl_impl : type_decl_store.storage) {
     module->types.push_back(finalize_type_decl(type_decl_impl));
   }
 }
@@ -1573,8 +1554,7 @@ void
 IRBuilderImpl::finalize_func_defns(std::unique_ptr<IRModule>& module)
 {
   module->closures.reserve(func_defn_store.func_defns_map.size());
-  for (const auto& pair : func_defn_store.func_defns_map)
-  {
+  for (const auto& pair : func_defn_store.func_defns_map) {
     const auto& func_name = pair.first;
     const auto& func_defn_impl =
       func_defn_store.func_defns_store.at(pair.second);
@@ -1586,7 +1566,8 @@ IRBuilderImpl::finalize_func_defns(std::unique_ptr<IRModule>& module)
 // -----------------------------------------------------------------------------
 
 IRClosure
-IRBuilderImpl::finalize_func_defn(const std::string& func_name,
+IRBuilderImpl::finalize_func_defn(
+  const std::string& func_name,
   const FuncDefnStore::FuncDefnImpl& func_defn_impl)
 {
   IRClosure closure;
@@ -1597,22 +1578,18 @@ IRBuilderImpl::finalize_func_defn(const std::string& func_name,
 
   // Parameters.
   closure.parameters.reserve(func_defn_impl.param_store.params_map.size());
-  for (const auto& param_impl : func_defn_impl.param_store.storage)
-  {
-    if (param_impl.param_type == FuncParamStore::FuncParamImpl::REGULAR_PARAM)
-    {
+  for (const auto& param_impl : func_defn_impl.param_store.storage) {
+    if (param_impl.param_type == FuncParamStore::FuncParamImpl::REGULAR_PARAM) {
       IRParameter ir_param;
       ir_param.identifier = param_impl.name;
       translate_IdentifierType(param_impl.type, ir_param.type);
 
       closure.parameters.push_back(ir_param);
-    }
-    else if (param_impl.param_type == FuncParamStore::FuncParamImpl::POSITIONAL_ARG)
-    {
+    } else if (param_impl.param_type ==
+               FuncParamStore::FuncParamImpl::POSITIONAL_ARG) {
       closure.positional_args = param_impl.name;
-    }
-    else if (param_impl.param_type == FuncParamStore::FuncParamImpl::KEYWORD_ARG)
-    {
+    } else if (param_impl.param_type ==
+               FuncParamStore::FuncParamImpl::KEYWORD_ARG) {
       closure.keyword_args = param_impl.name;
     }
   }
@@ -1622,14 +1599,12 @@ IRBuilderImpl::finalize_func_defn(const std::string& func_name,
 
   // Basic blocks.
   closure.blocks.reserve(func_defn_impl.bb_store.storage.size());
-  for (const auto& basic_block_impl : func_defn_impl.bb_store.storage)
-  {
+  for (const auto& basic_block_impl : func_defn_impl.bb_store.storage) {
     IRBasicBlock ir_basic_block;
     ir_basic_block.label = basic_block_impl.name;
     ir_basic_block.body.reserve(basic_block_impl.instr_store.size());
 
-    for (const auto& instr_impl : basic_block_impl.instr_store)
-    {
+    for (const auto& instr_impl : basic_block_impl.instr_store) {
       ir_basic_block.body.push_back(
         translate_InstructionImpl(func_defn_impl, instr_impl));
     }
@@ -1652,8 +1627,7 @@ IRBuilderImpl::finalize_type_decl(const TypeDeclImpl& type_decl_impl)
 
   // Fields.
   ir_type_decl.fields.reserve(type_decl_impl.fields.size());
-  for (const auto& field : type_decl_impl.fields)
-  {
+  for (const auto& field : type_decl_impl.fields) {
     IRTypeField ir_type_field;
 
     // Field name.
@@ -1667,8 +1641,7 @@ IRBuilderImpl::finalize_type_decl(const TypeDeclImpl& type_decl_impl)
 
   // Attributes.
   ir_type_decl.attributes.reserve(type_decl_impl.attribute_set.size());
-  for (const auto& pair : type_decl_impl.attribute_set)
-  {
+  for (const auto& pair : type_decl_impl.attribute_set) {
     IRTypeAttribute ir_type_attribute;
     ir_type_attribute.name = pair.first;
     ir_type_attribute.value = pair.second;
@@ -1683,17 +1656,14 @@ IRBuilderImpl::finalize_type_decl(const TypeDeclImpl& type_decl_impl)
 
 void
 IRBuilderImpl::translate_IdentifierType(const IdentifierType& src,
-  IRIdentifierType& dst) const
+                                        IRIdentifierType& dst) const
 {
   dst.ref_type = translate_ValueRefType(src.ref_type);
 
-  if (src.value.is<ValueType>())
-  {
+  if (src.value.is<ValueType>()) {
     dst.type = IdentifierType_ValueType;
     dst.value.set_IRValueType(translate_ValueType(src.value.get<ValueType>()));
-  }
-  else if (src.value.is<ArrayType>())
-  {
+  } else if (src.value.is<ArrayType>()) {
     ArrayType array_type = src.value.get<ArrayType>();
     const ArrayTypeImpl& array_type_impl =
       array_type_store.store.at(array_type);
@@ -1704,9 +1674,7 @@ IRBuilderImpl::translate_IdentifierType(const IdentifierType& src,
 
     dst.type = IdentifierType_Array;
     dst.value.set_IRArrayType(ir_array_type);
-  }
-  else if (src.value.is<TypeDecl>())
-  {
+  } else if (src.value.is<TypeDecl>()) {
     TypeDecl type_decl = src.value.get<TypeDecl>();
     const TypeDeclImpl& type_decl_impl =
       type_decl_store.storage.at(type_decl->id);
@@ -1726,8 +1694,7 @@ IRBuilderImpl::translate_InstructionImpl(
   IRInstruction ir_instr;
 
   // Target.
-  if (instr_impl.target)
-  {
+  if (instr_impl.target) {
     ir_instr.target.set_string(std::to_string(instr_impl.target));
   }
 
@@ -1735,8 +1702,7 @@ IRBuilderImpl::translate_InstructionImpl(
   ir_instr.opcode = translate_InstrOpcode(instr_impl.opcode);
 
   // Type.
-  if (instr_impl.type.is_initialized())
-  {
+  if (instr_impl.type.is_initialized()) {
     IRIdentifierType instr_type;
     translate_IdentifierType(instr_impl.type.get(), instr_type);
     ir_instr.type.set_IRIdentifierType(instr_type);
@@ -1747,117 +1713,89 @@ IRBuilderImpl::translate_InstructionImpl(
 
   // Operands.
   ir_instr.oprds.reserve(instr_impl.oprds.size());
-  for (const auto& oprd : instr_impl.oprds)
-  {
+  for (const auto& oprd : instr_impl.oprds) {
     IROperand ir_oprd;
 
-    if (oprd.is<bool>())
-    {
+    if (oprd.is<bool>()) {
       IRValue ir_value;
       ir_value.type = corevm::boolean;
       ir_value.value.set_bool(oprd.get<bool>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<uint8_t>())
-    {
+    } else if (oprd.is<uint8_t>()) {
       IRValue ir_value;
       ir_value.type = corevm::ui8;
       ir_value.value.set_int(oprd.get<uint8_t>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<int8_t>())
-    {
+    } else if (oprd.is<int8_t>()) {
       IRValue ir_value;
       ir_value.type = corevm::i8;
       ir_value.value.set_int(oprd.get<int8_t>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<uint16_t>())
-    {
+    } else if (oprd.is<uint16_t>()) {
       IRValue ir_value;
       ir_value.type = corevm::ui16;
       ir_value.value.set_int(oprd.get<uint16_t>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<int16_t>())
-    {
+    } else if (oprd.is<int16_t>()) {
       IRValue ir_value;
       ir_value.type = corevm::i16;
       ir_value.value.set_int(oprd.get<int16_t>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<uint32_t>())
-    {
+    } else if (oprd.is<uint32_t>()) {
       IRValue ir_value;
       ir_value.type = corevm::ui32;
       ir_value.value.set_int(oprd.get<uint32_t>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<int32_t>())
-    {
+    } else if (oprd.is<int32_t>()) {
       IRValue ir_value;
       ir_value.type = corevm::i32;
       ir_value.value.set_int(oprd.get<int32_t>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<uint64_t>())
-    {
+    } else if (oprd.is<uint64_t>()) {
       IRValue ir_value;
       ir_value.type = corevm::ui64;
       ir_value.value.set_long(oprd.get<uint64_t>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<int64_t>())
-    {
+    } else if (oprd.is<int64_t>()) {
       IRValue ir_value;
       ir_value.type = corevm::i64;
       ir_value.value.set_long(oprd.get<int64_t>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<float>())
-    {
+    } else if (oprd.is<float>()) {
       IRValue ir_value;
       ir_value.type = corevm::spf;
       ir_value.value.set_float(oprd.get<float>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<double>())
-    {
+    } else if (oprd.is<double>()) {
       IRValue ir_value;
       ir_value.type = corevm::dpf;
       ir_value.value.set_double(oprd.get<double>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<std::string>())
-    {
+    } else if (oprd.is<std::string>()) {
       IRValue ir_value;
       ir_value.type = corevm::string;
       ir_value.value.set_string(oprd.get<std::string>());
       ir_oprd.value.set_IRValue(ir_value);
       ir_oprd.type = corevm::constant;
-    }
-    else if (oprd.is<FuncParam>())
-    {
+    } else if (oprd.is<FuncParam>()) {
       FuncParam param_wrapper = oprd.get<FuncParam>();
       const FuncParamStore::FuncParamImpl& param_impl =
-        func_defn_impl.param_store.storage.at(param_wrapper.value); 
+        func_defn_impl.param_store.storage.at(param_wrapper.value);
 
       ir_oprd.value.set_string(param_impl.name);
       ir_oprd.type = corevm::ref;
-    }
-    else if (oprd.is<SSAVariable>())
-    {
+    } else if (oprd.is<SSAVariable>()) {
       SSAVariable var_wrapper = oprd.get<SSAVariable>();
 
       ir_oprd.value.set_string(std::to_string(var_wrapper.value));
@@ -1868,22 +1806,18 @@ IRBuilderImpl::translate_InstructionImpl(
   }
 
   // Labels.
-  if (!instr_impl.labels.empty())
-  {
+  if (!instr_impl.labels.empty()) {
     std::vector<corevm::IRLabel> ir_labels;
     ir_labels.reserve(instr_impl.labels.size());
 
-    for (const auto& basic_block : instr_impl.labels)
-    {
+    for (const auto& basic_block : instr_impl.labels) {
       const auto& bb_impl = func_defn_impl.bb_store.storage.at(basic_block);
       IRLabel ir_label;
       ir_label.name = bb_impl.name;
       ir_labels.push_back(ir_label);
     }
     ir_instr.labels.set_array(ir_labels);
-  }
-  else
-  {
+  } else {
     ir_instr.labels.set_null();
   }
 
@@ -1892,38 +1826,37 @@ IRBuilderImpl::translate_InstructionImpl(
 
 // -----------------------------------------------------------------------------
 
-IRBuilder::IRBuilder()
-  :
-  m_impl(new IRBuilderImpl())
+IRBuilder::IRBuilder() : m_impl(new IRBuilderImpl())
 {
 }
 
 // -----------------------------------------------------------------------------
 
-IRBuilder::IRBuilder(const char* module_name)
-  :
-  m_impl(new IRBuilderImpl())
+IRBuilder::IRBuilder(const char* module_name) : m_impl(new IRBuilderImpl())
 {
   m_impl->add_module_name(module_name);
 }
 
 // -----------------------------------------------------------------------------
 
-void IRBuilder::add_author(const char* author_name)
+void
+IRBuilder::add_author(const char* author_name)
 {
   m_impl->add_author(author_name);
 }
 
 // -----------------------------------------------------------------------------
 
-void IRBuilder::add_target_version(uint64_t target_version)
+void
+IRBuilder::add_target_version(uint64_t target_version)
 {
   m_impl->add_target_version(target_version);
 }
 
 // -----------------------------------------------------------------------------
 
-void IRBuilder::add_timestamp(uint64_t timestamp)
+void
+IRBuilder::add_timestamp(uint64_t timestamp)
 {
   m_impl->add_timestamp(timestamp);
 }
@@ -1947,8 +1880,8 @@ IRBuilder::get_type_decl_name(TypeDecl type_decl) const
 // -----------------------------------------------------------------------------
 
 void
-IRBuilder::add_type_attribution(TypeDecl type_decl,
-  const std::string& attr_key, const std::string& attr_val)
+IRBuilder::add_type_attribution(TypeDecl type_decl, const std::string& attr_key,
+                                const std::string& attr_val)
 {
   m_impl->add_type_attribution(type_decl, attr_key, attr_val);
 }
@@ -1957,30 +1890,30 @@ IRBuilder::add_type_attribution(TypeDecl type_decl,
 
 void
 IRBuilder::add_type_field(TypeDecl type_decl, ValueType field_type,
-  ValueRefType ref_type, const std::string& field_name)
+                          ValueRefType ref_type, const std::string& field_name)
 {
   m_impl->add_type_field(type_decl, IdentifierType{ref_type, field_type},
-    field_name);
+                         field_name);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilder::add_type_field(TypeDecl type_decl, TypeDecl field_type,
-  ValueRefType ref_type, const std::string& field_name)
+                          ValueRefType ref_type, const std::string& field_name)
 {
   m_impl->add_type_field(type_decl, IdentifierType{ref_type, field_type},
-    field_name);
+                         field_name);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilder::add_type_field(TypeDecl type_decl, ArrayType field_type,
-  ValueRefType ref_type, const std::string& field_name)
+                          ValueRefType ref_type, const std::string& field_name)
 {
   m_impl->add_type_field(type_decl, IdentifierType{ref_type, field_type},
-    field_name);
+                         field_name);
 }
 
 // -----------------------------------------------------------------------------
@@ -1995,7 +1928,7 @@ IRBuilder::has_field(TypeDecl type_decl, const std::string& field_name)
 
 ArrayType
 IRBuilder::add_array_type(size_t len, TypeDecl element_type,
-  ValueRefType ref_type)
+                          ValueRefType ref_type)
 {
   return m_impl->add_array_type(
     ArrayTypeImpl{len, IdentifierType{ref_type, element_type}});
@@ -2005,7 +1938,7 @@ IRBuilder::add_array_type(size_t len, TypeDecl element_type,
 
 ArrayType
 IRBuilder::add_array_type(size_t len, ValueType element_type,
-  ValueRefType ref_type)
+                          ValueRefType ref_type)
 {
   return m_impl->add_array_type(
     ArrayTypeImpl{len, IdentifierType{ref_type, element_type}});
@@ -2015,7 +1948,7 @@ IRBuilder::add_array_type(size_t len, ValueType element_type,
 
 ArrayType
 IRBuilder::add_array_type(size_t len, ArrayType element_type,
-  ValueRefType ref_type)
+                          ValueRefType ref_type)
 {
   return m_impl->add_array_type(
     ArrayTypeImpl{len, IdentifierType{ref_type, element_type}});
@@ -2033,67 +1966,67 @@ IRBuilder::has_array_type(ArrayType array_type)
 
 FuncDefn
 IRBuilder::create_func_defn(const std::string& func_name, TypeDecl rettype,
-  ValueRefType ref_type, const char* parent)
+                            ValueRefType ref_type, const char* parent)
 {
-  return m_impl->create_func_defn(func_name,
-    IdentifierType{ref_type, rettype}, parent);
+  return m_impl->create_func_defn(func_name, IdentifierType{ref_type, rettype},
+                                  parent);
 }
 
 // -----------------------------------------------------------------------------
 
 FuncDefn
 IRBuilder::create_func_defn(const std::string& func_name, ValueType rettype,
-  ValueRefType ref_type, const char* parent)
+                            ValueRefType ref_type, const char* parent)
 {
-  return m_impl->create_func_defn(func_name,
-    IdentifierType{ref_type, rettype}, parent);
+  return m_impl->create_func_defn(func_name, IdentifierType{ref_type, rettype},
+                                  parent);
 }
 
 // -----------------------------------------------------------------------------
 
 FuncDefn
 IRBuilder::create_func_defn(const std::string& func_name, ArrayType rettype,
-  ValueRefType ref_type, const char* parent)
+                            ValueRefType ref_type, const char* parent)
 {
-  return m_impl->create_func_defn(func_name,
-    IdentifierType{ref_type, rettype}, parent);
+  return m_impl->create_func_defn(func_name, IdentifierType{ref_type, rettype},
+                                  parent);
 }
 
 // -----------------------------------------------------------------------------
 
 FuncParam
 IRBuilder::add_func_parameter(FuncDefn func_defn, const std::string& param_name,
-  TypeDecl param_type, ValueRefType ref_type)
+                              TypeDecl param_type, ValueRefType ref_type)
 {
   return m_impl->add_func_parameter(func_defn, param_name,
-    IdentifierType{ref_type, param_type});
+                                    IdentifierType{ref_type, param_type});
 }
 
 // -----------------------------------------------------------------------------
 
 FuncParam
 IRBuilder::add_func_parameter(FuncDefn func_defn, const std::string& param_name,
-  ValueType param_type, ValueRefType ref_type)
+                              ValueType param_type, ValueRefType ref_type)
 {
   return m_impl->add_func_parameter(func_defn, param_name,
-    IdentifierType{ref_type, param_type});
+                                    IdentifierType{ref_type, param_type});
 }
 
 // -----------------------------------------------------------------------------
 
 FuncParam
 IRBuilder::add_func_parameter(FuncDefn func_defn, const std::string& param_name,
-  ArrayType param_type, ValueRefType ref_type)
+                              ArrayType param_type, ValueRefType ref_type)
 {
   return m_impl->add_func_parameter(func_defn, param_name,
-    IdentifierType{ref_type, param_type});
+                                    IdentifierType{ref_type, param_type});
 }
 
 // -----------------------------------------------------------------------------
 
 FuncParam
 IRBuilder::add_func_positional_arg(FuncDefn func_defn,
-  const std::string& param_name)
+                                   const std::string& param_name)
 {
   return m_impl->add_func_positional_arg(func_defn, param_name);
 }
@@ -2101,7 +2034,8 @@ IRBuilder::add_func_positional_arg(FuncDefn func_defn,
 // -----------------------------------------------------------------------------
 
 FuncParam
-IRBuilder::add_func_keyword_arg(FuncDefn func_defn, const std::string& param_name)
+IRBuilder::add_func_keyword_arg(FuncDefn func_defn,
+                                const std::string& param_name)
 {
   return m_impl->add_func_keyword_arg(func_defn, param_name);
 }
@@ -2118,111 +2052,118 @@ IRBuilder::create_basic_block(FuncDefn func_defn)
 
 SSAVariable
 IRBuilder::add_alloca(FuncDefn func_defn, BasicBlock basic_block,
-  AllocaType alloca_type, ValueType target_type, ValueRefType ref_type)
+                      AllocaType alloca_type, ValueType target_type,
+                      ValueRefType ref_type)
 {
   return m_impl->add_alloca(func_defn, basic_block, alloca_type,
-    IdentifierType{ref_type, target_type});
+                            IdentifierType{ref_type, target_type});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_alloca(FuncDefn func_defn, BasicBlock basic_block,
-  AllocaType alloca_type, ArrayType target_type, ValueRefType ref_type)
+                      AllocaType alloca_type, ArrayType target_type,
+                      ValueRefType ref_type)
 {
   return m_impl->add_alloca(func_defn, basic_block, alloca_type,
-    IdentifierType{ref_type, target_type});
+                            IdentifierType{ref_type, target_type});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_alloca(FuncDefn func_defn, BasicBlock basic_block,
-  AllocaType alloca_type, TypeDecl target_type, ValueRefType ref_type)
+                      AllocaType alloca_type, TypeDecl target_type,
+                      ValueRefType ref_type)
 {
   return m_impl->add_alloca(func_defn, basic_block, alloca_type,
-    IdentifierType{ref_type, target_type});
+                            IdentifierType{ref_type, target_type});
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_alloca(FuncDefn func_defn, BasicBlock basic_block,
-  AllocaType alloca_type, const std::string& target_type_name,
-  ValueRefType ref_type)
+                      AllocaType alloca_type,
+                      const std::string& target_type_name,
+                      ValueRefType ref_type)
 {
   return m_impl->add_alloca(func_defn, basic_block, alloca_type,
-    target_type_name, ref_type);
+                            target_type_name, ref_type);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_load(FuncDefn func_defn, BasicBlock basic_block,
-  ValueType value_type, ValueRefType ref_type, OperandValue oprd)
+                    ValueType value_type, ValueRefType ref_type,
+                    OperandValue oprd)
 {
   return m_impl->add_load(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, oprd);
+                          IdentifierType{ref_type, value_type}, oprd);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_load(FuncDefn func_defn, BasicBlock basic_block,
-  ArrayType value_type, ValueRefType ref_type, OperandValue oprd)
+                    ArrayType value_type, ValueRefType ref_type,
+                    OperandValue oprd)
 {
   return m_impl->add_load(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, oprd);
+                          IdentifierType{ref_type, value_type}, oprd);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_load(FuncDefn func_defn, BasicBlock basic_block,
-  TypeDecl value_type, ValueRefType ref_type, OperandValue oprd)
+                    TypeDecl value_type, ValueRefType ref_type,
+                    OperandValue oprd)
 {
   return m_impl->add_load(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, oprd);
+                          IdentifierType{ref_type, value_type}, oprd);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilder::add_store(FuncDefn func_defn, BasicBlock basic_block,
-  ValueType value_type, ValueRefType ref_type, OperandValue src,
-  OperandValue dst)
+                     ValueType value_type, ValueRefType ref_type,
+                     OperandValue src, OperandValue dst)
 {
   return m_impl->add_store(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, src, dst);
+                           IdentifierType{ref_type, value_type}, src, dst);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilder::add_store(FuncDefn func_defn, BasicBlock basic_block,
-  ArrayType value_type, ValueRefType ref_type, OperandValue src,
-  OperandValue dst)
+                     ArrayType value_type, ValueRefType ref_type,
+                     OperandValue src, OperandValue dst)
 {
   return m_impl->add_store(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, src, dst);
+                           IdentifierType{ref_type, value_type}, src, dst);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilder::add_store(FuncDefn func_defn, BasicBlock basic_block,
-  TypeDecl value_type, ValueRefType ref_type, OperandValue src,
-  OperandValue dst)
+                     TypeDecl value_type, ValueRefType ref_type,
+                     OperandValue src, OperandValue dst)
 {
   return m_impl->add_store(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, src, dst);
+                           IdentifierType{ref_type, value_type}, src, dst);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_get_attribute(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue source, const std::string& attr_name)
+                             OperandValue source, const std::string& attr_name)
 {
   return m_impl->add_get_attribute(func_defn, basic_block, source, attr_name);
 }
@@ -2231,7 +2172,8 @@ IRBuilder::add_get_attribute(FuncDefn func_defn, BasicBlock basic_block,
 
 void
 IRBuilder::add_set_attribute(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue target, OperandValue source, const std::string& attr_name)
+                             OperandValue target, OperandValue source,
+                             const std::string& attr_name)
 {
   m_impl->add_set_attribute(func_defn, basic_block, target, source, attr_name);
 }
@@ -2240,7 +2182,8 @@ IRBuilder::add_set_attribute(FuncDefn func_defn, BasicBlock basic_block,
 
 void
 IRBuilder::add_delete_attribute(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue source, const std::string& attr_name)
+                                OperandValue source,
+                                const std::string& attr_name)
 {
   m_impl->add_delete_attribute(func_defn, basic_block, source, attr_name);
 }
@@ -2249,40 +2192,40 @@ IRBuilder::add_delete_attribute(FuncDefn func_defn, BasicBlock basic_block,
 
 SSAVariable
 IRBuilder::add_get_element(FuncDefn func_defn, BasicBlock basic_block,
-  ValueType value_type, ValueRefType ref_type, OperandValue source,
-  OperandValue idx)
+                           ValueType value_type, ValueRefType ref_type,
+                           OperandValue source, OperandValue idx)
 {
-  return m_impl->add_get_element(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, source, idx);
+  return m_impl->add_get_element(
+    func_defn, basic_block, IdentifierType{ref_type, value_type}, source, idx);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_get_element(FuncDefn func_defn, BasicBlock basic_block,
-  ArrayType value_type, ValueRefType ref_type, OperandValue source,
-  OperandValue idx)
+                           ArrayType value_type, ValueRefType ref_type,
+                           OperandValue source, OperandValue idx)
 {
-  return m_impl->add_get_element(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, source, idx);
+  return m_impl->add_get_element(
+    func_defn, basic_block, IdentifierType{ref_type, value_type}, source, idx);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_get_element(FuncDefn func_defn, BasicBlock basic_block,
-  TypeDecl value_type, ValueRefType ref_type, OperandValue source,
-  OperandValue idx)
+                           TypeDecl value_type, ValueRefType ref_type,
+                           OperandValue source, OperandValue idx)
 {
-  return m_impl->add_get_element(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, source, idx);
+  return m_impl->add_get_element(
+    func_defn, basic_block, IdentifierType{ref_type, value_type}, source, idx);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilder::add_put_element(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue src, OperandValue dst, OperandValue idx)
+                           OperandValue src, OperandValue dst, OperandValue idx)
 {
   m_impl->add_put_element(func_defn, basic_block, src, dst, idx);
 }
@@ -2291,7 +2234,7 @@ IRBuilder::add_put_element(FuncDefn func_defn, BasicBlock basic_block,
 
 SSAVariable
 IRBuilder::add_len(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue oprd)
+                   OperandValue oprd)
 {
   return m_impl->add_len(func_defn, basic_block, oprd);
 }
@@ -2300,101 +2243,108 @@ IRBuilder::add_len(FuncDefn func_defn, BasicBlock basic_block,
 
 SSAVariable
 IRBuilder::add_ret(FuncDefn func_defn, BasicBlock basic_block,
-  ValueType value_type, ValueRefType ref_type, OperandValue value)
+                   ValueType value_type, ValueRefType ref_type,
+                   OperandValue value)
 {
   return m_impl->add_ret(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, value);
+                         IdentifierType{ref_type, value_type}, value);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_ret(FuncDefn func_defn, BasicBlock basic_block,
-  ArrayType value_type, ValueRefType ref_type, OperandValue value)
+                   ArrayType value_type, ValueRefType ref_type,
+                   OperandValue value)
 {
   return m_impl->add_ret(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, value);
+                         IdentifierType{ref_type, value_type}, value);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_ret(FuncDefn func_defn, BasicBlock basic_block,
-  TypeDecl value_type, ValueRefType ref_type, OperandValue value)
+                   TypeDecl value_type, ValueRefType ref_type,
+                   OperandValue value)
 {
   return m_impl->add_ret(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, value);
+                         IdentifierType{ref_type, value_type}, value);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_unary_instr(FuncDefn func_defn, BasicBlock basic_block,
-  InstrOpcode opcode, ValueType value_type, OperandValue source)
+                           InstrOpcode opcode, ValueType value_type,
+                           OperandValue source)
 {
-  return m_impl->add_unary_instr(func_defn, basic_block, opcode,
-    value_type, source);
+  return m_impl->add_unary_instr(func_defn, basic_block, opcode, value_type,
+                                 source);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_binary_instr(FuncDefn func_defn, BasicBlock basic_block,
-  InstrOpcode opcode, ValueType value_type, OperandValue lhs, OperandValue rhs)
+                            InstrOpcode opcode, ValueType value_type,
+                            OperandValue lhs, OperandValue rhs)
 {
-  return m_impl->add_binary_instr(func_defn, basic_block, opcode,
-    value_type, lhs, rhs);
+  return m_impl->add_binary_instr(func_defn, basic_block, opcode, value_type,
+                                  lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_unary_bitwise_instr(FuncDefn func_defn, BasicBlock basic_block,
-  InstrOpcode opcode, OperandValue oprd)
+                                   InstrOpcode opcode, OperandValue oprd)
 {
   // NOTE: return type for bitwise instructions is ui64 according to spec.
-  return add_unary_instr(func_defn, basic_block, opcode,
-    ValueTypeUInt64, oprd);
+  return add_unary_instr(func_defn, basic_block, opcode, ValueTypeUInt64, oprd);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_binary_bitwise_instr(FuncDefn func_defn, BasicBlock basic_block,
-  InstrOpcode opcode, OperandValue lhs, OperandValue rhs)
+                                    InstrOpcode opcode, OperandValue lhs,
+                                    OperandValue rhs)
 {
   // NOTE: return type for bitwise instructions is ui64 according to spec.
-  return add_binary_instr(func_defn, basic_block, opcode,
-    ValueTypeUInt64, lhs, rhs);
+  return add_binary_instr(func_defn, basic_block, opcode, ValueTypeUInt64, lhs,
+                          rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_unary_logical_instr(FuncDefn func_defn, BasicBlock basic_block,
-  InstrOpcode opcode, OperandValue oprd)
+                                   InstrOpcode opcode, OperandValue oprd)
 {
   // NOTE: return type for logical instructions is boolean according to spec.
-  return add_unary_instr(func_defn, basic_block, opcode,
-    ValueTypeBoolean, oprd);
+  return add_unary_instr(func_defn, basic_block, opcode, ValueTypeBoolean,
+                         oprd);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_binary_logical_instr(FuncDefn func_defn, BasicBlock basic_block,
-  InstrOpcode opcode, OperandValue lhs, OperandValue rhs)
+                                    InstrOpcode opcode, OperandValue lhs,
+                                    OperandValue rhs)
 {
   // NOTE: return type for logical instructions is boolean according to spec.
-  return add_binary_instr(func_defn, basic_block, opcode,
-    ValueTypeBoolean, lhs, rhs);
+  return add_binary_instr(func_defn, basic_block, opcode, ValueTypeBoolean, lhs,
+                          rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 SSAVariable
 IRBuilder::add_equality_instr(FuncDefn func_defn, BasicBlock basic_block,
-  InstrOpcode opcode, OperandValue lhs, OperandValue rhs)
+                              InstrOpcode opcode, OperandValue lhs,
+                              OperandValue rhs)
 {
   return m_impl->add_equality_instr(func_defn, basic_block, opcode, lhs, rhs);
 }
@@ -2403,7 +2353,7 @@ IRBuilder::add_equality_instr(FuncDefn func_defn, BasicBlock basic_block,
 
 SSAVariable
 IRBuilder::add_cmp(FuncDefn func_defn, BasicBlock basic_block, OperandValue lhs,
-  OperandValue rhs)
+                   OperandValue rhs)
 {
   return m_impl->add_cmp(func_defn, basic_block, lhs, rhs);
 }
@@ -2412,18 +2362,20 @@ IRBuilder::add_cmp(FuncDefn func_defn, BasicBlock basic_block, OperandValue lhs,
 
 SSAVariable
 IRBuilder::add_call(FuncDefn func_defn, BasicBlock basic_block,
-  ValueType value_type, ValueRefType ref_type, const std::string& callee,
-  const std::vector<OperandValue>& args)
+                    ValueType value_type, ValueRefType ref_type,
+                    const std::string& callee,
+                    const std::vector<OperandValue>& args)
 {
   return m_impl->add_call(func_defn, basic_block,
-    IdentifierType{ref_type, value_type}, callee, args);
+                          IdentifierType{ref_type, value_type}, callee, args);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 IRBuilder::add_conditional_branch(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue predicate, BasicBlock bb1, BasicBlock bb2)
+                                  OperandValue predicate, BasicBlock bb1,
+                                  BasicBlock bb2)
 {
   m_impl->add_conditional_branch(func_defn, basic_block, predicate, bb1, bb2);
 }
@@ -2432,7 +2384,7 @@ IRBuilder::add_conditional_branch(FuncDefn func_defn, BasicBlock basic_block,
 
 void
 IRBuilder::add_unconditional_branch(FuncDefn func_defn, BasicBlock basic_block,
-  BasicBlock target_block)
+                                    BasicBlock target_block)
 {
   m_impl->add_unconditional_branch(func_defn, basic_block, target_block);
 }
@@ -2441,8 +2393,9 @@ IRBuilder::add_unconditional_branch(FuncDefn func_defn, BasicBlock basic_block,
 
 void
 IRBuilder::add_switch(FuncDefn func_defn, BasicBlock basic_block,
-  OperandValue predicate, const std::vector<OperandValue>& cases,
-  const std::vector<BasicBlock>& target_blocks)
+                      OperandValue predicate,
+                      const std::vector<OperandValue>& cases,
+                      const std::vector<BasicBlock>& target_blocks)
 {
   m_impl->add_switch(func_defn, basic_block, predicate, cases, target_blocks);
 }
@@ -2451,7 +2404,7 @@ IRBuilder::add_switch(FuncDefn func_defn, BasicBlock basic_block,
 
 bool
 IRBuilder::finalize(std::unique_ptr<IRModule>& module, std::string& msg,
-  bool verify)
+                    bool verify)
 {
   return m_impl->finalize(module, msg, verify);
 }
@@ -2462,5 +2415,5 @@ IRBuilder::finalize(std::unique_ptr<IRModule>& module, std::string& msg,
 } /* end namespace corevm */
 
 #if defined(__clang__) and __clang__
-  #pragma clang diagnostic pop
+#pragma clang diagnostic pop
 #endif

@@ -28,18 +28,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <iosfwd>
 
-
 namespace corevm {
 namespace runtime {
 
-class FramePrinter
-{
+class FramePrinter {
 public:
   FramePrinter(const Frame&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
+
 private:
-  template<typename V>
+  template <typename V>
   void print_variables(std::ostream&, const Compartment*, const V& vars) const;
 
   const Frame& m_frame;
@@ -48,6 +47,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_FRAME_PRINTER_H_ */

@@ -23,12 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "native_types_pool.h"
 
 #include "common.h"
-#include "utils.h"
 #include "corevm/macros.h"
 #include "types/native_type_value.h"
+#include "utils.h"
 
 #include <ostream>
-
 
 namespace {
 
@@ -40,24 +39,20 @@ typedef corevm::runtime::NativeTypesPool _MyType;
 
 } /* anonymous namespace */
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
 NativeTypesPool::NativeTypesPool()
-  :
-  m_container(COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE)
+  : m_container(COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE)
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-NativeTypesPool::NativeTypesPool(uint64_t total_size)
-  :
-  m_container(total_size)
+NativeTypesPool::NativeTypesPool(uint64_t total_size) : m_container(total_size)
 {
   // Do nothing here.
 }
@@ -93,8 +88,7 @@ NativeTypesPool::at(_MyType::const_pointer ptr)
 {
   ptr = m_container[ptr];
 
-  if (ptr == nullptr)
-  {
+  if (ptr == nullptr) {
     THROW(NativeTypeValueNotFoundError());
   }
 
@@ -108,8 +102,7 @@ NativeTypesPool::create()
 {
   auto ptr = m_container.create();
 
-  if (ptr == nullptr)
-  {
+  if (ptr == nullptr) {
     THROW(NativeTypeValueInsertionError(
       "insufficient memory to store native type value"));
   }
@@ -124,8 +117,7 @@ NativeTypesPool::create(const types::NativeTypeValue& type_val)
 {
   auto ptr = m_container.create(type_val);
 
-  if (ptr == nullptr)
-  {
+  if (ptr == nullptr) {
     THROW(NativeTypeValueInsertionError(
       "insufficient memory to store native type value"));
   }
@@ -140,8 +132,7 @@ NativeTypesPool::erase(_MyType::pointer ptr)
 {
   ptr = m_container[ptr];
 
-  if (ptr == nullptr)
-  {
+  if (ptr == nullptr) {
     THROW(NativeTypeValueNotFoundError());
   }
 

@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 
-
 namespace corevm {
 
 /** Forward declaration. */
@@ -38,11 +37,9 @@ namespace ir {
  *
  * Returns true if the read is successful, false otherwise.
  */
-bool
-read_module_from_file(const char* filepath, IRModule&, std::string& err);
+bool read_module_from_file(const char* filepath, IRModule&, std::string& err);
 
 } /* end namespace ir */
 } /* end namespace corevm */
 
 #endif /* COREVM_IR_READER_H_ */
-

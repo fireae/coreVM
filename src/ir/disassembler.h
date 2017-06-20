@@ -35,14 +35,12 @@ namespace ir {
  * Encapsulates the logic for transforming an IR module from its in-memory
  * format to the equivalent textual representation.
  */
-class Disassembler
-{
+class Disassembler {
 public:
   /**
    * A set of options for `Disassembler`.
    */
-  struct Options
-  {
+  struct Options {
     bool emit_newlines;
 
     Options();
@@ -60,7 +58,6 @@ public:
   void disassemble(const IRModule&, std::ostream&) const;
 
 private:
-
   void disassemble(const IRModuleMeta&, std::ostream&) const;
 
   void disassemble(const IRTypeDecl&, std::ostream&) const;

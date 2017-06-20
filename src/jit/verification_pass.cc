@@ -21,11 +21,10 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "verification_pass.h"
-#include "ir/verifier.h"
-#include "ir/ir_module_index.h"
 #include "ir/format.h"
+#include "ir/ir_module_index.h"
+#include "ir/verifier.h"
 #include <string>
-
 
 namespace corevm {
 namespace jit {
@@ -47,8 +46,7 @@ const Pass::PassType VerificationPass::Type = PassType_Module;
 // -----------------------------------------------------------------------------
 
 VerificationPass::VerificationPass()
-  :
-  m_analysis_result(new IRModuleIndexAnalysisResult())
+  : m_analysis_result(new IRModuleIndexAnalysisResult())
 {
 }
 
@@ -64,12 +62,12 @@ VerificationPass::get_analysis_result() const
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool VerificationPass::run(const IRModule& module, const AnalysisResult*)
+bool
+VerificationPass::run(const IRModule& module, const AnalysisResult*)
 {
   ir::Verifier verifier(module);
   std::string msg;
-  if (!verifier.run(msg))
-  {
+  if (!verifier.run(msg)) {
     return false;
   }
 

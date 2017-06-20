@@ -25,13 +25,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <vector>
 
-
 namespace corevm {
 namespace runtime {
 
-template<typename K, typename V, typename CoreType=std::vector<std::pair<K, V>>, bool cache_conscious=false>
-class LinearMap
-{
+template <typename K, typename V,
+          typename CoreType = std::vector<std::pair<K, V>>,
+          bool cache_conscious = false>
+class LinearMap {
 public:
   typedef K key_type;
   typedef V mapped_type;
@@ -40,11 +40,13 @@ public:
 private:
   typedef CoreType core_type;
 
-  struct KeyPred
-  {
-    KeyPred(K key) : m_value(key) {}
+  struct KeyPred {
+    KeyPred(K key) : m_value(key)
+    {
+    }
 
-    bool operator()(const value_type& pair) const
+    bool
+    operator()(const value_type& pair) const
     {
       return pair.first == m_value;
     }
@@ -57,21 +59,53 @@ public:
   typedef typename core_type::iterator iterator;
   typedef typename core_type::const_iterator const_iterator;
 
-  iterator begin() { return m_vec.begin(); }
-  iterator end() { return m_vec.end(); }
-  const_iterator begin() const { return m_vec.begin(); }
-  const_iterator end() const { return m_vec.end(); }
-  const_iterator cbegin() const { return m_vec.cbegin(); }
-  const_iterator cend() const { return m_vec.cend(); }
-
-  size_t size() const { return m_vec.size(); }
-
-  bool empty() const { return m_vec.empty(); }
-
-  iterator at_index(size_t i)
+  iterator
+  begin()
   {
-    if (i >= size())
-    {
+    return m_vec.begin();
+  }
+  iterator
+  end()
+  {
+    return m_vec.end();
+  }
+  const_iterator
+  begin() const
+  {
+    return m_vec.begin();
+  }
+  const_iterator
+  end() const
+  {
+    return m_vec.end();
+  }
+  const_iterator
+  cbegin() const
+  {
+    return m_vec.cbegin();
+  }
+  const_iterator
+  cend() const
+  {
+    return m_vec.cend();
+  }
+
+  size_t
+  size() const
+  {
+    return m_vec.size();
+  }
+
+  bool
+  empty() const
+  {
+    return m_vec.empty();
+  }
+
+  iterator
+  at_index(size_t i)
+  {
+    if (i >= size()) {
       return end();
     }
 
@@ -80,10 +114,10 @@ public:
     return itr;
   }
 
-  const_iterator at_index(size_t i) const
+  const_iterator
+  at_index(size_t i) const
   {
-    if (i >= size())
-    {
+    if (i >= size()) {
       return end();
     }
 
@@ -92,35 +126,37 @@ public:
     return itr;
   }
 
-  iterator find(K k)
+  iterator
+  find(K k)
   {
     return std::find_if(m_vec.begin(), m_vec.end(), KeyPred(k));
   }
 
-  const_iterator find(K k) const
+  const_iterator
+  find(K k) const
   {
     return std::find_if(m_vec.begin(), m_vec.end(), KeyPred(k));
   }
 
-  iterator erase(iterator pos)
+  iterator
+  erase(iterator pos)
   {
     return m_vec.erase(pos);
   }
 
-  void erase(K k)
+  void
+  erase(K k)
   {
     m_vec.erase(std::remove_if(m_vec.begin(), m_vec.end(), KeyPred(k)));
   }
 
-  void insert(const value_type& pair)
+  void
+  insert(const value_type& pair)
   {
     auto itr = find(pair.first);
-    if (itr != end())
-    {
+    if (itr != end()) {
       *itr = pair;
-    }
-    else
-    {
+    } else {
       m_vec.push_back(pair);
     }
   }
@@ -129,15 +165,11 @@ public:
   {
     auto itr = find(k);
 
-    if (itr != end())
-    {
-      if (cache_conscious)
-      {
+    if (itr != end()) {
+      if (cache_conscious) {
         std::swap(m_vec.front(), *itr);
         return m_vec.front().second;
-      }
-      else
-      {
+      } else {
         return itr->second;
       }
     }
@@ -153,6 +185,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_LINEAR_MAP_H_ */

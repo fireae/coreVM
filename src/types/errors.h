@@ -27,21 +27,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <boost/format.hpp>
 
-
 namespace corevm {
 namespace types {
 
 // -----------------------------------------------------------------------------
 
-class ConversionError : public RuntimeError
-{
+class ConversionError : public RuntimeError {
 public:
   explicit ConversionError(const char* src_type_, const char* dst_type_)
-    :
-    RuntimeError(str(boost::format(
-      "Cannot convert between native types %s to %s") % src_type_ % dst_type_)),
-    src_type(src_type_),
-    dst_type(dst_type_)
+    : RuntimeError(
+        str(boost::format("Cannot convert between native types %s to %s") %
+            src_type_ % dst_type_)),
+      src_type(src_type_),
+      dst_type(dst_type_)
   {
   }
 
@@ -51,15 +49,14 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class InvalidOperatorError : public RuntimeError
-{
+class InvalidOperatorError : public RuntimeError {
 public:
   explicit InvalidOperatorError(const char* op_, const char* type_)
-    :
-    RuntimeError(str(boost::format(
-      "Cannot perform operator %s on native type %s") % op_ % type_)),
-    op(op_),
-    type(type_)
+    : RuntimeError(
+        str(boost::format("Cannot perform operator %s on native type %s") %
+            op_ % type_)),
+      op(op_),
+      type(type_)
   {
   }
 
@@ -69,12 +66,9 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class OutOfRangeError : public RuntimeError
-{
+class OutOfRangeError : public RuntimeError {
 public:
-  explicit OutOfRangeError(const char* what_arg)
-    :
-    RuntimeError(what_arg)
+  explicit OutOfRangeError(const char* what_arg) : RuntimeError(what_arg)
   {
   }
 };
@@ -83,6 +77,5 @@ public:
 
 } /* end namespace types */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_TYPES_ERRORS_H_ */

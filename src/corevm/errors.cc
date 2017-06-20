@@ -22,14 +22,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "errors.h"
 
-
 namespace corevm {
 
 // -----------------------------------------------------------------------------
 
-RuntimeError::RuntimeError(const std::string& what_arg)
-  :
-  m_what_arg(what_arg)
+RuntimeError::RuntimeError(const std::string& what_arg) : m_what_arg(what_arg)
 {
 }
 

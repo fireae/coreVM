@@ -25,11 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 
-
 namespace corevm {
 
-class RuntimeError
-{
+class RuntimeError {
 public:
   explicit RuntimeError(const std::string& what_arg);
 
@@ -40,6 +38,5 @@ private:
 };
 
 } /* end namespace corevm */
-
 
 #endif /* COREVM_ERRORS_H_ */

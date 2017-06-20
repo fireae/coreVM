@@ -22,62 +22,51 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "native_string.h"
 
-#include "errors.h"
 #include "corevm/macros.h"
+#include "errors.h"
 
 #include <cstdint>
 #include <stdexcept>
 #include <utility>
-
 
 namespace corevm {
 namespace types {
 
 // -----------------------------------------------------------------------------
 
-native_string::native_string()
-  :
-  native_string_base()
+native_string::native_string() : native_string_base()
 {
 }
 
 // -----------------------------------------------------------------------------
 
-native_string::native_string(const char* s)
-  :
-  native_string_base(s)
+native_string::native_string(const char* s) : native_string_base(s)
 {
 }
 
 // -----------------------------------------------------------------------------
 
 native_string::native_string(const native_string_base& str)
-  :
-  native_string_base(str)
+  : native_string_base(str)
 {
 }
 
 // -----------------------------------------------------------------------------
 
 native_string::native_string(native_string_base&& str)
-  :
-  native_string_base(std::forward<native_string_base>(str))
+  : native_string_base(std::forward<native_string_base>(str))
 {
 }
 
 // -----------------------------------------------------------------------------
 
-native_string::native_string(size_t n, char c)
-  :
-  native_string_base(n, c)
+native_string::native_string(size_t n, char c) : native_string_base(n, c)
 {
 }
 
 // -----------------------------------------------------------------------------
 
-native_string::native_string(int8_t)
-  :
-  native_string_base()
+native_string::native_string(int8_t) : native_string_base()
 {
   THROW(ConversionError("int8", "string"));
 }
@@ -107,32 +96,28 @@ native_string::operator-() const
 
 // -----------------------------------------------------------------------------
 
-native_string&
-native_string::operator++() const
+native_string& native_string::operator++() const
 {
   THROW(InvalidOperatorError("++", "string"));
 }
 
 // -----------------------------------------------------------------------------
 
-native_string&
-native_string::operator--() const
+native_string& native_string::operator--() const
 {
   THROW(InvalidOperatorError("--", "string"));
 }
 
 // -----------------------------------------------------------------------------
 
-native_string&
-native_string::operator!() const
+native_string& native_string::operator!() const
 {
   THROW(InvalidOperatorError("!", "string"));
 }
 
 // -----------------------------------------------------------------------------
 
-native_string&
-native_string::operator~() const
+native_string& native_string::operator~() const
 {
   THROW(InvalidOperatorError("~", "string"));
 }
@@ -155,8 +140,7 @@ native_string::operator-(const native_string&) const
 
 // -----------------------------------------------------------------------------
 
-native_string&
-native_string::operator*(const native_string&) const
+native_string& native_string::operator*(const native_string&)const
 {
   THROW(InvalidOperatorError("*", "string"));
 }
@@ -195,8 +179,7 @@ native_string::operator||(const native_string&) const
 
 // -----------------------------------------------------------------------------
 
-native_string&
-native_string::operator&(const native_string&) const
+native_string& native_string::operator&(const native_string&)const
 {
   THROW(InvalidOperatorError("&", "string"));
 }
@@ -238,12 +221,9 @@ native_string::operator>>(const native_string&) const
 native_string::reference
 native_string::at(size_type n)
 {
-  try
-  {
+  try {
     return native_string_base::at(n);
-  }
-  catch (const std::out_of_range&)
-  {
+  } catch (const std::out_of_range&) {
     THROW(OutOfRangeError("String index out of range"));
   }
 }
@@ -253,12 +233,9 @@ native_string::at(size_type n)
 native_string::const_reference
 native_string::at(size_type n) const
 {
-  try
-  {
+  try {
     return native_string_base::at(n);
-  }
-  catch (const std::out_of_range&)
-  {
+  } catch (const std::out_of_range&) {
     THROW(OutOfRangeError("String index out of range"));
   }
 }
@@ -268,13 +245,9 @@ native_string::at(size_type n) const
 native_string&
 native_string::insert(size_type pos, const native_string& str)
 {
-  try
-  {
-    return static_cast<native_string&>(
-      native_string_base::insert(pos, str));
-  }
-  catch (const std::out_of_range&)
-  {
+  try {
+    return static_cast<native_string&>(native_string_base::insert(pos, str));
+  } catch (const std::out_of_range&) {
     THROW(OutOfRangeError("String index out of range"));
   }
 }
@@ -284,13 +257,9 @@ native_string::insert(size_type pos, const native_string& str)
 native_string&
 native_string::insert(size_type pos, size_type n, value_type c)
 {
-  try
-  {
-    return static_cast<native_string&>(
-      native_string_base::insert(pos, n, c));
-  }
-  catch (const std::out_of_range&)
-  {
+  try {
+    return static_cast<native_string&>(native_string_base::insert(pos, n, c));
+  } catch (const std::out_of_range&) {
     THROW(OutOfRangeError("String index out of range"));
   }
 }
@@ -300,13 +269,9 @@ native_string::insert(size_type pos, size_type n, value_type c)
 native_string&
 native_string::erase(size_type pos)
 {
-  try
-  {
-    return static_cast<native_string&>(
-      native_string_base::erase(pos));
-  }
-  catch (const std::out_of_range&)
-  {
+  try {
+    return static_cast<native_string&>(native_string_base::erase(pos));
+  } catch (const std::out_of_range&) {
     THROW(OutOfRangeError("String index out of range"));
   }
 }
@@ -316,13 +281,9 @@ native_string::erase(size_type pos)
 native_string&
 native_string::erase(size_type pos, size_type len)
 {
-  try
-  {
-    return static_cast<native_string&>(
-      native_string_base::erase(pos, len));
-  }
-  catch (const std::out_of_range&)
-  {
+  try {
+    return static_cast<native_string&>(native_string_base::erase(pos, len));
+  } catch (const std::out_of_range&) {
     THROW(OutOfRangeError("String index out of range"));
   }
 }
@@ -332,13 +293,10 @@ native_string::erase(size_type pos, size_type len)
 native_string&
 native_string::replace(size_type pos, size_type len, const native_string& str)
 {
-  try
-  {
+  try {
     return static_cast<native_string&>(
       native_string_base::replace(pos, len, str));
-  }
-  catch (const std::out_of_range&)
-  {
+  } catch (const std::out_of_range&) {
     THROW(OutOfRangeError("String index out of range"));
   }
 }

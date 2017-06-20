@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /** Forward declarations. */
 
-
 namespace corevm {
 namespace runtime {
 
@@ -38,6 +37,5 @@ class Process;
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_RUNTIME_FWD_H_ */

@@ -38,10 +38,7 @@ namespace ir {
  *   * IR_VERSION / 100 % 1000 is the minor version.
  *   * IR_VERSION / 100000 is the major version.
  */
-enum : uint32_t
-{
-  IR_VERSION = 100
-};
+enum : uint32_t { IR_VERSION = 100 };
 
 } /* end namespace ir */
 } /* end namespace api */

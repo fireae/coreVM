@@ -22,13 +22,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "logging.h"
 
-
 namespace corevm {
 
 // -----------------------------------------------------------------------------
 
-class void_log_scheme : public sneaker::logging::log_scheme
-{
+class void_log_scheme : public sneaker::logging::log_scheme {
 public:
   virtual void write(const char* msg);
 };
@@ -48,20 +46,13 @@ log_mode_to_scheme(const std::string& mode)
 {
   sneaker::logging::log_scheme* scheme = NULL;
 
-  if (mode == "")
-  {
+  if (mode == "") {
     scheme = new void_log_scheme();
-  }
-  else if (mode == "stdout")
-  {
+  } else if (mode == "stdout") {
     scheme = new sneaker::logging::stdout_log_scheme();
-  }
-  else if (mode == "stderr")
-  {
+  } else if (mode == "stderr") {
     scheme = new sneaker::logging::stderr_log_scheme();
-  }
-  else
-  {
+  } else {
     scheme = new sneaker::logging::file_log_scheme(mode.c_str());
   }
 
@@ -70,9 +61,7 @@ log_mode_to_scheme(const std::string& mode)
 
 // -----------------------------------------------------------------------------
 
-Loggable::Loggable()
-  :
-  m_logger(nullptr)
+Loggable::Loggable() : m_logger(nullptr)
 {
 }
 

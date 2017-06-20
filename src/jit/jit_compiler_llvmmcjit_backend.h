@@ -30,7 +30,7 @@ namespace llvm {
 class Module;
 class ExecutionEngine;
 class Function;
-}
+} // namespace llvm
 
 namespace corevm {
 namespace jit {
@@ -38,8 +38,7 @@ namespace jit {
 /**
  * JIT backend based on LLVM's MCJIT framework.
  */
-class JITCompilerLLVMMCJITBackend : public JITCompilerBackend
-{
+class JITCompilerLLVMMCJITBackend : public JITCompilerBackend {
 public:
   typedef llvm::Module ModuleType;
 
@@ -67,8 +66,9 @@ public:
    * Implements `JITCompilerBackend::eval_func()`.
    */
   virtual bool eval_func(const std::vector<RuntimeValue>& args,
-    const std::vector<RuntimeValueType>& arg_types,
-    const RuntimeValueType& result_type, RuntimeValue& result_value);
+                         const std::vector<RuntimeValueType>& arg_types,
+                         const RuntimeValueType& result_type,
+                         RuntimeValue& result_value);
 
   /**
    * Implements `JITCompilerBackend::finalize()`.

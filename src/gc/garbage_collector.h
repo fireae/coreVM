@@ -27,29 +27,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/logging.h"
 #include "dyobj/dynamic_object_heap.h"
 
-
 namespace corevm {
 namespace gc {
 
 // -----------------------------------------------------------------------------
 
-template<class garbage_collection_scheme>
-class GarbageCollector : public Loggable
-{
+template <class garbage_collection_scheme>
+class GarbageCollector : public Loggable {
 public:
   using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<
     typename garbage_collection_scheme::DynamicObjectManager>;
 
-  using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
+  using dynamic_object_type =
+    typename dynamic_object_heap_type::dynamic_object_type;
 
-  class Callback
-  {
-    public:
-      using dynamic_object_type = typename GarbageCollector::dynamic_object_type;
+  class Callback {
+  public:
+    using dynamic_object_type = typename GarbageCollector::dynamic_object_type;
 
-      virtual void operator()(const dynamic_object_type& obj) = 0;
+    virtual void operator()(const dynamic_object_type& obj) = 0;
 
-    virtual ~Callback() {}
+    virtual ~Callback()
+    {
+    }
   };
 
   explicit GarbageCollector(dynamic_object_heap_type&);
@@ -59,7 +59,7 @@ public:
   void gc(Callback*) noexcept;
 
 protected:
-  void free(Callback* f=nullptr) noexcept;
+  void free(Callback* f = nullptr) noexcept;
 
   garbage_collection_scheme m_gc_scheme;
   dynamic_object_heap_type& m_heap;
@@ -67,20 +67,17 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-template<class garbage_collection_scheme>
+template <class garbage_collection_scheme>
 GarbageCollector<garbage_collection_scheme>::GarbageCollector(
   GarbageCollector<garbage_collection_scheme>::dynamic_object_heap_type& heap)
-  :
-  Loggable(),
-  m_gc_scheme(),
-  m_heap(heap)
+  : Loggable(), m_gc_scheme(), m_heap(heap)
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-template<class garbage_collection_scheme>
+template <class garbage_collection_scheme>
 void
 GarbageCollector<garbage_collection_scheme>::gc() noexcept
 {
@@ -90,7 +87,7 @@ GarbageCollector<garbage_collection_scheme>::gc() noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class garbage_collection_scheme>
+template <class garbage_collection_scheme>
 void
 GarbageCollector<garbage_collection_scheme>::gc(Callback* f) noexcept
 {
@@ -101,7 +98,7 @@ GarbageCollector<garbage_collection_scheme>::gc(Callback* f) noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class garbage_collection_scheme>
+template <class garbage_collection_scheme>
 void
 GarbageCollector<garbage_collection_scheme>::free(Callback* f) noexcept
 {
@@ -112,23 +109,19 @@ GarbageCollector<garbage_collection_scheme>::free(Callback* f) noexcept
   llvm::SmallVector<dynamic_object_type*, 50> objs_to_delete;
   objs_to_delete.reserve(m_heap.size());
 
-  for (auto itr = m_heap.begin(); itr != m_heap.end(); ++itr)
-  {
+  for (auto itr = m_heap.begin(); itr != m_heap.end(); ++itr) {
     dynamic_object_type& obj = static_cast<dynamic_object_type&>(*itr);
 
-    if (obj.is_garbage_collectible())
-    {
+    if (obj.is_garbage_collectible()) {
       objs_to_delete.push_back(&obj);
 
-      if (f)
-      {
+      if (f) {
         (*f)(obj);
       }
     }
   }
 
-  for (const auto obj : objs_to_delete)
-  {
+  for (const auto obj : objs_to_delete) {
     m_heap.erase(obj);
   }
 }
@@ -137,6 +130,5 @@ GarbageCollector<garbage_collection_scheme>::free(Callback* f) noexcept
 
 } /* end namespace gc */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_GARBAGE_COLLECTOR_H_ */

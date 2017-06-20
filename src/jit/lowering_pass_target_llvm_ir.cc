@@ -99,4 +99,3 @@ LoweringPassTargetLLVMIR::run(const IRInstruction&, const AnalysisResult*)
 
 } /* end namespace jit */
 } /* end namespace corevm */
-

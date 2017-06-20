@@ -23,17 +23,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_PROCESS_H_
 #define COREVM_PROCESS_H_
 
-#include "fwd.h"
 #include "closure.h"
 #include "common.h"
-#include "runtime_types.h"
-#include "dyobj/common.h"
 #include "corevm/logging.h"
+#include "dyobj/common.h"
+#include "fwd.h"
+#include "runtime_types.h"
 
 #include <cstdint>
 #include <iosfwd>
 #include <type_traits>
-
 
 namespace corevm {
 namespace runtime {
@@ -52,8 +51,7 @@ namespace runtime {
  * - A pool of native type values.
  * - A set of compartments.
  */
-class Process : public Loggable
-{
+class Process : public Loggable {
 public:
   typedef RuntimeTypes::dynamic_object_type dynamic_object_type;
   typedef RuntimeTypes::dynamic_object_heap_type dynamic_object_heap_type;
@@ -61,8 +59,7 @@ public:
   typedef RuntimeTypes::dyobj_ptr_type dyobj_ptr;
 
 public:
-  struct Options
-  {
+  struct Options {
     Options();
 
     uint64_t heap_alloc_size;
@@ -70,16 +67,14 @@ public:
     uint8_t gc_flag;
   };
 
-  enum ExecutionStatus : uint8_t
-  {
+  enum ExecutionStatus : uint8_t {
     EXECUTION_STATUS_IDLE,
     EXECUTION_STATUS_ACTIVE,
     EXECUTION_STATUS_PAUSED,
     EXECUTION_STATUS_TERMINATED
   };
 
-  class Printer
-  {
+  class Printer {
   public:
     Printer(const Process&, uint32_t opts);
 
@@ -235,7 +230,7 @@ public:
   // 1. Once the stack is unwinded, the action cannot be undone.
   // 2. This function has to be exception safe because there are no catch
   //    blocks to catch exceptions from it.
-  void unwind_stack(size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
+  void unwind_stack(size_t limit = COREVM_DEFAULT_STACK_UNWIND_COUNT);
 
 private:
   class Impl;
@@ -247,6 +242,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_PROCESS_H_ */

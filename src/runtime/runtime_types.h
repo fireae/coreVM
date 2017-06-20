@@ -26,23 +26,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/dynamic_object_heap.h"
 #include "gc/refcount_gc_scheme.h"
 
-
 namespace corevm {
 namespace runtime {
 
 /**
  * Global declaration of types used in the runtime sub-system.
  */
-struct RuntimeTypes
-{
+struct RuntimeTypes {
   typedef gc::RefCountGarbageCollectionScheme garbage_collection_scheme;
-  using dynamic_object_type = typename dyobj::DynamicObject<garbage_collection_scheme::DynamicObjectManager>;
-  using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<garbage_collection_scheme::DynamicObjectManager>;
+  using dynamic_object_type = typename dyobj::DynamicObject<
+    garbage_collection_scheme::DynamicObjectManager>;
+  using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<
+    garbage_collection_scheme::DynamicObjectManager>;
   typedef dynamic_object_type::dyobj_ptr dyobj_ptr_type;
 };
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_RUNTIME_TYPES_H_ */

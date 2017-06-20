@@ -27,13 +27,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 
-
 namespace corevm {
 
 // -----------------------------------------------------------------------------
 
-typedef sneaker::logging::logger<
-  sneaker::logging::thread_safe_tag, sneaker::logging::exception_safe_tag> Logger;
+typedef sneaker::logging::logger<sneaker::logging::thread_safe_tag,
+                                 sneaker::logging::exception_safe_tag>
+  Logger;
 
 // -----------------------------------------------------------------------------
 
@@ -41,8 +41,7 @@ sneaker::logging::log_scheme* log_mode_to_scheme(const std::string& mode);
 
 // -----------------------------------------------------------------------------
 
-class Loggable
-{
+class Loggable {
 public:
   void set_logger(Logger*);
 
@@ -55,6 +54,5 @@ protected:
 // -----------------------------------------------------------------------------
 
 } /* end namespace corevm */
-
 
 #endif /* COREVM_LOGGING_H_ */

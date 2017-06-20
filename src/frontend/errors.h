@@ -27,18 +27,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <boost/format.hpp>
 
-
 namespace corevm {
 namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-class FileLoadingError : public RuntimeError
-{
+class FileLoadingError : public RuntimeError {
 public:
-  explicit FileLoadingError(const char* what_arg)
-    :
-    RuntimeError(what_arg)
+  explicit FileLoadingError(const char* what_arg) : RuntimeError(what_arg)
   {
   }
 };
@@ -47,6 +43,5 @@ public:
 
 } /* end namespace frontend */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_FRONTEND_ERRORS_H_ */

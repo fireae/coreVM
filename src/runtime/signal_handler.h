@@ -23,16 +23,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_SIGNAL_HANDLER_H_
 #define COREVM_SIGNAL_HANDLER_H_
 
-
 namespace corevm {
 namespace runtime {
 
 /** Forward declaration */
 class Process;
 
-
-class SignalHandler
-{
+class SignalHandler {
 public:
   static void register_process(Process*);
 
@@ -44,6 +41,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_SIGNAL_HANDLER_H_ */

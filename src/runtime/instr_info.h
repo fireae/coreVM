@@ -25,21 +25,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "instr_fwd.h"
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-typedef struct InstrInfo
-{
+typedef struct InstrInfo {
   const char* const name;
 } InstrInfo;
 
 // -----------------------------------------------------------------------------
 
-struct InstrSetInfo
-{
+struct InstrSetInfo {
   static const InstrInfo instr_infos[INSTR_CODE_MAX];
 };
 
@@ -47,6 +44,5 @@ struct InstrSetInfo
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_INSTR_INFO_H_ */

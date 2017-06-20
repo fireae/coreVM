@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <vector>
 
-
 namespace corevm {
 namespace runtime {
 
@@ -43,6 +42,5 @@ typedef std::vector<LocInfo> LocTable;
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_LOC_INFO_H_ */

@@ -28,33 +28,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <list>
 
-
 namespace corevm {
 namespace memory {
 
 // -----------------------------------------------------------------------------
 
-typedef struct __SequentialBlockDescriptor
-{
+typedef struct __SequentialBlockDescriptor {
   __SequentialBlockDescriptor()
-    :
-    size(0u),
-    actual_size(0u),
-    offset(0u),
-    flags(0u)
+    : size(0u), actual_size(0u), offset(0u), flags(0u)
   {
   }
 
-  __SequentialBlockDescriptor(
-    uint64_t size_,
-    uint64_t actual_size_,
-    uint64_t offset_,
-    uint8_t flags_)
-    :
-    size(size_),
-    actual_size(actual_size_),
-    offset(offset_),
-    flags(flags_)
+  __SequentialBlockDescriptor(uint64_t size_, uint64_t actual_size_,
+                              uint64_t offset_, uint8_t flags_)
+    : size(size_), actual_size(actual_size_), offset(offset_), flags(flags_)
   {
   }
 
@@ -66,8 +53,7 @@ typedef struct __SequentialBlockDescriptor
 
 // -----------------------------------------------------------------------------
 
-class SequentialAllocationScheme : public AllocationScheme
-{
+class SequentialAllocationScheme : public AllocationScheme {
 public:
   explicit SequentialAllocationScheme(size_t);
 
@@ -101,8 +87,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class FirstFitAllocationScheme : public SequentialAllocationScheme
-{
+class FirstFitAllocationScheme : public SequentialAllocationScheme {
 public:
   explicit FirstFitAllocationScheme(size_t total_size);
 
@@ -112,8 +97,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class BestFitAllocationScheme : public SequentialAllocationScheme
-{
+class BestFitAllocationScheme : public SequentialAllocationScheme {
 public:
   explicit BestFitAllocationScheme(size_t total_size);
 
@@ -123,8 +107,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class WorstFitAllocationScheme : public SequentialAllocationScheme
-{
+class WorstFitAllocationScheme : public SequentialAllocationScheme {
 public:
   explicit WorstFitAllocationScheme(size_t total_size);
 
@@ -134,8 +117,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class NextFitAllocationScheme : public SequentialAllocationScheme
-{
+class NextFitAllocationScheme : public SequentialAllocationScheme {
 public:
   explicit NextFitAllocationScheme(size_t total_size);
 
@@ -149,8 +131,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class BuddyAllocationScheme : public SequentialAllocationScheme
-{
+class BuddyAllocationScheme : public SequentialAllocationScheme {
 public:
   explicit BuddyAllocationScheme(size_t total_size);
 
@@ -170,6 +151,5 @@ protected:
 
 } /* end namespace memory */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_SEQUENTIAL_ALLOCATION_SCHEME_H_ */

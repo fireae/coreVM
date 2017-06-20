@@ -29,16 +29,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 
-
 namespace corevm {
 namespace runtime {
 
 /** Forward declaration of `CompartmentPrinter` */
 class CompartmentPrinter;
 
-
-class Compartment
-{
+class Compartment {
 public:
   explicit Compartment(const std::string&);
 
@@ -81,6 +78,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_COMPARTMENT_H_ */

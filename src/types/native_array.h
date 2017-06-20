@@ -29,18 +29,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdexcept>
 #include <vector>
 
-
 namespace corevm {
 namespace types {
 
 typedef uint64_t native_array_element_type;
 
-
 using native_array_base = typename std::vector<native_array_element_type>;
 
-
-class native_array : public native_array_base
-{
+class native_array : public native_array_base {
 public:
   native_array();
 
@@ -50,13 +46,12 @@ public:
 
   native_array(std::initializer_list<value_type>);
 
-  [[ noreturn ]] /** Avoid compiler warning [-Wmissing-noreturn]. */
-  native_array(int8_t);
+  [[noreturn]] /** Avoid compiler warning [-Wmissing-noreturn]. */
+    native_array(int8_t);
 
   template <class InputIterator>
   native_array(InputIterator first, InputIterator last)
-    :
-    native_array_base(first, last)
+    : native_array_base(first, last)
   {
   }
 
@@ -78,7 +73,7 @@ public:
 
   native_array& operator-(const native_array&) const;
 
-  native_array& operator*(const native_array&) const;
+  native_array& operator*(const native_array&)const;
 
   native_array& operator/(const native_array&) const;
 
@@ -88,7 +83,7 @@ public:
 
   native_array& operator||(const native_array&) const;
 
-  native_array& operator&(const native_array&) const;
+  native_array& operator&(const native_array&)const;
 
   native_array& operator|(const native_array&) const;
 
@@ -107,6 +102,5 @@ public:
 
 } /* end namespace types */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_NATIVE_ARRAY_H_ */

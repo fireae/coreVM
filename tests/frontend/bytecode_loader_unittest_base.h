@@ -27,29 +27,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <fstream>
 
-
-class BytecodeLoaderUnitTestBase : public ::testing::Test
-{
+class BytecodeLoaderUnitTestBase : public ::testing::Test {
 protected:
   static const char* PATH;
 
-  virtual void SetUp()
+  virtual void
+  SetUp()
   {
     std::ofstream f(PATH, std::ios::binary);
     f << bytecode();
     f.close();
   }
 
-  virtual void TearDown()
+  virtual void
+  TearDown()
   {
     remove(PATH);
   }
 
-  virtual const char* bytecode()
+  virtual const char*
+  bytecode()
   {
     return "";
   }
 };
-
 
 #endif /* COREVM_BYTECODE_LOADER_UNITTEST_BASE_H_ */

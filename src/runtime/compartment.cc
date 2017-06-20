@@ -27,15 +27,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include <ostream>
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-Compartment::Compartment(const std::string& path)
-  :
-  m_path(path)
+Compartment::Compartment(const std::string& path) : m_path(path)
 {
 }
 
@@ -84,8 +81,7 @@ Compartment::set_fpt_literal_table(FptLiteralTable&& table)
 std::string
 Compartment::get_string_literal(encoding_key_t key) const
 {
-  if (key >= m_str_literal_table.size())
-  {
+  if (key >= m_str_literal_table.size()) {
     THROW(StringLiteralNotFoundError(key));
   }
 
@@ -100,8 +96,7 @@ Compartment::get_string_literal(encoding_key_t key, std::string* str) const
   const char* str_ = NULL;
   get_string_literal(key, &str_);
 
-  if (str_)
-  {
+  if (str_) {
     str->assign(str_);
   }
 }
@@ -111,8 +106,7 @@ Compartment::get_string_literal(encoding_key_t key, std::string* str) const
 void
 Compartment::get_string_literal(encoding_key_t key, const char** str) const
 {
-  if (key < m_str_literal_table.size())
-  {
+  if (key < m_str_literal_table.size()) {
     *str = m_str_literal_table[key].c_str();
   }
 }
@@ -122,8 +116,7 @@ Compartment::get_string_literal(encoding_key_t key, const char** str) const
 double
 Compartment::get_fpt_literal(encoding_key_t key) const
 {
-  if (key >= m_fpt_literal_table.size())
-  {
+  if (key >= m_fpt_literal_table.size()) {
     THROW(FptLiteralNotFoundError(key));
   }
 
@@ -151,8 +144,7 @@ Compartment::set_closure_table(const ClosureTable&& closure_table)
 const Closure
 Compartment::get_closure_by_id(closure_id_t id) const
 {
-  if (id < static_cast<closure_id_t>(m_closure_table.size()))
-  {
+  if (id < static_cast<closure_id_t>(m_closure_table.size())) {
     return m_closure_table[static_cast<size_t>(id)];
   }
 
@@ -164,8 +156,7 @@ Compartment::get_closure_by_id(closure_id_t id) const
 void
 Compartment::get_closure_by_id(closure_id_t id, Closure** closure_ptr)
 {
-  if (id < static_cast<closure_id_t>(m_closure_table.size()))
-  {
+  if (id < static_cast<closure_id_t>(m_closure_table.size())) {
     *closure_ptr = &m_closure_table[static_cast<size_t>(id)];
   }
 }
@@ -175,13 +166,11 @@ Compartment::get_closure_by_id(closure_id_t id, Closure** closure_ptr)
 bool
 Compartment::get_starting_closure(Closure** closure)
 {
-  for (size_t i = 0; i < m_closure_table.size(); ++i)
-  {
+  for (size_t i = 0; i < m_closure_table.size(); ++i) {
     const runtime::Closure& closure_ = m_closure_table[i];
 
     if (closure_.id != NONESET_CLOSURE_ID &&
-        closure_.parent_id == NONESET_CLOSURE_ID)
-    {
+        closure_.parent_id == NONESET_CLOSURE_ID) {
       *closure = const_cast<runtime::Closure*>(&closure_);
 
       return true;

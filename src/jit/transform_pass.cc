@@ -22,14 +22,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "transform_pass.h"
 
-
 namespace corevm {
 namespace jit {
 
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool TransformPass::run(IRModule&, const AnalysisResult*)
+bool
+TransformPass::run(IRModule&, const AnalysisResult*)
 {
   return true;
 }
@@ -37,7 +37,8 @@ bool TransformPass::run(IRModule&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool TransformPass::run(IRTypeDecl&, const AnalysisResult*)
+bool
+TransformPass::run(IRTypeDecl&, const AnalysisResult*)
 {
   return true;
 }
@@ -45,7 +46,8 @@ bool TransformPass::run(IRTypeDecl&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool TransformPass::run(IRClosure&, const AnalysisResult*)
+bool
+TransformPass::run(IRClosure&, const AnalysisResult*)
 {
   return true;
 }
@@ -53,7 +55,8 @@ bool TransformPass::run(IRClosure&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool TransformPass::run(IRBasicBlock&, const AnalysisResult*)
+bool
+TransformPass::run(IRBasicBlock&, const AnalysisResult*)
 {
   return true;
 }
@@ -61,7 +64,8 @@ bool TransformPass::run(IRBasicBlock&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool TransformPass::run(IRInstruction&, const AnalysisResult*)
+bool
+TransformPass::run(IRInstruction&, const AnalysisResult*)
 {
   return true;
 }

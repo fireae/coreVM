@@ -23,32 +23,33 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_NATIVE_TYPE_VISITORS_IMPL_H_
 #define COREVM_NATIVE_TYPE_VISITORS_IMPL_H_
 
-#include "fwd.h"
 #include "common/variant/static_visitor.h"
 #include "common/variant/variant.h"
+#include "fwd.h"
 
 #include <type_traits>
 
 #if defined(__clang__) and __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wconversion"
-  #pragma clang diagnostic ignored "-Wsign-conversion"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Wsign-conversion"
 #endif
-
 
 namespace corevm {
 namespace types {
 
 // -----------------------------------------------------------------------------
 
-template<class op>
-class native_type_unary_visitor : public common::variant::static_visitor<NativeTypeValue>
-{
+template <class op>
+class native_type_unary_visitor
+  : public common::variant::static_visitor<NativeTypeValue> {
 public:
-  static_assert(std::is_same<typename op::operator_category, unary_op_tag>::value, "");
+  static_assert(
+    std::is_same<typename op::operator_category, unary_op_tag>::value, "");
 
-  template<typename T>
-  NativeTypeValue operator()(const T& operand) const
+  template <typename T>
+  NativeTypeValue
+  operator()(const T& operand) const
   {
     return op().template operator()(operand);
   }
@@ -56,21 +57,22 @@ public:
 
 // -----------------------------------------------------------------------------
 
-template<class op>
-class native_type_parameterized_unary_visitor : public common::variant::static_visitor<NativeTypeValue>
-{
+template <class op>
+class native_type_parameterized_unary_visitor
+  : public common::variant::static_visitor<NativeTypeValue> {
 public:
-  static_assert(std::is_same<typename op::operator_category, unary_op_tag>::value, "");
+  static_assert(
+    std::is_same<typename op::operator_category, unary_op_tag>::value, "");
 
-  template<typename... Arguments>
+  template <typename... Arguments>
   explicit native_type_parameterized_unary_visitor(Arguments... args)
-    :
-    m_op(args...)
+    : m_op(args...)
   {
   }
 
-  template<typename T>
-  NativeTypeValue operator()(const T& operand) const
+  template <typename T>
+  NativeTypeValue
+  operator()(const T& operand) const
   {
     return m_op.template operator()(operand);
   }
@@ -81,15 +83,18 @@ private:
 
 // -----------------------------------------------------------------------------
 
-template<class op, class R>
-class native_type_typed_unary_visitor : public common::variant::static_visitor<R>
-{
+template <class op, class R>
+class native_type_typed_unary_visitor
+  : public common::variant::static_visitor<R> {
 public:
-  static_assert(std::is_same<typename op::operator_category, typed_unary_op_tag>::value, "");
+  static_assert(
+    std::is_same<typename op::operator_category, typed_unary_op_tag>::value,
+    "");
   static_assert(std::is_same<typename op::result_type, R>::value, "");
 
-  template<typename T>
-  R operator()(const T& operand) const
+  template <typename T>
+  R
+  operator()(const T& operand) const
   {
     return R(op().template operator()(operand));
   }
@@ -97,21 +102,20 @@ public:
 
 // -----------------------------------------------------------------------------
 
-template<class op>
-class native_type_binary_visitor : public common::variant::static_visitor<NativeTypeValue>
-{
+template <class op>
+class native_type_binary_visitor
+  : public common::variant::static_visitor<NativeTypeValue> {
 public:
-  static_assert(std::is_same<typename op::operator_category, binary_op_tag>::value, "");
+  static_assert(
+    std::is_same<typename op::operator_category, binary_op_tag>::value, "");
 
-  template<typename T, typename U>
-  NativeTypeValue operator()(const T& lhs, const U& rhs) const
+  template <typename T, typename U>
+  NativeTypeValue
+  operator()(const T& lhs, const U& rhs) const
   {
-    if (sizeof(lhs) >= sizeof(rhs))
-    {
+    if (sizeof(lhs) >= sizeof(rhs)) {
       return T(op().template operator()<T>(lhs, rhs));
-    }
-    else
-    {
+    } else {
       return U(op().template operator()<U>(lhs, rhs));
     }
   }
@@ -119,22 +123,22 @@ public:
 
 // -----------------------------------------------------------------------------
 
-template<class op, typename R>
-class native_type_typed_binary_visitor : public common::variant::static_visitor<R>
-{
+template <class op, typename R>
+class native_type_typed_binary_visitor
+  : public common::variant::static_visitor<R> {
 public:
-  static_assert(std::is_same<typename op::operator_category, typed_binary_op_tag>::value, "");
+  static_assert(
+    std::is_same<typename op::operator_category, typed_binary_op_tag>::value,
+    "");
   static_assert(std::is_same<typename op::result_type, R>::value, "");
 
-  template<typename T, typename U>
-  R operator()(const T& lhs, const U& rhs) const
+  template <typename T, typename U>
+  R
+  operator()(const T& lhs, const U& rhs) const
   {
-    if (sizeof(lhs) >= sizeof(rhs))
-    {
+    if (sizeof(lhs) >= sizeof(rhs)) {
       return R(op().template operator()<T>(lhs, rhs));
-    }
-    else
-    {
+    } else {
       return R(op().template operator()<U>(lhs, rhs));
     }
   }
@@ -142,15 +146,18 @@ public:
 
 // -----------------------------------------------------------------------------
 
-template<class op, typename R>
-class native_type_typed_cast_binary_visitor : public common::variant::static_visitor<R>
-{
+template <class op, typename R>
+class native_type_typed_cast_binary_visitor
+  : public common::variant::static_visitor<R> {
 public:
-  static_assert(std::is_same<typename op::operator_category, typed_cast_binary_op_tag>::value, "");
+  static_assert(std::is_same<typename op::operator_category,
+                             typed_cast_binary_op_tag>::value,
+                "");
   static_assert(std::is_same<typename op::result_type, R>::value, "");
 
-  template<typename T, typename U>
-  R operator()(const T& lhs, const U& rhs) const
+  template <typename T, typename U>
+  R
+  operator()(const T& lhs, const U& rhs) const
   {
     return R(op().template operator()(lhs, rhs));
   }
@@ -158,12 +165,12 @@ public:
 
 // -----------------------------------------------------------------------------
 
-template<typename T>
-class native_type_value_visitor : public common::variant::static_visitor<T>
-{
+template <typename T>
+class native_type_value_visitor : public common::variant::static_visitor<T> {
 public:
-  template<typename H>
-  T operator()(const H& oprd) const
+  template <typename H>
+  T
+  operator()(const H& oprd) const
   {
     return static_cast<T>(oprd);
   }
@@ -174,10 +181,8 @@ public:
 } /* end namespace types */
 } /* end namespace corevm */
 
-
 #if defined(__clang__) and __clang__
-  #pragma clang diagnostic pop
+#pragma clang diagnostic pop
 #endif
-
 
 #endif /* COREVM_NATIVE_TYPE_VISITORS_IMPL_H_ */

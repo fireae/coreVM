@@ -22,7 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "flags.h"
 
-
 namespace corevm {
 namespace dyobj {
 
@@ -31,7 +30,8 @@ namespace dyobj {
 bool
 is_valid_flag_bit(char bit)
 {
-  return (0 < bit) && (static_cast<DynamicObjectFlagBits>(bit) < DYOBJ_MAX_VALUE);
+  return (0 < bit) &&
+         (static_cast<DynamicObjectFlagBits>(bit) < DYOBJ_MAX_VALUE);
 }
 
 // -----------------------------------------------------------------------------

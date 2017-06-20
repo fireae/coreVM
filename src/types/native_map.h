@@ -28,19 +28,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <unordered_map>
 
-
 namespace corevm {
 namespace types {
 
 typedef uint64_t native_map_key_type;
 typedef uint64_t native_map_mapped_type;
 
+using native_map_base =
+  typename std::unordered_map<native_map_key_type, native_map_mapped_type>;
 
-using native_map_base = typename std::unordered_map<native_map_key_type, native_map_mapped_type>;
-
-
-class native_map : public native_map_base
-{
+class native_map : public native_map_base {
 public:
   native_map();
 
@@ -50,8 +47,8 @@ public:
 
   native_map(std::initializer_list<value_type>);
 
-  [[ noreturn ]] /** Avoid compiler warning [-Wmissing-noreturn]. */
-  native_map(int8_t);
+  [[noreturn]] /** Avoid compiler warning [-Wmissing-noreturn]. */
+    native_map(int8_t);
 
   operator int8_t() const;
 
@@ -71,7 +68,7 @@ public:
 
   native_map& operator-(const native_map&) const;
 
-  native_map& operator*(const native_map&) const;
+  native_map& operator*(const native_map&)const;
 
   native_map& operator/(const native_map&) const;
 
@@ -81,7 +78,7 @@ public:
 
   native_map& operator||(const native_map&) const;
 
-  native_map& operator&(const native_map&) const;
+  native_map& operator&(const native_map&)const;
 
   native_map& operator|(const native_map&) const;
 
@@ -106,6 +103,5 @@ public:
 
 } /* end namespace types */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_NATIVE_MAP_H_ */

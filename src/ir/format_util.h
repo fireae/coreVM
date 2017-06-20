@@ -23,14 +23,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_FORMAT_UTIL_H_
 #define COREVM_FORMAT_UTIL_H_
 
-#include "format.h"
 #include "common/variant/variant.h"
+#include "format.h"
 #include <array>
 #include <string>
 #include <tuple>
 #include <utility>
 #include <vector>
-
 
 /** Utilities for handling coreVM IR entities. */
 
@@ -41,25 +40,25 @@ namespace ir {
  * Type representing the set of allowed values for IR function definition
  * options.
  */
-enum class FuncDefnOption : int64_t
-{
-  CONSTEXPR        = (0x01 << 0),
-  INLINE           = (0x01 << 1),
+enum class FuncDefnOption : int64_t {
+  CONSTEXPR = (0x01 << 0),
+  INLINE = (0x01 << 1),
   TAIL_DUPLICATION = (0x01 << 2),
-  LOOP_SIMPLIFY    = (0x01 << 3),
+  LOOP_SIMPLIFY = (0x01 << 3),
 };
 
 /**
  * FuncDefnOption <--> string representation map.
  */
-extern
-std::array<std::tuple<FuncDefnOption, const char*>, 4> FuncDefnOptionToStrArray;
+extern std::array<std::tuple<FuncDefnOption, const char*>, 4>
+  FuncDefnOptionToStrArray;
 
 /**
  * Add a function definition option to an value set.
  * Returns the new value set.
  */
-inline constexpr int64_t add_func_defn_option(int64_t val, int64_t new_val)
+inline constexpr int64_t
+add_func_defn_option(int64_t val, int64_t new_val)
 {
   return (val | new_val);
 }
@@ -67,8 +66,8 @@ inline constexpr int64_t add_func_defn_option(int64_t val, int64_t new_val)
 /**
  * Determine if a particular function definition option has been set.
  */
-inline
-constexpr bool is_func_defn_option_enabled(int64_t val, FuncDefnOption opt)
+inline constexpr bool
+is_func_defn_option_enabled(int64_t val, FuncDefnOption opt)
 {
   return (val & static_cast<int64_t>(opt)) == static_cast<int64_t>(opt);
 }
@@ -82,8 +81,7 @@ int64_t interpret_func_defn_option(const std::string&);
 /**
  * Convert IR opcode string representation to enum value.
  */
-corevm::IROpcode
-string_to_IROpcode(const std::string& val);
+corevm::IROpcode string_to_IROpcode(const std::string& val);
 
 /**
  * Convert IR opcode to string representation.
@@ -104,8 +102,8 @@ const char* IRValueRefType_to_string(IRValueRefType val);
  * Generic type representing an IR definition, it can be either a type
  * or function definition.
  */
-using IRDefn = common::variant::variant<
-  corevm::IRClosure, corevm::IRTypeDecl, corevm::IRIntrinsicDecl>;
+using IRDefn = common::variant::variant<corevm::IRClosure, corevm::IRTypeDecl,
+                                        corevm::IRIntrinsicDecl>;
 
 /**
  * IR module metadata key-value pair.
@@ -116,7 +114,8 @@ typedef std::pair<std::string, std::string> MetadataPair;
  * Set metadata and definitions to an IR module.
  */
 void set_metadata_and_definitions(const std::vector<MetadataPair>&,
-  const std::vector<IRDefn>&, corevm::IRModule&);
+                                  const std::vector<IRDefn>&,
+                                  corevm::IRModule&);
 
 /**
  * Add a metadata key-value pair to a IR module.
@@ -135,19 +134,19 @@ void set_metadata(const std::vector<MetadataPair>&, corevm::IRModule&);
  * if both are of numeric or boolean types.
  */
 bool are_compatible_types(const corevm::IRIdentifierType&,
-  const corevm::IRIdentifierType&);
+                          const corevm::IRIdentifierType&);
 
 /**
  * Equality check between two IR identifier types.
  */
 bool operator==(const corevm::IRIdentifierType&,
-  const corevm::IRIdentifierType&);
+                const corevm::IRIdentifierType&);
 
 /**
  * Equality check between two IR identifier types.
  */
 bool operator!=(const corevm::IRIdentifierType&,
-  const corevm::IRIdentifierType&);
+                const corevm::IRIdentifierType&);
 
 /**
  * Equality check between two IR array types.
@@ -224,8 +223,8 @@ bool type_decl_has_field(const corevm::IRTypeDecl&, const std::string&);
 /**
  * Get the identifier type of a type field.
  */
-corevm::IRIdentifierType
-get_type_decl_field_type(const corevm::IRTypeDecl&, const std::string&);
+corevm::IRIdentifierType get_type_decl_field_type(const corevm::IRTypeDecl&,
+                                                  const std::string&);
 
 } /* end namespace ir */
 } /* end namespace corevm */

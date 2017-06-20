@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types.h"
 #include "visitors.impl.h"
 
-
 namespace corevm {
 namespace types {
 
@@ -42,23 +41,27 @@ typedef native_type_unary_visitor<decrement> native_type_decrement_visitor;
 typedef native_type_unary_visitor<bitwise_not> native_type_bitwise_not_visitor;
 typedef native_type_unary_visitor<reverse> native_type_reverse_visitor;
 typedef native_type_unary_visitor<absolute> native_type_abs_visitor;
-typedef native_type_unary_visitor<sqrt>  native_type_sqrt_visitor;
+typedef native_type_unary_visitor<sqrt> native_type_sqrt_visitor;
 
 // -----------------------------------------------------------------------------
 
 /** Typed unary operator visitors */
 
 typedef native_type_typed_unary_visitor<repr, string> native_type_repr_visitor;
-typedef native_type_typed_unary_visitor<logical_not, boolean> native_type_logical_not_visitor;
-typedef native_type_typed_unary_visitor<truthy, boolean> native_type_truthy_visitor;
+typedef native_type_typed_unary_visitor<logical_not, boolean>
+  native_type_logical_not_visitor;
+typedef native_type_typed_unary_visitor<truthy, boolean>
+  native_type_truthy_visitor;
 typedef native_type_typed_unary_visitor<hash, int64> native_type_hash_visitor;
 
 // -----------------------------------------------------------------------------
 
 /** Parameterized unary operator visitors */
 
-typedef native_type_parameterized_unary_visitor<slice> native_type_slice_visitor;
-typedef native_type_parameterized_unary_visitor<stride> native_type_stride_visitor;
+typedef native_type_parameterized_unary_visitor<slice>
+  native_type_slice_visitor;
+typedef native_type_parameterized_unary_visitor<stride>
+  native_type_stride_visitor;
 
 // -----------------------------------------------------------------------------
 
@@ -66,7 +69,8 @@ typedef native_type_parameterized_unary_visitor<stride> native_type_stride_visit
 
 typedef native_type_binary_visitor<addition> native_type_addition_visitor;
 typedef native_type_binary_visitor<subtraction> native_type_subtraction_visitor;
-typedef native_type_binary_visitor<multiplication> native_type_multiplication_visitor;
+typedef native_type_binary_visitor<multiplication>
+  native_type_multiplication_visitor;
 typedef native_type_binary_visitor<division> native_type_division_visitor;
 typedef native_type_binary_visitor<modulus> native_type_modulus_visitor;
 typedef native_type_binary_visitor<pow_op> native_type_pow_visitor;
@@ -75,18 +79,25 @@ typedef native_type_binary_visitor<pow_op> native_type_pow_visitor;
 
 /** Typed cast binary operator visitors */
 
-typedef native_type_typed_cast_binary_visitor<bitwise_and, int64> native_type_bitwise_and_visitor;
-typedef native_type_typed_cast_binary_visitor<bitwise_or, int64> native_type_bitwise_or_visitor;
-typedef native_type_typed_cast_binary_visitor<bitwise_xor, int64> native_type_bitwise_xor_visitor;
-typedef native_type_typed_cast_binary_visitor<bitwise_left_shift, int64> native_type_bitwise_left_shift_visitor;
-typedef native_type_typed_cast_binary_visitor<bitwise_right_shift, int64> native_type_bitwise_right_shift_visitor;
+typedef native_type_typed_cast_binary_visitor<bitwise_and, int64>
+  native_type_bitwise_and_visitor;
+typedef native_type_typed_cast_binary_visitor<bitwise_or, int64>
+  native_type_bitwise_or_visitor;
+typedef native_type_typed_cast_binary_visitor<bitwise_xor, int64>
+  native_type_bitwise_xor_visitor;
+typedef native_type_typed_cast_binary_visitor<bitwise_left_shift, int64>
+  native_type_bitwise_left_shift_visitor;
+typedef native_type_typed_cast_binary_visitor<bitwise_right_shift, int64>
+  native_type_bitwise_right_shift_visitor;
 
 // -----------------------------------------------------------------------------
 
 /** Typed binary operator visitors */
 
-typedef native_type_typed_binary_visitor<logical_and, boolean> native_type_logical_and_visitor;
-typedef native_type_typed_binary_visitor<logical_or, boolean> native_type_logical_or_visitor;
+typedef native_type_typed_binary_visitor<logical_and, boolean>
+  native_type_logical_and_visitor;
+typedef native_type_typed_binary_visitor<logical_or, boolean>
+  native_type_logical_or_visitor;
 typedef native_type_typed_binary_visitor<eq, boolean> native_type_eq_visitor;
 typedef native_type_typed_binary_visitor<neq, boolean> native_type_neq_visitor;
 typedef native_type_typed_binary_visitor<gt, boolean> native_type_gt_visitor;
@@ -99,6 +110,5 @@ typedef native_type_typed_binary_visitor<cmp, int32> native_type_cmp_visitor;
 
 } /* end namespace types */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_NATIVE_TYPE_VISITORS_H_ */

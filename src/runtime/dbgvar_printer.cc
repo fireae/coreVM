@@ -29,19 +29,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 #include <string>
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
 DbgvarPrinter::DbgvarPrinter(const Process& process, const Frame& frame,
-  const char* variable_name, RuntimeTypes::dyobj_ptr_type obj)
-  :
-  m_process(process),
-  m_frame(frame),
-  m_variable_name(variable_name),
-  m_obj(obj)
+                             const char* variable_name,
+                             RuntimeTypes::dyobj_ptr_type obj)
+  : m_process(process),
+    m_frame(frame),
+    m_variable_name(variable_name),
+    m_obj(obj)
 {
 }
 
@@ -53,7 +52,8 @@ DbgvarPrinter::operator()(std::ostream& ost) const
   std::stringstream ss;
 
   ss << "------------------- DEBUG -------------------" << std::endl;
-  ss << std::setw(10) << "Module: " << m_frame.compartment()->path() << std::endl;
+  ss << std::setw(10) << "Module: " << m_frame.compartment()->path()
+     << std::endl;
   ss << std::setw(10) << "Frame: " << m_frame.closure()->name << std::endl;
   ss << std::setw(10) << "Variable: " << m_variable_name << std::endl;
   ss << std::endl;
@@ -61,8 +61,7 @@ DbgvarPrinter::operator()(std::ostream& ost) const
   ss << "\tAttribute count: " << m_obj->attr_count() << std::endl;
 
   size_t i = 1;
-  for (auto itr = m_obj->begin(); itr != m_obj->end(); ++itr, ++i)
-  {
+  for (auto itr = m_obj->begin(); itr != m_obj->end(); ++itr, ++i) {
     auto attr_key = itr->first;
     auto attr_obj = itr->second;
     const char* attr_name = NULL;
@@ -74,7 +73,8 @@ DbgvarPrinter::operator()(std::ostream& ost) const
   }
 
   ss << "\tFlags: " << m_obj->flags() << std::endl;
-  ss << "\tIs garbage collectible: " << m_obj->is_garbage_collectible() << std::endl;
+  ss << "\tIs garbage collectible: " << m_obj->is_garbage_collectible()
+     << std::endl;
   ss << std::endl;
 
   ost << ss.str();

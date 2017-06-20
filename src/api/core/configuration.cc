@@ -31,44 +31,41 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 #include <string>
 
-
 namespace corevm {
 namespace api {
 namespace core {
 
 // -----------------------------------------------------------------------------
 
-const char* Configuration::schema =
-  "{"
-    "\"type\": \"object\","
-    "\"properties\": {"
-      "\"heap-alloc-size\": {"
-        "\"type\": \"integer\""
-      "},"
-      "\"pool-alloc-size\": {"
-        "\"type\": \"integer\""
-      "},"
-      "\"gc-interval\": {"
-        "\"type\": \"integer\""
-      "},"
-      "\"gc-flag\": {"
-        "\"type\": \"integer\""
-      "},"
-      "\"logging\": {"
-        "\"type\": \"string\""
-      "}"
-    "}"
-  "}";
+const char* Configuration::schema = "{"
+                                    "\"type\": \"object\","
+                                    "\"properties\": {"
+                                    "\"heap-alloc-size\": {"
+                                    "\"type\": \"integer\""
+                                    "},"
+                                    "\"pool-alloc-size\": {"
+                                    "\"type\": \"integer\""
+                                    "},"
+                                    "\"gc-interval\": {"
+                                    "\"type\": \"integer\""
+                                    "},"
+                                    "\"gc-flag\": {"
+                                    "\"type\": \"integer\""
+                                    "},"
+                                    "\"logging\": {"
+                                    "\"type\": \"string\""
+                                    "}"
+                                    "}"
+                                    "}";
 
 // -----------------------------------------------------------------------------
 
 Configuration::Configuration()
-  :
-  m_heap_alloc_size(0u),
-  m_pool_alloc_size(0u),
-  m_gc_interval(0u),
-  m_gc_flag(),
-  m_log_mode()
+  : m_heap_alloc_size(0u),
+    m_pool_alloc_size(0u),
+    m_gc_interval(0u),
+    m_gc_flag(),
+    m_log_mode()
 {
 }
 
@@ -176,8 +173,7 @@ set_values(Configuration& configuration, const sneaker::json::JSON& config_json)
   const JSON::object& config_obj = config_json.object_items();
 
   // Set heap alloc size.
-  if (config_obj.find("heap-alloc-size") != config_obj.end())
-  {
+  if (config_obj.find("heap-alloc-size") != config_obj.end()) {
     const JSON& heap_alloc_size_raw = config_obj.at("heap-alloc-size");
     uint64_t heap_alloc_size =
       static_cast<uint64_t>(heap_alloc_size_raw.int_value());
@@ -185,8 +181,7 @@ set_values(Configuration& configuration, const sneaker::json::JSON& config_json)
   }
 
   // Set native type pool alloc size.
-  if (config_obj.find("pool-alloc-size") != config_obj.end())
-  {
+  if (config_obj.find("pool-alloc-size") != config_obj.end()) {
     const JSON& pool_alloc_size_raw = config_obj.at("pool-alloc-size");
     uint64_t pool_alloc_size =
       static_cast<uint64_t>(pool_alloc_size_raw.int_value());
@@ -194,26 +189,21 @@ set_values(Configuration& configuration, const sneaker::json::JSON& config_json)
   }
 
   // GC interval.
-  if (config_obj.find("gc-interval") != config_obj.end())
-  {
+  if (config_obj.find("gc-interval") != config_obj.end()) {
     const JSON& gc_interval_raw = config_obj.at("gc-interval");
-    uint32_t gc_interval =
-      static_cast<uint32_t>(gc_interval_raw.int_value());
+    uint32_t gc_interval = static_cast<uint32_t>(gc_interval_raw.int_value());
     configuration.set_gc_interval(gc_interval);
   }
 
   // GC flag.
-  if (config_obj.find("gc-flag") != config_obj.end())
-  {
+  if (config_obj.find("gc-flag") != config_obj.end()) {
     const JSON& gc_flag_raw = config_obj.at("gc-flag");
-    const uint8_t gc_flag =
-      static_cast<uint8_t>(gc_flag_raw.int_value());
+    const uint8_t gc_flag = static_cast<uint8_t>(gc_flag_raw.int_value());
     configuration.set_gc_flag(gc_flag);
   }
 
   // Log mode.
-  if (config_obj.find("logging") != config_obj.end())
-  {
+  if (config_obj.find("logging") != config_obj.end()) {
     const JSON& log_mode_raw = config_obj.at("logging");
     const std::string log_mode =
       static_cast<std::string>(log_mode_raw.string_value());
@@ -231,8 +221,7 @@ Configuration::load_config(const char* path, Configuration& configuration)
   std::ifstream fs(path, std::ios::binary);
   std::stringstream buffer;
 
-  if (!fs.good())
-  {
+  if (!fs.good()) {
     return false;
   }
 
@@ -243,23 +232,17 @@ Configuration::load_config(const char* path, Configuration& configuration)
 
   sneaker::json::JSON content_json;
 
-  try
-  {
+  try {
     content_json = sneaker::json::parse(content);
-  }
-  catch (const sneaker::json::invalid_json_error&)
-  {
+  } catch (const sneaker::json::invalid_json_error&) {
     return false;
   }
 
   const auto schema_json = sneaker::json::parse(Configuration::schema);
 
-  try
-  {
+  try {
     sneaker::json::json_schema::validate(content_json, schema_json);
-  }
-  catch (const sneaker::json::json_validation_error&)
-  {
+  } catch (const sneaker::json::json_validation_error&) {
     return false;
   }
 

@@ -39,16 +39,17 @@ namespace ir {
  * through the interfaces of the `Verifier` class, as well as other IR
  * optimization operations.
  */
-struct IRModuleIndex
-{
+struct IRModuleIndex {
   typedef std::unordered_map<std::string, const IRTypeDecl* const> TypeIndex;
 
-  struct FunctionDefIndex
-  {
+  struct FunctionDefIndex {
     const IRClosure* closure;
-    typedef std::unordered_map<std::string, const IRParameter* const> ParameterIndex;
-    typedef std::unordered_map<std::string, const IRInstruction* const> InstructionIndex;
-    typedef std::unordered_map<std::string, IRIdentifierType> IdentifierTypeIndex;
+    typedef std::unordered_map<std::string, const IRParameter* const>
+      ParameterIndex;
+    typedef std::unordered_map<std::string, const IRInstruction* const>
+      InstructionIndex;
+    typedef std::unordered_map<std::string, IRIdentifierType>
+      IdentifierTypeIndex;
     typedef std::unordered_map<std::string, InstructionIndex> BasicBlockIndex;
     IdentifierTypeIndex identifier_type_index;
     ParameterIndex parameter_index;
@@ -88,10 +89,13 @@ private:
   void init_type_index(const IRModule&);
   void init_function_index(const IRModule&);
   FunctionDefIndex create_func_def_index(const IRClosure&) const;
-  FunctionDefIndex::IdentifierTypeIndex create_identifier_type_index(const IRClosure&) const;
-  FunctionDefIndex::ParameterIndex create_parameter_index(const IRClosure&) const;
+  FunctionDefIndex::IdentifierTypeIndex
+  create_identifier_type_index(const IRClosure&) const;
+  FunctionDefIndex::ParameterIndex
+  create_parameter_index(const IRClosure&) const;
   FunctionDefIndex::BasicBlockIndex create_bb_index(const IRClosure&) const;
-  FunctionDefIndex::InstructionIndex create_instr_index(const IRBasicBlock&) const;
+  FunctionDefIndex::InstructionIndex
+  create_instr_index(const IRBasicBlock&) const;
 };
 
 } /* end namespace ir */

@@ -27,14 +27,16 @@ namespace jit {
 
 // -----------------------------------------------------------------------------
 
-bool operator==(const AggregateType& lhs, const AggregateType& rhs)
+bool
+operator==(const AggregateType& lhs, const AggregateType& rhs)
 {
   return lhs.types == rhs.types;
 }
 
 // -----------------------------------------------------------------------------
 
-bool operator!=(const AggregateType& lhs, const AggregateType& rhs)
+bool
+operator!=(const AggregateType& lhs, const AggregateType& rhs)
 {
   return !operator==(lhs, rhs);
 }

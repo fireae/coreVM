@@ -34,8 +34,7 @@ namespace jit {
  * Abstraction that encapsulates the lowered LLVM IR as the result of
  * `LoweringPassTargetLLVMIR`.
  */
-struct LLVMModuleAnalysisResult : public AnalysisResult
-{
+struct LLVMModuleAnalysisResult : public AnalysisResult {
   mutable std::unique_ptr<llvm::Module> target_module;
 };
 
@@ -43,8 +42,7 @@ struct LLVMModuleAnalysisResult : public AnalysisResult
  * An analysis pass in the JIT pipeline that performs lowering process on
  * input IR module and transforms to the equivalent LLVM IR.
  */
-class LoweringPassTargetLLVMIR : public AnalysisPass
-{
+class LoweringPassTargetLLVMIR : public AnalysisPass {
 public:
   /**
    * Name of pass.
@@ -62,27 +60,32 @@ public:
   virtual std::shared_ptr<const AnalysisResult> get_analysis_result() const;
 
   /**
-   * Implements `AnalysisPass::run(const IRModule&, const AnalysisResult* = nullptr)`.
+   * Implements `AnalysisPass::run(const IRModule&, const AnalysisResult* =
+   * nullptr)`.
    */
   virtual bool run(const IRModule&, const AnalysisResult* = nullptr);
 
   /**
-   * Implements `AnalysisPass::run(const IRTypeDecl&, const AnalysisResult* = nullptr)`.
+   * Implements `AnalysisPass::run(const IRTypeDecl&, const AnalysisResult* =
+   * nullptr)`.
    */
   virtual bool run(const IRTypeDecl&, const AnalysisResult* = nullptr);
 
   /**
-   * Implements `AnalysisPass::run(const IRClosure&, const AnalysisResult* = nullptr)`.
+   * Implements `AnalysisPass::run(const IRClosure&, const AnalysisResult* =
+   * nullptr)`.
    */
   virtual bool run(const IRClosure&, const AnalysisResult* = nullptr);
 
   /**
-   * Implements `AnalysisPass::run(const IRBasicBlock&, const AnalysisResult* = nullptr)`.
+   * Implements `AnalysisPass::run(const IRBasicBlock&, const AnalysisResult* =
+   * nullptr)`.
    */
   virtual bool run(const IRBasicBlock&, const AnalysisResult* = nullptr);
 
   /**
-   * Implements `AnalysisPass::run(const IRInstruction&, const AnalysisResult* = nullptr)`.
+   * Implements `AnalysisPass::run(const IRInstruction&, const AnalysisResult* =
+   * nullptr)`.
    */
   virtual bool run(const IRInstruction&, const AnalysisResult* = nullptr);
 };

@@ -23,12 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_OBJECT_CONTAINER_H_
 #define COREVM_OBJECT_CONTAINER_H_
 
-#include "errors.h"
 #include "corevm/macros.h"
+#include "errors.h"
 
 #include <cstdint>
 #include <ostream>
-
 
 namespace corevm {
 namespace memory {
@@ -42,11 +41,8 @@ namespace memory {
  * In addition, it provides a set of iterator interfaces for the outside world
  * to iterate through all the contained objects.
  */
-template<typename T, typename AllocatorType>
-class ObjectContainer
-{
+template <typename T, typename AllocatorType> class ObjectContainer {
 public:
-
   typedef typename AllocatorType::value_type value_type;
   typedef typename AllocatorType::pointer pointer;
   typedef typename AllocatorType::const_pointer const_pointer;
@@ -102,27 +98,24 @@ private:
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
-ObjectContainer<T, AllocatorType>::ObjectContainer()
-  :
-  m_allocator()
+template <typename T, typename AllocatorType>
+ObjectContainer<T, AllocatorType>::ObjectContainer() : m_allocator()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 ObjectContainer<T, AllocatorType>::ObjectContainer(uint64_t total_size)
-  :
-  m_allocator(total_size)
+  : m_allocator(total_size)
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::iterator
 ObjectContainer<T, AllocatorType>::begin()
 {
@@ -131,7 +124,7 @@ ObjectContainer<T, AllocatorType>::begin()
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::iterator
 ObjectContainer<T, AllocatorType>::end()
 {
@@ -140,7 +133,7 @@ ObjectContainer<T, AllocatorType>::end()
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::const_iterator
 ObjectContainer<T, AllocatorType>::cbegin() const
 {
@@ -149,7 +142,7 @@ ObjectContainer<T, AllocatorType>::cbegin() const
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::const_iterator
 ObjectContainer<T, AllocatorType>::cend() const
 {
@@ -158,13 +151,12 @@ ObjectContainer<T, AllocatorType>::cend() const
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::size_type
 ObjectContainer<T, AllocatorType>::size() const
 {
   size_t count = 0;
-  for (auto itr = cbegin(); itr != cend(); ++itr)
-  {
+  for (auto itr = cbegin(); itr != cend(); ++itr) {
     ++count;
   }
 
@@ -173,7 +165,7 @@ ObjectContainer<T, AllocatorType>::size() const
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::size_type
 ObjectContainer<T, AllocatorType>::max_size() const
 {
@@ -182,7 +174,7 @@ ObjectContainer<T, AllocatorType>::max_size() const
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::size_type
 ObjectContainer<T, AllocatorType>::total_size() const
 {
@@ -191,14 +183,13 @@ ObjectContainer<T, AllocatorType>::total_size() const
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::pointer
 ObjectContainer<T, AllocatorType>::create()
 {
   pointer p = m_allocator.allocate(1, 0);
 
-  if (!p)
-  {
+  if (!p) {
     return nullptr;
   }
 
@@ -209,19 +200,17 @@ ObjectContainer<T, AllocatorType>::create()
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::pointer
 ObjectContainer<T, AllocatorType>::create(size_t n)
 {
   pointer p = m_allocator.allocate(n, 0);
 
-  if (!p)
-  {
+  if (!p) {
     return nullptr;
   }
 
-  for (size_t i = 0; i < n; ++i)
-  {
+  for (size_t i = 0; i < n; ++i) {
     m_allocator.construct(&p[i]);
   }
 
@@ -230,14 +219,13 @@ ObjectContainer<T, AllocatorType>::create(size_t n)
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::pointer
 ObjectContainer<T, AllocatorType>::create(const_reference value)
 {
   pointer p = m_allocator.allocate(1, 0);
 
-  if (!p)
-  {
+  if (!p) {
     return nullptr;
   }
 
@@ -248,7 +236,7 @@ ObjectContainer<T, AllocatorType>::create(const_reference value)
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 bool
 ObjectContainer<T, AllocatorType>::check_ptr(pointer p) const
 {
@@ -257,12 +245,11 @@ ObjectContainer<T, AllocatorType>::check_ptr(pointer p) const
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::pointer
-ObjectContainer<T, AllocatorType>::operator[](pointer p)
+  ObjectContainer<T, AllocatorType>::operator[](pointer p)
 {
-  if (!check_ptr(p))
-  {
+  if (!check_ptr(p)) {
     return nullptr;
   }
 
@@ -271,12 +258,11 @@ ObjectContainer<T, AllocatorType>::operator[](pointer p)
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::const_pointer
-ObjectContainer<T, AllocatorType>::operator[](const_pointer p) const
+  ObjectContainer<T, AllocatorType>::operator[](const_pointer p) const
 {
-  if (!check_ptr(const_cast<pointer>(p)))
-  {
+  if (!check_ptr(const_cast<pointer>(p))) {
     return nullptr;
   }
 
@@ -285,12 +271,11 @@ ObjectContainer<T, AllocatorType>::operator[](const_pointer p) const
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::pointer
 ObjectContainer<T, AllocatorType>::at(pointer p)
 {
-  if (!check_ptr(p))
-  {
+  if (!check_ptr(p)) {
     THROW(InvalidAddressError(reinterpret_cast<uint64_t>(p)));
   }
 
@@ -299,12 +284,11 @@ ObjectContainer<T, AllocatorType>::at(pointer p)
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::const_pointer
 ObjectContainer<T, AllocatorType>::at(const_pointer p) const
 {
-  if (!check_ptr(const_cast<pointer>(p)))
-  {
+  if (!check_ptr(const_cast<pointer>(p))) {
     THROW(InvalidAddressError(reinterpret_cast<uint64_t>(p)));
   }
 
@@ -313,12 +297,11 @@ ObjectContainer<T, AllocatorType>::at(const_pointer p) const
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 void
 ObjectContainer<T, AllocatorType>::destroy(pointer p)
 {
-  if (!check_ptr(p))
-  {
+  if (!check_ptr(p)) {
     THROW(InvalidAddressError(reinterpret_cast<uint64_t>(p)));
   }
 
@@ -328,12 +311,11 @@ ObjectContainer<T, AllocatorType>::destroy(pointer p)
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 void
 ObjectContainer<T, AllocatorType>::erase(iterator& itr)
 {
-  if (itr == end())
-  {
+  if (itr == end()) {
     return;
   }
 
@@ -343,9 +325,10 @@ ObjectContainer<T, AllocatorType>::erase(iterator& itr)
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocatorType>
+template <typename T, typename AllocatorType>
 std::ostream&
-operator<<(std::ostream& ost, const ObjectContainer<T, AllocatorType>& container)
+operator<<(std::ostream& ost,
+           const ObjectContainer<T, AllocatorType>& container)
 {
   ost << "object container: ";
   ost << container.size() << "/" << container.max_size();
@@ -353,8 +336,7 @@ operator<<(std::ostream& ost, const ObjectContainer<T, AllocatorType>& container
   ost << std::endl << std::endl;
 
   ost << "-- BEGIN --" << std::endl;
-  for (auto itr = container.cbegin(); itr != container.cend(); ++itr)
-  {
+  for (auto itr = container.cbegin(); itr != container.cend(); ++itr) {
     const T* t = itr.operator->();
     ost << t << std::endl;
   }
@@ -368,6 +350,5 @@ operator<<(std::ostream& ost, const ObjectContainer<T, AllocatorType>& container
 
 } /* end namespace memory */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_OBJECT_CONTAINER */

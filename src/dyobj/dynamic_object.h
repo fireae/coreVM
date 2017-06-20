@@ -25,8 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "corevm/macros.h"
 #include "dyobj/common.h"
-#include "dyobj/flags.h"
 #include "dyobj/errors.h"
+#include "dyobj/flags.h"
 #include "runtime/closure_ctx.h"
 #include "types/fwd.h"
 
@@ -34,20 +34,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/libc/utils.h>
 
 #if COREVM_USE_SMALL_ATTRIBUTE_TABLE
-  #include "corevm/llvm_smallvector.h"
+#include "corevm/llvm_smallvector.h"
 #else
-  #include <vector>
+#include <vector>
 #endif // COREVM_USE_SMALL_ATTRIBUTE_TABLE
 
 #include <algorithm>
 
-
 namespace corevm {
 namespace dyobj {
 
-template<class DynamicObjectManager>
-class DynamicObject
-{
+template <class DynamicObjectManager> class DynamicObject {
 public:
   typedef attr_key_t attr_key_type;
   typedef DynamicObject<DynamicObjectManager>* dyobj_ptr;
@@ -115,23 +112,20 @@ public:
 
   bool has_ref(dyobj_ptr) const noexcept;
 
-  template<typename Function>
-  void iterate(Function) noexcept;
+  template <typename Function> void iterate(Function) noexcept;
 
   void copy_from(const DynamicObject<DynamicObjectManager>&);
 
 private:
   void check_flag_bit(char) const;
 
-  struct AttributeKeyPred
-  {
-    explicit AttributeKeyPred(attr_key_t key)
-      :
-      m_key(key)
+  struct AttributeKeyPred {
+    explicit AttributeKeyPred(attr_key_t key) : m_key(key)
     {
     }
 
-    bool operator()(const attr_key_value_pair& pair) const
+    bool
+    operator()(const attr_key_value_pair& pair) const
     {
       return m_key == pair.first;
     }
@@ -140,15 +134,13 @@ private:
     attr_key_t m_key;
   };
 
-  struct AttributeValuePred
-  {
-    explicit AttributeValuePred(dyobj_ptr value)
-      :
-      m_value(value)
+  struct AttributeValuePred {
+    explicit AttributeValuePred(dyobj_ptr value) : m_value(value)
     {
     }
 
-    bool operator()(const attr_key_value_pair& pair) const
+    bool
+    operator()(const attr_key_value_pair& pair) const
     {
       return m_value == pair.second;
     }
@@ -174,22 +166,21 @@ static const size_t COREVM_DYNAMIC_OBJECT_DEFAULT_ATTRIBUTE_COUNT = 10u;
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 DynamicObject<DynamicObjectManager>::DynamicObject()
-  :
-  m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
-  m_attrs(),
-  m_manager(),
-  m_type_value_ptr(NULL),
-  m_closure_ctx(runtime::ClosureCtx(
-    runtime::NONESET_COMPARTMENT_ID, runtime::NONESET_CLOSURE_ID))
+  : m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
+    m_attrs(),
+    m_manager(),
+    m_type_value_ptr(NULL),
+    m_closure_ctx(runtime::ClosureCtx(runtime::NONESET_COMPARTMENT_ID,
+                                      runtime::NONESET_CLOSURE_ID))
 {
   m_attrs.reserve(COREVM_DYNAMIC_OBJECT_DEFAULT_ATTRIBUTE_COUNT);
 }
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 DynamicObject<DynamicObjectManager>::~DynamicObject()
 {
   // Do nothing here.
@@ -197,27 +188,27 @@ DynamicObject<DynamicObjectManager>::~DynamicObject()
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 bool
-DynamicObject<DynamicObjectManager>::operator==(
-  const DynamicObject<DynamicObjectManager>& rhs)
+DynamicObject<DynamicObjectManager>::
+operator==(const DynamicObject<DynamicObjectManager>& rhs)
 {
   return id() == rhs.id();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 bool
-DynamicObject<DynamicObjectManager>::operator!=(
-  const DynamicObject<DynamicObjectManager>& rhs)
+DynamicObject<DynamicObjectManager>::
+operator!=(const DynamicObject<DynamicObjectManager>& rhs)
 {
   return !((*this) == rhs);
 }
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::iterator
 DynamicObject<DynamicObjectManager>::begin() noexcept
 {
@@ -226,7 +217,7 @@ DynamicObject<DynamicObjectManager>::begin() noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::iterator
 DynamicObject<DynamicObjectManager>::end() noexcept
 {
@@ -235,7 +226,7 @@ DynamicObject<DynamicObjectManager>::end() noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::const_iterator
 DynamicObject<DynamicObjectManager>::cbegin() const noexcept
 {
@@ -244,7 +235,7 @@ DynamicObject<DynamicObjectManager>::cbegin() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::const_iterator
 DynamicObject<DynamicObjectManager>::cend() const noexcept
 {
@@ -253,17 +244,17 @@ DynamicObject<DynamicObjectManager>::cend() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 dyobj_id_t
 DynamicObject<DynamicObjectManager>::id() const noexcept
 {
-  return static_cast<dyobj_id_t>(
-    reinterpret_cast<const uint8_t*>(this) - reinterpret_cast<uint8_t*>(0));
+  return static_cast<dyobj_id_t>(reinterpret_cast<const uint8_t*>(this) -
+                                 reinterpret_cast<uint8_t*>(0));
 }
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 flag_t
 DynamicObject<DynamicObjectManager>::flags() const noexcept
 {
@@ -272,7 +263,7 @@ DynamicObject<DynamicObjectManager>::flags() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 DynamicObjectManager&
 DynamicObject<DynamicObjectManager>::manager() noexcept
 {
@@ -281,7 +272,7 @@ DynamicObject<DynamicObjectManager>::manager() noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 const types::NativeTypeValue&
 DynamicObject<DynamicObjectManager>::type_value() const noexcept
 {
@@ -293,16 +284,17 @@ DynamicObject<DynamicObjectManager>::type_value() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 void
-DynamicObject<DynamicObjectManager>::set_type_value(types::NativeTypeValue* type_value) noexcept
+DynamicObject<DynamicObjectManager>::set_type_value(
+  types::NativeTypeValue* type_value) noexcept
 {
   m_type_value_ptr = type_value;
 }
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::clear_type_value() noexcept
 {
@@ -311,7 +303,7 @@ DynamicObject<DynamicObjectManager>::clear_type_value() noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 bool
 DynamicObject<DynamicObjectManager>::has_type_value() const noexcept
 {
@@ -320,19 +312,18 @@ DynamicObject<DynamicObjectManager>::has_type_value() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::check_flag_bit(char bit) const
 {
-  if (!is_valid_flag_bit(bit))
-  {
+  if (!is_valid_flag_bit(bit)) {
     THROW(InvalidFlagBitError());
   }
 }
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 bool
 DynamicObject<DynamicObjectManager>::get_flag(char bit) const
 {
@@ -342,7 +333,7 @@ DynamicObject<DynamicObjectManager>::get_flag(char bit) const
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::set_flag(char bit)
 {
@@ -352,7 +343,7 @@ DynamicObject<DynamicObjectManager>::set_flag(char bit)
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::clear_flag(char bit)
 {
@@ -362,19 +353,18 @@ DynamicObject<DynamicObjectManager>::clear_flag(char bit)
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 bool
 DynamicObject<DynamicObjectManager>::is_garbage_collectible() const noexcept
 {
-  return (
-    get_flag(DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE) == false &&
-    m_manager.garbage_collectible()
-  );
+  return (get_flag(DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE) ==
+            false &&
+          m_manager.garbage_collectible());
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename DynamicObjectManager>
+template <typename DynamicObjectManager>
 size_t
 DynamicObject<DynamicObjectManager>::attr_count() const
 {
@@ -383,25 +373,26 @@ DynamicObject<DynamicObjectManager>::attr_count() const
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 bool
 DynamicObject<DynamicObjectManager>::hasattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key) const noexcept
 {
-  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
+  auto itr =
+    std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
   return itr != m_attrs.end();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::delattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key)
 {
-  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
-  if (itr == m_attrs.end())
-  {
+  auto itr =
+    std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
+  if (itr == m_attrs.end()) {
     THROW(ObjectAttributeNotFoundError(attr_key, id()));
   }
   m_attrs.erase(itr);
@@ -409,7 +400,7 @@ DynamicObject<DynamicObjectManager>::delattr(
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::dyobj_ptr
 DynamicObject<DynamicObjectManager>::getattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key) const
@@ -417,8 +408,7 @@ DynamicObject<DynamicObjectManager>::getattr(
   DynamicObject<DynamicObjectManager>::dyobj_ptr attr_ptr = NULL;
 
   bool res = getattr(attr_key, &attr_ptr);
-  if (!res)
-  {
+  if (!res) {
     THROW(ObjectAttributeNotFoundError(attr_key, id()));
   }
 
@@ -427,19 +417,18 @@ DynamicObject<DynamicObjectManager>::getattr(
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 bool
 DynamicObject<DynamicObjectManager>::getattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key,
   dyobj_ptr* attr_ptr) const
 {
-  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(),
-    AttributeKeyPred(attr_key));
+  auto itr =
+    std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
 
   bool res = itr != m_attrs.end();
 
-  if (res)
-  {
+  if (res) {
     *attr_ptr = itr->second;
   }
 
@@ -448,28 +437,25 @@ DynamicObject<DynamicObjectManager>::getattr(
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::putattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key,
   DynamicObject<DynamicObjectManager>::dyobj_ptr obj_ptr) noexcept
 {
-  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(),
-    AttributeKeyPred(attr_key));
+  auto itr =
+    std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
 
-  if (itr == m_attrs.end())
-  {
+  if (itr == m_attrs.end()) {
     m_attrs.push_back(std::make_pair(attr_key, obj_ptr));
-  }
-  else
-  {
+  } else {
     (*itr).second = obj_ptr;
   }
 }
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 const corevm::runtime::ClosureCtx&
 DynamicObject<DynamicObjectManager>::closure_ctx() const
 {
@@ -478,7 +464,7 @@ DynamicObject<DynamicObjectManager>::closure_ctx() const
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::set_closure_ctx(
   const runtime::ClosureCtx& ctx)
@@ -488,7 +474,7 @@ DynamicObject<DynamicObjectManager>::set_closure_ctx(
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
+template <class DynamicObjectManager>
 bool
 DynamicObject<DynamicObjectManager>::has_ref(dyobj_ptr ref_ptr) const noexcept
 {
@@ -497,19 +483,19 @@ DynamicObject<DynamicObjectManager>::has_ref(dyobj_ptr ref_ptr) const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
-template<typename Function>
+template <class DynamicObjectManager>
+template <typename Function>
 void
 DynamicObject<DynamicObjectManager>::iterate(Function func) noexcept
 {
-  std::for_each(begin(), end(),
+  std::for_each(
+    begin(), end(),
     [&func](DynamicObject<DynamicObjectManager>::attr_key_value_pair& pair) {
-      func(
-        static_cast<DynamicObject<DynamicObjectManager>::attr_key_type>(pair.first),
-        static_cast<DynamicObject<DynamicObjectManager>::dyobj_ptr>(pair.second)
-      );
-    }
-  );
+      func(static_cast<DynamicObject<DynamicObjectManager>::attr_key_type>(
+             pair.first),
+           static_cast<DynamicObject<DynamicObjectManager>::dyobj_ptr>(
+             pair.second));
+    });
 }
 
 // -----------------------------------------------------------------------------
@@ -527,22 +513,20 @@ DynamicObject<DynamicObjectManager>::copy_from(
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
-inline
-bool operator==(
-  const DynamicObject<DynamicObjectManager>& lhs,
-  const DynamicObject<DynamicObjectManager>& rhs)
+template <class DynamicObjectManager>
+inline bool
+operator==(const DynamicObject<DynamicObjectManager>& lhs,
+           const DynamicObject<DynamicObjectManager>& rhs)
 {
   return lhs.id() == rhs.id();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class DynamicObjectManager>
-inline
-bool operator!=(
-  const DynamicObject<DynamicObjectManager>& lhs,
-  const DynamicObject<DynamicObjectManager>& rhs)
+template <class DynamicObjectManager>
+inline bool
+operator!=(const DynamicObject<DynamicObjectManager>& lhs,
+           const DynamicObject<DynamicObjectManager>& rhs)
 {
   return !operator==(lhs, rhs);
 }
@@ -551,6 +535,5 @@ bool operator!=(
 
 } /* end namespace dyobj */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_DYNAMIC_OBJECT_H_ */

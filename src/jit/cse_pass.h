@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "transform_pass.h"
 
-
 namespace corevm {
 namespace jit {
 
@@ -33,8 +32,7 @@ namespace jit {
  * Class encapsulates the logic for running "Common Subexpression Elimination"
  * optimization on an input IR module.
  */
-class CSEPass : public TransformPass
-{
+class CSEPass : public TransformPass {
 public:
   /**
    * Name of the pass.

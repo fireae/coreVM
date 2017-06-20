@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <csignal>
 
-
 namespace corevm {
 namespace runtime {
 
@@ -39,8 +38,7 @@ Process* SignalHandler::registered_process = nullptr;
 void
 SignalHandler::register_process(Process* process)
 {
-  if (process)
-  {
+  if (process) {
     registered_process = process;
     signal(SIGTERM, handle_signal);
   }
@@ -52,13 +50,12 @@ SignalHandler::register_process(Process* process)
 void
 SignalHandler::handle_signal(int signum)
 {
-  switch (signum)
-  {
-    case SIGTERM:
-      registered_process->terminate_exec();
-      break;
-    default:
-      break;
+  switch (signum) {
+  case SIGTERM:
+    registered_process->terminate_exec();
+    break;
+  default:
+    break;
   }
 }
 

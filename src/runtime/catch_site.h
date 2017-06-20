@@ -23,9 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_CATCH_SITE_H_
 #define COREVM_CATCH_SITE_H_
 
-#include <vector>
 #include "corevm/corevm_bytecode_schema.h" // Compiled.
-
+#include <vector>
 
 namespace corevm {
 namespace runtime {
@@ -42,6 +41,5 @@ typedef std::vector<CatchSite> CatchSiteList;
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_CATCH_SITE_H_ */

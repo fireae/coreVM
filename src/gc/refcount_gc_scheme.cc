@@ -29,17 +29,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unordered_map>
 #include <vector>
 
-
 namespace corevm {
 namespace gc {
 
 // -----------------------------------------------------------------------------
 
 RefCountGarbageCollectionScheme::DynamicObjectManager::DynamicObjectManager()
-  :
-  dyobj::DynamicObjectManager(),
-  m_count(0u),
-  m_attached(false)
+  : dyobj::DynamicObjectManager(), m_count(0u), m_attached(false)
 {
 }
 
@@ -62,14 +58,12 @@ RefCountGarbageCollectionScheme::gc(
 
   auto prev_active_size = heap.active_size();
 
-  while (true)
-  {
+  while (true) {
     heap.iterate(heap_iterator);
 
     remove_cycles(heap);
 
-    if (heap.active_size() == prev_active_size)
-    {
+    if (heap.active_size() == prev_active_size) {
       break;
     }
 
@@ -79,15 +73,15 @@ RefCountGarbageCollectionScheme::gc(
 
 // -----------------------------------------------------------------------------
 
-struct ObjectRefCountDecrementor
-{
-  using dynamic_object_type = typename RefCountGarbageCollectionScheme::dynamic_object_type;
+struct ObjectRefCountDecrementor {
+  using dynamic_object_type =
+    typename RefCountGarbageCollectionScheme::dynamic_object_type;
 
-  void operator()(const typename dynamic_object_type::attr_key_type&,
-    dynamic_object_type* referenced_object)
+  void
+  operator()(const typename dynamic_object_type::attr_key_type&,
+             dynamic_object_type* referenced_object)
   {
-    if (!referenced_object->manager().locked())
-    {
+    if (!referenced_object->manager().locked()) {
       referenced_object->manager().dec_ref_count();
     }
   }
@@ -99,8 +93,7 @@ void
 RefCountGarbageCollectionScheme::check_and_dec_ref_count(
   RefCountGarbageCollectionScheme::dynamic_object_type* object) const
 {
-  if (!object->is_garbage_collectible())
-  {
+  if (!object->is_garbage_collectible()) {
     return;
   }
 
@@ -110,33 +103,32 @@ RefCountGarbageCollectionScheme::check_and_dec_ref_count(
 
 // -----------------------------------------------------------------------------
 
-struct CycledObjectReferenceDecrementor
-{
+struct CycledObjectReferenceDecrementor {
 private:
-  using dynamic_object_type = typename RefCountGarbageCollectionScheme::dynamic_object_type;
+  using dynamic_object_type =
+    typename RefCountGarbageCollectionScheme::dynamic_object_type;
 
 public:
   CycledObjectReferenceDecrementor(dynamic_object_type* object)
-    :
-    m_object(object)
+    : m_object(object)
   {
   }
 
-  void operator()(const typename dynamic_object_type::attr_key_type&,
-    dynamic_object_type* referenced_object)
+  void
+  operator()(const typename dynamic_object_type::attr_key_type&,
+             dynamic_object_type* referenced_object)
   {
-    if (referenced_object->get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE) ||
+    if (referenced_object->get_flag(
+          dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE) ||
         referenced_object->manager().locked() ||
-        !referenced_object->has_ref(m_object))
-    {
+        !referenced_object->has_ref(m_object)) {
       return;
     }
 
     const auto ref_count1 = m_object->manager().ref_count();
     const auto ref_count2 = referenced_object->manager().ref_count();
 
-    if (ref_count1 == 1 && ref_count2 == 1)
-    {
+    if (ref_count1 == 1 && ref_count2 == 1) {
       m_object->manager().dec_ref_count();
       referenced_object->manager().dec_ref_count();
     }
@@ -153,8 +145,8 @@ void
 RefCountGarbageCollectionScheme::resolve_self_reference_cycles(
   RefCountGarbageCollectionScheme::dynamic_object_type* object) const
 {
-  if (!object->get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE))
-  {
+  if (!object->get_flag(
+        dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE)) {
     CycledObjectReferenceDecrementor decrementor(object);
     object->iterate(decrementor);
   }
@@ -162,65 +154,56 @@ RefCountGarbageCollectionScheme::resolve_self_reference_cycles(
 
 // -----------------------------------------------------------------------------
 
-struct ObjectGraphBuilder
-{
+struct ObjectGraphBuilder {
 public:
-  using dynamic_object_type = typename RefCountGarbageCollectionScheme::dynamic_object_heap_type::dynamic_object_type;
-  using vertex_type = typename sneaker::algorithm::tarjan<dynamic_object_type*>::vertex;
-  using vertices_map_type = typename std::unordered_map<dynamic_object_type*, vertex_type>;
+  using dynamic_object_type = typename RefCountGarbageCollectionScheme::
+    dynamic_object_heap_type::dynamic_object_type;
+  using vertex_type =
+    typename sneaker::algorithm::tarjan<dynamic_object_type*>::vertex;
+  using vertices_map_type =
+    typename std::unordered_map<dynamic_object_type*, vertex_type>;
   using neighbor_set_type = typename std::set<dynamic_object_type*>;
 
 public:
   ObjectGraphBuilder(vertices_map_type& vertices_map,
-    neighbor_set_type& non_garbage_collectible_neighbors)
-    :
-    m_non_garbage_collectible_neighbors(non_garbage_collectible_neighbors),
-    m_vertices_map(vertices_map)
+                     neighbor_set_type& non_garbage_collectible_neighbors)
+    : m_non_garbage_collectible_neighbors(non_garbage_collectible_neighbors),
+      m_vertices_map(vertices_map)
   {
   }
 
-  void operator()(dynamic_object_type* object)
+  void
+  operator()(dynamic_object_type* object)
   {
-    if (object->manager().locked())
-    {
+    if (object->manager().locked()) {
       return;
     }
 
-    if (object->get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE))
-    {
-      object->iterate(
-        [&](
-          const typename dynamic_object_type::attr_key_type&,
-          dynamic_object_type* neighbor)
-        {
-          m_non_garbage_collectible_neighbors.insert(neighbor);
-        }
-      );
-    }
-    else
-    {
+    if (object->get_flag(
+          dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE)) {
+      object->iterate([&](const typename dynamic_object_type::attr_key_type&,
+                          dynamic_object_type* neighbor) {
+        m_non_garbage_collectible_neighbors.insert(neighbor);
+      });
+    } else {
       vertex_type& vertex = get_vertex(object);
 
-      object->iterate(
-        [&](
-          const typename dynamic_object_type::attr_key_type&,
-          dynamic_object_type* neighbor)
-        {
-          vertex_type& neighbor_vertex = get_vertex(neighbor);
+      object->iterate([&](const typename dynamic_object_type::attr_key_type&,
+                          dynamic_object_type* neighbor) {
+        vertex_type& neighbor_vertex = get_vertex(neighbor);
 
-          vertex.dependencies().push_back(&neighbor_vertex);
-        }
-      );
+        vertex.dependencies().push_back(&neighbor_vertex);
+      });
     }
   }
 
 private:
-  vertex_type& get_vertex(dynamic_object_type* obj)
+  vertex_type&
+  get_vertex(dynamic_object_type* obj)
   {
     auto itr = m_vertices_map.find(obj);
 
-    if (itr == m_vertices_map.end())
-    {
+    if (itr == m_vertices_map.end()) {
       m_vertices_map[obj] = vertex_type(obj);
     }
 
@@ -238,10 +221,11 @@ void
 RefCountGarbageCollectionScheme::remove_cycles(
   RefCountGarbageCollectionScheme::dynamic_object_heap_type& heap) const
 {
-  using dynamic_object_heap_type = typename
-    RefCountGarbageCollectionScheme::dynamic_object_heap_type;
+  using dynamic_object_heap_type =
+    typename RefCountGarbageCollectionScheme::dynamic_object_heap_type;
 
-  using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
+  using dynamic_object_type =
+    typename dynamic_object_heap_type::dynamic_object_type;
 
   using vertex_type = typename ObjectGraphBuilder::vertex_type;
   using vertices_map_type = typename ObjectGraphBuilder::vertices_map_type;
@@ -256,8 +240,7 @@ RefCountGarbageCollectionScheme::remove_cycles(
 
   std::vector<vertex_type*> vertices;
 
-  for (auto itr = vertices_map.begin(); itr != vertices_map.end(); ++itr)
-  {
+  for (auto itr = vertices_map.begin(); itr != vertices_map.end(); ++itr) {
     auto vertex_ptr = static_cast<vertex_type*>(&itr->second);
     vertices.push_back(vertex_ptr);
   }
@@ -274,50 +257,38 @@ RefCountGarbageCollectionScheme::remove_cycles(
 
   std::unordered_map<dynamic_object_type*, size_t> ref_table;
 
-  for (const auto& cycle : cycles)
-  {
+  for (const auto& cycle : cycles) {
     std::set<dynamic_object_type*> cycle_set;
 
-    for (const auto& obj : cycle)
-    {
+    for (const auto& obj : cycle) {
       cycle_set.insert(obj);
-      for (const auto& attr : *obj)
-      {
+      for (const auto& attr : *obj) {
         ++ref_table[attr.second];
       }
     }
 
     std::set<dynamic_object_type*> intersect;
-    std::set_intersection(
-      non_garbage_collectible_neighbors.begin(),
-      non_garbage_collectible_neighbors.end(),
-      cycle_set.begin(),
-      cycle_set.end(),
-      std::inserter(intersect, intersect.begin())
-    );
+    std::set_intersection(non_garbage_collectible_neighbors.begin(),
+                          non_garbage_collectible_neighbors.end(),
+                          cycle_set.begin(), cycle_set.end(),
+                          std::inserter(intersect, intersect.begin()));
 
-    if (intersect.empty())
-    {
+    if (intersect.empty()) {
       garbage_collectible_cycles.push_back(&cycle);
     }
   }
 
-  for (const auto cycle : garbage_collectible_cycles)
-  {
+  for (const auto cycle : garbage_collectible_cycles) {
     bool res = true;
-    for (const auto obj : *cycle)
-    {
-      if (obj->manager().ref_count() != ref_table[obj])
-      {
+    for (const auto obj : *cycle) {
+      if (obj->manager().ref_count() != ref_table[obj]) {
         res = false;
         break;
       }
     }
 
-    if (res)
-    {
-      for (const auto obj : *cycle)
-      {
+    if (res) {
+      for (const auto obj : *cycle) {
         --ref_table[obj];
         obj->manager().dec_ref_count();
       }

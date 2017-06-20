@@ -25,25 +25,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 
-
 namespace corevm {
 namespace runtime {
 
-typedef struct ClosureCtx
-{
+typedef struct ClosureCtx {
   ClosureCtx(compartment_id_t compartment_id_, closure_id_t closure_id_)
-    :
-    compartment_id(compartment_id_),
-    closure_id(closure_id_)
+    : compartment_id(compartment_id_), closure_id(closure_id_)
   {
   }
 
-  bool operator==(const ClosureCtx& rhs) const
+  bool
+  operator==(const ClosureCtx& rhs) const
   {
-    return (
-      compartment_id == rhs.compartment_id &&
-      closure_id == rhs.closure_id
-    );
+    return (compartment_id == rhs.compartment_id &&
+            closure_id == rhs.closure_id);
   }
 
   compartment_id_t compartment_id;
@@ -53,6 +48,5 @@ typedef struct ClosureCtx
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_CLOSURE_CTX_H_ */

@@ -28,16 +28,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <iostream>
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
 FramePrinter::FramePrinter(const Frame& frame, uint32_t opts)
-  :
-  m_frame(frame),
-  m_opts(opts)
+  : m_frame(frame), m_opts(opts)
 {
   // Do nothing here.
 }
@@ -81,13 +78,11 @@ FramePrinter::operator()(std::ostream& ost) const
 
   // Parent closure info.
   {
-    if (closure.parent_id != NONESET_CLOSURE_ID)
-    {
+    if (closure.parent_id != NONESET_CLOSURE_ID) {
       runtime::Closure* parent_closure = nullptr;
       compartment->get_closure_by_id(closure.parent_id, &parent_closure);
 
-      if (parent_closure)
-      {
+      if (parent_closure) {
         ost << "Outer scope: " << parent_closure->name << std::endl;
         ost << std::endl;
       }
@@ -102,14 +97,13 @@ FramePrinter::operator()(std::ostream& ost) const
 
 // -----------------------------------------------------------------------------
 
-template<typename V>
+template <typename V>
 void
-FramePrinter::print_variables(std::ostream& ost,
-  const Compartment* compartment, const V& vars) const
+FramePrinter::print_variables(std::ostream& ost, const Compartment* compartment,
+                              const V& vars) const
 {
   ost << std::endl;
-  for (const auto var : vars)
-  {
+  for (const auto var : vars) {
     const char* var_name = NULL;
     auto encoding_key = static_cast<runtime::encoding_key_t>(var);
     compartment->get_string_literal(encoding_key, &var_name);

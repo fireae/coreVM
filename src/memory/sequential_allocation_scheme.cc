@@ -33,13 +33,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 #include <vector>
 
-
 namespace corevm {
 namespace memory {
 
 // -----------------------------------------------------------------------------
 
-const size_t SequentialAllocationScheme::LINEAR_SEARCH_BLOCK_COUNT_THRESHOLD = 10;
+const size_t SequentialAllocationScheme::LINEAR_SEARCH_BLOCK_COUNT_THRESHOLD =
+  10;
 
 // -----------------------------------------------------------------------------
 
@@ -54,8 +54,7 @@ typedef SequentialBlockDescriptor block_descriptor_type;
 // -----------------------------------------------------------------------------
 
 SequentialAllocationScheme::SequentialAllocationScheme(size_t total_size)
-  :
-  m_total_size(total_size)
+  : m_total_size(total_size)
 {
 }
 
@@ -64,29 +63,32 @@ SequentialAllocationScheme::SequentialAllocationScheme(size_t total_size)
 void
 SequentialAllocationScheme::debug_print(uint32_t base) const noexcept
 {
-  const std::string LINE        = "------------------------------------------------------------------------------------------";
-  const std::string BLANK_SPACE = "|                                                                                        |";
+  const std::string LINE = "---------------------------------------------------"
+                           "---------------------------------------";
+  const std::string BLANK_SPACE = "|                                           "
+                                  "                                            "
+                                  " |";
 
   std::stringstream ss;
 
   ss << LINE << std::endl;
-  ss << "| Heap debug print (starting at " << std::setw(10)
-    << std::hex << std::showbase << base << std::noshowbase << std::dec
-    << ")                                              |" << std::endl;
+  ss << "| Heap debug print (starting at " << std::setw(10) << std::hex
+     << std::showbase << base << std::noshowbase << std::dec
+     << ")                                              |" << std::endl;
   ss << BLANK_SPACE << std::endl;
 
-  for (auto itr = m_blocks.cbegin(); itr != m_blocks.cend(); ++itr)
-  {
+  for (auto itr = m_blocks.cbegin(); itr != m_blocks.cend(); ++itr) {
     block_descriptor_type descriptor = static_cast<block_descriptor_type>(*itr);
 
     ss << "| ";
     ss << std::left << std::setw(10) << std::hex << std::showbase
-      << base + descriptor.offset << std::noshowbase << std::dec << " " << std::right;
+       << base + descriptor.offset << std::noshowbase << std::dec << " "
+       << std::right;
     ss << "BlockSize[" << std::setw(10) << descriptor.size << "] ";
     ss << "ActualSize[" << std::setw(10) << descriptor.actual_size << "] ";
     ss << "Offset[" << std::setw(10) << descriptor.offset << "] ";
     ss << "Flags[" << std::setw(4) << std::hex << std::showbase
-      << (uint64_t)descriptor.flags << "]" << std::noshowbase << std::dec;
+       << (uint64_t)descriptor.flags << "]" << std::noshowbase << std::dec;
     ss << " |" << std::endl;
   }
   ss << LINE << std::endl;
@@ -105,8 +107,8 @@ SequentialAllocationScheme::default_block() const noexcept
 // -----------------------------------------------------------------------------
 
 void
-SequentialAllocationScheme::split(
-  iterator_type itr, size_t size, uint64_t offset) noexcept
+SequentialAllocationScheme::split(iterator_type itr, size_t size,
+                                  uint64_t offset) noexcept
 {
   block_descriptor_type descriptor(size, 0u, offset, 0u);
   m_blocks.insert(++itr, descriptor);
@@ -119,18 +121,17 @@ SequentialAllocationScheme::combine_free_blocks() noexcept
 {
   iterator_type itr = m_blocks.begin();
 
-  while (itr != m_blocks.end())
-  {
+  while (itr != m_blocks.end()) {
     iterator_type current = itr;
     iterator_type next = ++itr;
 
-    if (next != m_blocks.end())
-    {
-      block_descriptor_type current_block = static_cast<block_descriptor_type>(*current);
-      block_descriptor_type next_block = static_cast<block_descriptor_type>(*next);
+    if (next != m_blocks.end()) {
+      block_descriptor_type current_block =
+        static_cast<block_descriptor_type>(*current);
+      block_descriptor_type next_block =
+        static_cast<block_descriptor_type>(*next);
 
-      if (current_block.actual_size == 0 && next_block.actual_size == 0)
-      {
+      if (current_block.actual_size == 0 && next_block.actual_size == 0) {
         current_block.size += next_block.size;
         next_block.size = 0;
         *current = current_block;
@@ -139,13 +140,11 @@ SequentialAllocationScheme::combine_free_blocks() noexcept
     }
   }
 
-  auto new_end_itr = std::remove_if(
-    m_blocks.begin(),
-    m_blocks.end(),
-    [](const block_descriptor_type& block) -> bool {
-      return block.actual_size == 0u && block.size == 0u;
-    }
-  );
+  auto new_end_itr =
+    std::remove_if(m_blocks.begin(), m_blocks.end(),
+                   [](const block_descriptor_type& block) -> bool {
+                     return block.actual_size == 0u && block.size == 0u;
+                   });
   m_blocks.erase(new_end_itr, m_blocks.end());
 }
 
@@ -159,15 +158,14 @@ SequentialAllocationScheme::malloc(size_t size) noexcept
 
   itr = find_fit(size);
 
-  if (itr != m_blocks.end())
-  {
-    block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
+  if (itr != m_blocks.end()) {
+    block_descriptor_type block_found =
+      static_cast<block_descriptor_type>(*itr);
     block_found.actual_size = size;
 
-    if (block_found.size > size)
-    {
+    if (block_found.size > size) {
       split(itr, block_found.size - size,
-        static_cast<uint64_t>(block_found.offset + size));
+            static_cast<uint64_t>(block_found.offset + size));
 
       block_found.size = size;
     }
@@ -191,14 +189,13 @@ SequentialAllocationScheme::calloc(size_t num, size_t size) noexcept
 
   iterator_type itr = find_fit(alloc_size);
 
-  if (itr != m_blocks.end())
-  {
-    block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
+  if (itr != m_blocks.end()) {
+    block_descriptor_type block_found =
+      static_cast<block_descriptor_type>(*itr);
 
-    if (block_found.size > alloc_size)
-    {
+    if (block_found.size > alloc_size) {
       split(itr, block_found.size - alloc_size,
-        static_cast<uint64_t>(block_found.offset + alloc_size));
+            static_cast<uint64_t>(block_found.offset + alloc_size));
     }
 
     block_found.size = size;
@@ -207,13 +204,11 @@ SequentialAllocationScheme::calloc(size_t num, size_t size) noexcept
 
     res = static_cast<ssize_t>(block_found.offset);
 
-    if (num > 1)
-    {
+    if (num > 1) {
       uint64_t offset = block_found.offset + (uint64_t)size;
       std::vector<block_descriptor_type> descriptors(num - 1);
 
-      for (size_t i = 0; i < descriptors.size(); ++i)
-      {
+      for (size_t i = 0; i < descriptors.size(); ++i) {
         descriptors[i].size = size;
         descriptors[i].actual_size = size;
         descriptors[i].offset = offset;
@@ -230,18 +225,16 @@ SequentialAllocationScheme::calloc(size_t num, size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 // TODO: Move this to sneaker or somewhere else.
-template<class ForwardIterator, class T, class Compare>
-ForwardIterator binary_find(
-  ForwardIterator first, ForwardIterator last, const T& val, Compare comp)
+template <class ForwardIterator, class T, class Compare>
+ForwardIterator
+binary_find(ForwardIterator first, ForwardIterator last, const T& val,
+            Compare comp)
 {
   first = std::lower_bound(first, last, val, comp);
 
-  if (first != last && !(comp(val, *first)))
-  {
+  if (first != last && !(comp(val, *first))) {
     return first;
-  }
-  else
-  {
+  } else {
     return last;
   }
 }
@@ -249,15 +242,14 @@ ForwardIterator binary_find(
 // -----------------------------------------------------------------------------
 
 // TODO: Move this to sneaker or somewhere else.
-template<class ForwardIterator, class T, class Compare, class Predicate>
-ForwardIterator binary_find_if(
-  ForwardIterator first, ForwardIterator last,
-  const T& val, Compare comp, Predicate pred)
+template <class ForwardIterator, class T, class Compare, class Predicate>
+ForwardIterator
+binary_find_if(ForwardIterator first, ForwardIterator last, const T& val,
+               Compare comp, Predicate pred)
 {
   first = binary_find(first, last, val, comp);
 
-  if (first == last)
-  {
+  if (first == last) {
     return last;
   }
 
@@ -279,31 +271,31 @@ SequentialAllocationScheme::free(size_t offset) noexcept
   itr = std::find_if(m_blocks.begin(), m_blocks.end(), pred);
 
   /**
-   * TODO: Investigate benefits of binary search instead of linear search.
-   *
-  if (m_blocks.size() <= LINEAR_SEARCH_BLOCK_COUNT_THRESHOLD &&
-      !SUPPRESS_LINEAR_SEARCH)
-  {
-    itr = std::find_if(m_blocks.begin(), m_blocks.end(), pred);
-  }
-  else
-  {
-    auto comp = [](
-      const block_descriptor_type& lhs,
-      const block_descriptor_type& rhs) -> bool
-    {
-      return lhs.offset < rhs.offset;
-    };
+* TODO: Investigate benefits of binary search instead of linear search.
+*
+if (m_blocks.size() <= LINEAR_SEARCH_BLOCK_COUNT_THRESHOLD &&
+!SUPPRESS_LINEAR_SEARCH)
+{
+itr = std::find_if(m_blocks.begin(), m_blocks.end(), pred);
+}
+else
+{
+auto comp = [](
+const block_descriptor_type& lhs,
+const block_descriptor_type& rhs) -> bool
+{
+return lhs.offset < rhs.offset;
+};
 
-    block_descriptor_type ref { .offset = offset };
-    itr = binary_find_if(m_blocks.begin(), m_blocks.end(), ref, comp, pred);
-  }
-  *
-  **/
+block_descriptor_type ref { .offset = offset };
+itr = binary_find_if(m_blocks.begin(), m_blocks.end(), ref, comp, pred);
+}
+*
+**/
 
-  if (itr != m_blocks.end())
-  {
-    block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
+  if (itr != m_blocks.end()) {
+    block_descriptor_type block_found =
+      static_cast<block_descriptor_type>(*itr);
 
     size_freed = static_cast<ssize_t>(block_found.actual_size);
 
@@ -318,15 +310,12 @@ SequentialAllocationScheme::free(size_t offset) noexcept
 
 // -----------------------------------------------------------------------------
 
-
 /*                         FirstFitAllocationScheme                           */
-
 
 // -----------------------------------------------------------------------------
 
 FirstFitAllocationScheme::FirstFitAllocationScheme(size_t total_size)
-  :
-  SequentialAllocationScheme(total_size)
+  : SequentialAllocationScheme(total_size)
 {
   m_blocks.push_back(default_block());
 }
@@ -336,26 +325,20 @@ FirstFitAllocationScheme::FirstFitAllocationScheme(size_t total_size)
 iterator_type
 FirstFitAllocationScheme::find_fit(size_t size) noexcept
 {
-  return std::find_if(
-    m_blocks.begin(),
-    m_blocks.end(),
-    [this, size](block_descriptor_type block) -> bool {
-      return block.size >= size && block.actual_size == 0;
-    }
-  );
+  return std::find_if(m_blocks.begin(), m_blocks.end(),
+                      [this, size](block_descriptor_type block) -> bool {
+                        return block.size >= size && block.actual_size == 0;
+                      });
 }
 
 // -----------------------------------------------------------------------------
 
-
 /* -------------- BestFitAllocationScheme ---------------- */
-
 
 // -----------------------------------------------------------------------------
 
 BestFitAllocationScheme::BestFitAllocationScheme(size_t total_size)
-  :
-  SequentialAllocationScheme(total_size)
+  : SequentialAllocationScheme(total_size)
 {
   m_blocks.push_back(default_block());
 }
@@ -366,33 +349,27 @@ iterator_type
 BestFitAllocationScheme::find_fit(size_t size) noexcept
 {
   iterator_type itr = std::min_element(
-    m_blocks.begin(),
-    m_blocks.end(),
-    [size](
-      block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
-      if (block_a.actual_size != 0)
-      {
+    m_blocks.begin(), m_blocks.end(),
+    [size](block_descriptor_type block_a,
+           block_descriptor_type block_b) -> bool {
+      if (block_a.actual_size != 0) {
         return false;
       }
 
-      if (block_b.actual_size != 0)
-      {
+      if (block_b.actual_size != 0) {
         return true;
       }
 
       return block_a.size <= block_b.size && block_a.size >= size;
-    }
-  );
+    });
 
-  if (itr == m_blocks.end())
-  {
+  if (itr == m_blocks.end()) {
     return itr;
   }
 
   block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
-  if (! (block_found.actual_size == 0 && block_found.size >= size) )
-  {
+  if (!(block_found.actual_size == 0 && block_found.size >= size)) {
     itr = m_blocks.end();
   }
 
@@ -401,16 +378,12 @@ BestFitAllocationScheme::find_fit(size_t size) noexcept
 
 // -----------------------------------------------------------------------------
 
-
 /*                          WorstFitAllocationScheme                          */
-
 
 // -----------------------------------------------------------------------------
 
-WorstFitAllocationScheme::WorstFitAllocationScheme(
-  size_t total_size)
-  :
-  SequentialAllocationScheme(total_size)
+WorstFitAllocationScheme::WorstFitAllocationScheme(size_t total_size)
+  : SequentialAllocationScheme(total_size)
 {
   m_blocks.push_back(default_block());
 }
@@ -421,33 +394,27 @@ iterator_type
 WorstFitAllocationScheme::find_fit(size_t size) noexcept
 {
   iterator_type itr = std::max_element(
-    m_blocks.begin(),
-    m_blocks.end(),
-    [size](
-      block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
-      if (block_b.actual_size != 0)
-      {
+    m_blocks.begin(), m_blocks.end(),
+    [size](block_descriptor_type block_a,
+           block_descriptor_type block_b) -> bool {
+      if (block_b.actual_size != 0) {
         return false;
       }
 
-      if (block_a.actual_size != 0)
-      {
+      if (block_a.actual_size != 0) {
         return true;
       }
 
       return block_a.size <= block_b.size && block_a.size >= size;
-    }
-  );
+    });
 
-  if (itr == m_blocks.end())
-  {
+  if (itr == m_blocks.end()) {
     return itr;
   }
 
   block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
-  if (! (block_found.actual_size == 0 && block_found.size >= size) )
-  {
+  if (!(block_found.actual_size == 0 && block_found.size >= size)) {
     itr = m_blocks.end();
   }
 
@@ -456,15 +423,12 @@ WorstFitAllocationScheme::find_fit(size_t size) noexcept
 
 // -----------------------------------------------------------------------------
 
-
 /*                            NextFitAllocationScheme                         */
-
 
 // -----------------------------------------------------------------------------
 
 NextFitAllocationScheme::NextFitAllocationScheme(size_t total_size)
-  :
-  SequentialAllocationScheme(total_size)
+  : SequentialAllocationScheme(total_size)
 {
   m_last_itr = m_blocks.begin();
   m_blocks.push_back(default_block());
@@ -481,16 +445,14 @@ NextFitAllocationScheme::find_fit(size_t size) noexcept
 
   iterator_type itr = std::find_if(m_last_itr, m_blocks.end(), criterion);
 
-  if (itr != m_blocks.end())
-  {
+  if (itr != m_blocks.end()) {
     m_last_itr = itr;
     return itr;
   }
 
   itr = std::find_if(m_blocks.begin(), m_blocks.end(), criterion);
 
-  if (itr != m_blocks.end())
-  {
+  if (itr != m_blocks.end()) {
     m_last_itr = itr;
   }
 
@@ -502,11 +464,9 @@ NextFitAllocationScheme::find_fit(size_t size) noexcept
 ssize_t
 NextFitAllocationScheme::free(size_t offset) noexcept
 {
-  if (m_last_itr != m_blocks.end())
-  {
+  if (m_last_itr != m_blocks.end()) {
     const block_descriptor_type& block = *m_last_itr;
-    if (block.offset == offset)
-    {
+    if (block.offset == offset) {
       m_last_itr = m_blocks.end();
     }
   }
@@ -516,9 +476,7 @@ NextFitAllocationScheme::free(size_t offset) noexcept
 
 // -----------------------------------------------------------------------------
 
-
 /*                            BuddyAllocationScheme                           */
-
 
 // -----------------------------------------------------------------------------
 
@@ -531,8 +489,7 @@ const uint8_t BuddyAllocationScheme::FLAG_PARENT_SPLIT = 2;
 // -----------------------------------------------------------------------------
 
 BuddyAllocationScheme::BuddyAllocationScheme(size_t total_size)
-  :
-  SequentialAllocationScheme(total_size)
+  : SequentialAllocationScheme(total_size)
 {
   m_blocks.push_back(default_block());
 }
@@ -542,11 +499,8 @@ BuddyAllocationScheme::BuddyAllocationScheme(size_t total_size)
 block_descriptor_type
 BuddyAllocationScheme::default_block() const noexcept
 {
-  return block_descriptor_type(
-    m_total_size,
-    0u,
-    0u,
-    0x01 << (FLAG_PARENT_SPLIT - 1));
+  return block_descriptor_type(m_total_size, 0u, 0u,
+                               0x01 << (FLAG_PARENT_SPLIT - 1));
 }
 
 // -----------------------------------------------------------------------------
@@ -557,9 +511,9 @@ BuddyAllocationScheme::malloc(size_t size) noexcept
   ssize_t res = -1;
   iterator_type itr = find_fit(size);
 
-  if (itr != m_blocks.end())
-  {
-    block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
+  if (itr != m_blocks.end()) {
+    block_descriptor_type block_found =
+      static_cast<block_descriptor_type>(*itr);
     block_found.actual_size = size;
     *itr = block_found;
 
@@ -573,8 +527,8 @@ BuddyAllocationScheme::malloc(size_t size) noexcept
 
 // -----------------------------------------------------------------------------
 
-ssize_t
-BuddyAllocationScheme::calloc(size_t /* num */, size_t /* size */) noexcept
+ssize_t BuddyAllocationScheme::calloc(size_t /* num */,
+                                      size_t /* size */) noexcept
 {
   // Buddy allocation scheme does not currently support `calloc`.
   return -1;
@@ -585,27 +539,24 @@ BuddyAllocationScheme::calloc(size_t /* num */, size_t /* size */) noexcept
 iterator_type
 BuddyAllocationScheme::find_fit(size_t size) noexcept
 {
-  size_t nearest_power_of_2 = static_cast<size_t>(
-    nearest_exp2_ceil(static_cast<uint32_t>(size)));
+  size_t nearest_power_of_2 =
+    static_cast<size_t>(nearest_exp2_ceil(static_cast<uint32_t>(size)));
 
   iterator_type itr = m_blocks.end();
 
-  while (1)
-  {
+  while (1) {
     itr = std::find_if(
-      m_blocks.begin(),
-      m_blocks.end(),
+      m_blocks.begin(), m_blocks.end(),
       [this, nearest_power_of_2](block_descriptor_type block) -> bool {
         return block.size >= nearest_power_of_2 && block.actual_size == 0;
-      }
-    );
+      });
 
-    if (itr == m_blocks.end())
-    {
+    if (itr == m_blocks.end()) {
       break;
     }
 
-    block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
+    block_descriptor_type block_found =
+      static_cast<block_descriptor_type>(*itr);
 
     if (block_found.size / 2 >= size) // split
     {
@@ -613,10 +564,8 @@ BuddyAllocationScheme::find_fit(size_t size) noexcept
       set_nth_bit_uint8(&block_found.flags, FLAG_SPLIT);
       *itr = block_found;
       split(itr, block_found.size,
-        static_cast<uint64_t>(block_found.offset + block_found.size)
-      );
-    }
-    else // bingo! use this block
+            static_cast<uint64_t>(block_found.offset + block_found.size));
+    } else // bingo! use this block
     {
       block_found.size = block_found.size; // size stay the same
       block_found.actual_size = size;
@@ -640,12 +589,10 @@ BuddyAllocationScheme::combine_free_blocks() noexcept
 
   bool has_freed_blocks = true;
 
-  while (has_freed_blocks)
-  {
+  while (has_freed_blocks) {
     has_freed_blocks = false;
 
-    for (iterator_type itr = m_blocks.begin(); itr != m_blocks.end(); ++itr)
-    {
+    for (iterator_type itr = m_blocks.begin(); itr != m_blocks.end(); ++itr) {
       iterator_type current_itr = itr;
       iterator_type next_itr = current_itr;
       ++next_itr;
@@ -653,30 +600,28 @@ BuddyAllocationScheme::combine_free_blocks() noexcept
       block_descriptor_type current_block =
         static_cast<block_descriptor_type>(*itr);
 
-      if (itr != m_blocks.end() && next_itr != m_blocks.end())
-      {
+      if (itr != m_blocks.end() && next_itr != m_blocks.end()) {
         block_descriptor_type next_block =
           static_cast<block_descriptor_type>(*next_itr);
 
         bool is_split = is_bit_set_uint8(current_block.flags, FLAG_SPLIT) &&
-          !is_bit_set_uint8(next_block.flags, FLAG_SPLIT);
+                        !is_bit_set_uint8(next_block.flags, FLAG_SPLIT);
 
-        bool is_parent_split = is_bit_set_uint8(
-          current_block.flags, FLAG_PARENT_SPLIT);
+        bool is_parent_split =
+          is_bit_set_uint8(current_block.flags, FLAG_PARENT_SPLIT);
 
         if (is_split && current_block.actual_size == 0 &&
-            next_block.actual_size == 0)
-        {
+            next_block.actual_size == 0) {
           uint8_t flags = 0;
 
-          if (is_parent_split)
-          {
+          if (is_parent_split) {
             set_nth_bit_uint8(&flags, FLAG_PARENT_SPLIT);
             set_nth_bit_uint8(&flags, FLAG_SPLIT);
           }
 
-          block_descriptor_type combined_block(
-            current_block.size + next_block.size, 0u, current_block.offset, flags);
+          block_descriptor_type combined_block(current_block.size +
+                                                 next_block.size,
+                                               0u, current_block.offset, flags);
 
           *itr = combined_block;
 

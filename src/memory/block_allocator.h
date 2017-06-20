@@ -32,7 +32,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "corevm/macros.h"
 
-
 namespace corevm {
 namespace memory {
 
@@ -41,20 +40,16 @@ namespace memory {
 namespace {
 
 #if defined(__clang__) and __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wunneeded-member-function"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunneeded-member-function"
 #endif
 
-typedef struct FreeListDescriptor
-{
-  FreeListDescriptor(
-    uint32_t start_index_,
-    uint32_t end_index_,
-    uint32_t current_index_)
-    :
-    start_index(start_index_),
-    end_index(end_index_),
-    current_index(current_index_)
+typedef struct FreeListDescriptor {
+  FreeListDescriptor(uint32_t start_index_, uint32_t end_index_,
+                     uint32_t current_index_)
+    : start_index(start_index_),
+      end_index(end_index_),
+      current_index(current_index_)
   {
   }
 
@@ -64,7 +59,7 @@ typedef struct FreeListDescriptor
 } FreeListDescriptor;
 
 #if defined(__clang__) and __clang__
-  #pragma clang diagnostic pop
+#pragma clang diagnostic pop
 #endif
 
 // -----------------------------------------------------------------------------
@@ -109,9 +104,7 @@ is_empty_free_list(const FreeListDescriptor& descriptor)
 
 // -----------------------------------------------------------------------------
 
-template<class T>
-class BlockAllocator
-{
+template <class T> class BlockAllocator {
 public:
   explicit BlockAllocator(uint64_t total_size);
 
@@ -147,37 +140,38 @@ private:
   std::vector<FreeListDescriptor> m_free_lists;
 
 private:
-
   /**
    * An implementation of forward iterator for block allocator.
    */
-  template<bool is_const_iterator = true>
-  class const_noconst_iterator : public std::iterator<std::forward_iterator_tag, T>
-  {
+  template <bool is_const_iterator = true>
+  class const_noconst_iterator
+    : public std::iterator<std::forward_iterator_tag, T> {
   public:
     typedef BlockAllocator<T>& ParentRefType;
 
-    typedef typename std::conditional<is_const_iterator, const T&, T&>::type ReferenceType;
+    typedef typename std::conditional<is_const_iterator, const T&, T&>::type
+      ReferenceType;
 
-    typedef typename std::conditional<is_const_iterator, const T*, T*>::type PointerType;
+    typedef typename std::conditional<is_const_iterator, const T*, T*>::type
+      PointerType;
 
-    const_noconst_iterator(ParentRefType parent, int64_t descriptor_index, int64_t slot_index)
-      :
-      m_parent(parent),
-      m_descriptor_index(descriptor_index),
-      m_slot_index(slot_index)
+    const_noconst_iterator(ParentRefType parent, int64_t descriptor_index,
+                           int64_t slot_index)
+      : m_parent(parent),
+        m_descriptor_index(descriptor_index),
+        m_slot_index(slot_index)
     {
     }
 
     const_noconst_iterator(const const_noconst_iterator<false>& other)
-      :
-      m_parent(other.m_parent),
-      m_descriptor_index(other.m_descriptor_index),
-      m_slot_index(other.m_slot_index)
+      : m_parent(other.m_parent),
+        m_descriptor_index(other.m_descriptor_index),
+        m_slot_index(other.m_slot_index)
     {
     }
 
-    const_noconst_iterator& operator=(const const_noconst_iterator<false>& other)
+    const_noconst_iterator&
+    operator=(const const_noconst_iterator<false>& other)
     {
       m_descriptor_index = other.m_descriptor_index;
       m_slot_index = other.m_slot_index;
@@ -188,7 +182,8 @@ private:
     {
       const auto desp_index = static_cast<size_t>(m_descriptor_index);
       const auto start_index = m_parent.m_free_lists[desp_index].start_index;
-      const uint64_t slot_index = start_index + static_cast<uint64_t>(m_slot_index);
+      const uint64_t slot_index =
+        start_index + static_cast<uint64_t>(m_slot_index);
       T* heap_ = reinterpret_cast<T*>(m_parent.m_heap);
       return heap_[slot_index];
     }
@@ -198,14 +193,18 @@ private:
       return &(operator*());
     }
 
-    friend bool operator==(const const_noconst_iterator& lhs, const const_noconst_iterator& rhs)
+    friend bool
+    operator==(const const_noconst_iterator& lhs,
+               const const_noconst_iterator& rhs)
     {
       return &lhs.m_parent == &rhs.m_parent &&
-        lhs.m_descriptor_index == rhs.m_descriptor_index &&
-        lhs.m_slot_index == rhs.m_slot_index;
+             lhs.m_descriptor_index == rhs.m_descriptor_index &&
+             lhs.m_slot_index == rhs.m_slot_index;
     }
 
-    friend bool operator!=(const const_noconst_iterator& lhs, const const_noconst_iterator& rhs)
+    friend bool
+    operator!=(const const_noconst_iterator& lhs,
+               const const_noconst_iterator& rhs)
     {
       return !(operator==(lhs, rhs));
     }
@@ -213,50 +212,41 @@ private:
     /** Prefix increment. */
     const_noconst_iterator& operator++()
     {
-      while (*this != m_parent.end())
-      {
+      while (*this != m_parent.end()) {
         // Invalid case.
-        if (m_descriptor_index < 0 ||
-            static_cast<size_t>(m_descriptor_index) >= m_parent.m_free_lists.size())
-        {
+        if (m_descriptor_index < 0 || static_cast<size_t>(m_descriptor_index) >=
+                                        m_parent.m_free_lists.size()) {
           *this = m_parent.end();
-        }
-        else
-        {
+        } else {
           const auto& descriptor =
             m_parent.m_free_lists[static_cast<size_t>(m_descriptor_index)];
 
-          if (descriptor.start_index + m_slot_index + 1 < descriptor.current_index)
-          {
+          if (descriptor.start_index + m_slot_index + 1 <
+              descriptor.current_index) {
             ++m_slot_index;
             break;
-          }
-          else
-          {
+          } else {
             ++m_descriptor_index;
             m_slot_index = 0;
 
             // Skip empty lists.
-            while (static_cast<size_t>(m_descriptor_index) < m_parent.m_free_lists.size())
-            {
+            while (static_cast<size_t>(m_descriptor_index) <
+                   m_parent.m_free_lists.size()) {
               const auto& descriptor_ =
                 m_parent.m_free_lists[static_cast<size_t>(m_descriptor_index)];
 
-              if (!is_empty_free_list(descriptor_))
-              {
-                  break;
+              if (!is_empty_free_list(descriptor_)) {
+                break;
               }
 
               ++m_descriptor_index;
               m_slot_index = 0;
             }
           }
-          if (static_cast<size_t>(m_descriptor_index) >= m_parent.m_free_lists.size())
-          {
+          if (static_cast<size_t>(m_descriptor_index) >=
+              m_parent.m_free_lists.size()) {
             *this = m_parent.end();
-          }
-          else
-          {
+          } else {
             break;
           }
         }
@@ -299,31 +289,28 @@ private:
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 BlockAllocator<T>::BlockAllocator(uint64_t total_size)
-  :
-  m_heap(nullptr),
-  m_total_size(total_size),
-  m_empty_lists_count(0u),
-  m_free_lists()
+  : m_heap(nullptr),
+    m_total_size(total_size),
+    m_empty_lists_count(0u),
+    m_free_lists()
 {
   void* mem = malloc(m_total_size);
 
-  if (!mem)
-  {
+  if (!mem) {
     throw std::bad_alloc();
   }
 
   m_heap = mem;
 
-  if (m_total_size)
-  {
+  if (m_total_size) {
     uint64_t total_blocks = m_total_size / sizeof(T);
 
-    if (total_blocks)
-    {
+    if (total_blocks) {
       m_free_lists.reserve(10u);
-      m_free_lists.emplace_back(0u, static_cast<uint32_t>(total_blocks - 1), 0u);
+      m_free_lists.emplace_back(0u, static_cast<uint32_t>(total_blocks - 1),
+                                0u);
       m_empty_lists_count = 1u;
     }
   }
@@ -331,11 +318,9 @@ BlockAllocator<T>::BlockAllocator(uint64_t total_size)
 
 // -----------------------------------------------------------------------------
 
-template<class T>
-BlockAllocator<T>::~BlockAllocator()
+template <class T> BlockAllocator<T>::~BlockAllocator()
 {
-  if (m_heap)
-  {
+  if (m_heap) {
     free(m_heap);
     m_heap = nullptr;
   }
@@ -345,7 +330,7 @@ BlockAllocator<T>::~BlockAllocator()
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 void*
 BlockAllocator<T>::allocate()
 {
@@ -354,29 +339,25 @@ BlockAllocator<T>::allocate()
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 void*
 BlockAllocator<T>::allocate_n(size_t n)
 {
   void* ptr = nullptr;
 
-  if (n == 0)
-  {
+  if (n == 0) {
     return ptr;
   }
 
-  for (size_t i = 0; i < m_free_lists.size(); ++i)
-  {
+  for (size_t i = 0; i < m_free_lists.size(); ++i) {
     FreeListDescriptor& descriptor = m_free_lists[i];
 
-    if (is_free_list_available(descriptor, n))
-    {
+    if (is_free_list_available(descriptor, n)) {
 #if __DEBUG__
       ASSERT(descriptor.current_index <= descriptor.end_index);
 #endif
 
-      if (is_empty_free_list(descriptor))
-      {
+      if (is_empty_free_list(descriptor)) {
         --m_empty_lists_count;
       }
 
@@ -402,7 +383,7 @@ BlockAllocator<T>::allocate_n(size_t n)
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 void*
 BlockAllocator<T>::allocate_n(size_t n, size_t)
 {
@@ -411,36 +392,32 @@ BlockAllocator<T>::allocate_n(size_t n, size_t)
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 int
 BlockAllocator<T>::deallocate(void* ptr)
 {
   int res = -1;
 
-  if (ptr == nullptr)
-  {
+  if (ptr == nullptr) {
     return res;
   }
 
   uint64_t ptr_ = reinterpret_cast<uint64_t>(ptr);
   uint64_t heap_ = reinterpret_cast<uint64_t>(m_heap);
 
-  if (ptr_ < heap_ || ptr_ > heap_ + m_total_size)
-  {
+  if (ptr_ < heap_ || ptr_ > heap_ + m_total_size) {
     return res;
   }
 
   uint64_t range = ptr_ - heap_;
 
-  uint32_t index = (uint32_t)( range / sizeof(T) );
+  uint32_t index = (uint32_t)(range / sizeof(T));
 
   size_t i = 0;
-  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr, ++i)
-  {
+  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr, ++i) {
     FreeListDescriptor& descriptor = *itr;
 
-    if (is_allocated_in_free_list(descriptor, index))
-    {
+    if (is_allocated_in_free_list(descriptor, index)) {
       /**
        * Free a block in 2 cases:
        *
@@ -451,44 +428,37 @@ BlockAllocator<T>::deallocate(void* ptr)
        *      having the free block at `index` at the end.
        */
 
-      if (index == descriptor.current_index - 1)
-      {
+      if (index == descriptor.current_index - 1) {
         /**
          * Free at end of block.
          *
          */
         --descriptor.current_index;
 
-        if (is_empty_free_list(descriptor))
-        {
+        if (is_empty_free_list(descriptor)) {
           ++m_empty_lists_count;
-          if (m_empty_lists_count > 1)
-          {
+          if (m_empty_lists_count > 1) {
             combine_empty_freelists(i);
           }
         }
-      }
-      else
-      {
+      } else {
         /**
          * Free at beginning or middle of the list.
          *
          */
 
-        if (index == descriptor.start_index and i > 0 and is_empty_free_list(m_free_lists[i-1]))
-        {
+        if (index == descriptor.start_index and i > 0 and
+            is_empty_free_list(m_free_lists[i - 1])) {
           /**
            * Free at the beginning of a list and there is a previous empty list.
            *
            * Just expand the previous empty list.
            */
-          auto& previous_descriptor = m_free_lists[i-1];
+          auto& previous_descriptor = m_free_lists[i - 1];
           previous_descriptor.end_index = index;
 
           descriptor.start_index = index + 1;
-        }
-        else
-        {
+        } else {
           /**
            * Mark the current list as one element less than full, and insert
            * a new list after it.
@@ -506,11 +476,9 @@ BlockAllocator<T>::deallocate(void* ptr)
           ++itr_;
           m_free_lists.insert(itr_, new_descriptor);
 
-          if (is_empty_free_list(descriptor))
-          {
+          if (is_empty_free_list(descriptor)) {
             ++m_empty_lists_count;
-            if (m_empty_lists_count > 1)
-            {
+            if (m_empty_lists_count > 1) {
               combine_empty_freelists(i);
             }
           }
@@ -527,28 +495,25 @@ BlockAllocator<T>::deallocate(void* ptr)
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 void*
 BlockAllocator<T>::find(void* ptr) const
 {
   uint64_t ptr_ = reinterpret_cast<uint64_t>(ptr);
   uint64_t heap_ = reinterpret_cast<uint64_t>(m_heap);
 
-  if (ptr_ < heap_ || ptr_ > heap_ + m_total_size)
-  {
+  if (ptr_ < heap_ || ptr_ > heap_ + m_total_size) {
     return NULL;
   }
 
   const uint64_t range = ptr_ - heap_;
 
-  const uint32_t index = (uint32_t)( range / sizeof(T) );
+  const uint32_t index = (uint32_t)(range / sizeof(T));
 
-  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr)
-  {
+  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr) {
     const FreeListDescriptor& descriptor = *itr;
 
-    if (is_allocated_in_free_list(descriptor, index))
-    {
+    if (is_allocated_in_free_list(descriptor, index)) {
       return ptr;
     }
   }
@@ -558,18 +523,18 @@ BlockAllocator<T>::find(void* ptr) const
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 void
 BlockAllocator<T>::combine_empty_freelists(size_t i)
 {
-  const bool combine_with_previous = i > 0 and is_empty_free_list(m_free_lists[i - 1]);
+  const bool combine_with_previous =
+    i > 0 and is_empty_free_list(m_free_lists[i - 1]);
 
 #if __DEBUG__
   ASSERT(is_empty_free_list(m_free_lists[i]));
 #endif
 
-  if (combine_with_previous)
-  {
+  if (combine_with_previous) {
     auto& previous_descriptor = m_free_lists[i - 1];
     auto& descriptor = m_free_lists[i];
 
@@ -581,14 +546,14 @@ BlockAllocator<T>::combine_empty_freelists(size_t i)
     --m_empty_lists_count;
   }
 
-  const bool combine_with_next = i < (m_free_lists.size() - 1) and is_empty_free_list(m_free_lists[i + 1]);
+  const bool combine_with_next =
+    i < (m_free_lists.size() - 1) and is_empty_free_list(m_free_lists[i + 1]);
 
 #if __DEBUG__
   ASSERT(is_empty_free_list(m_free_lists[i]));
 #endif
 
-  if (combine_with_next)
-  {
+  if (combine_with_next) {
     auto& descriptor = m_free_lists[i];
     auto& next_descriptor = m_free_lists[i + 1];
 
@@ -602,7 +567,7 @@ BlockAllocator<T>::combine_empty_freelists(size_t i)
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 uint64_t
 BlockAllocator<T>::base_addr() const noexcept
 {
@@ -611,7 +576,7 @@ BlockAllocator<T>::base_addr() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 uint64_t
 BlockAllocator<T>::total_size() const noexcept
 {
@@ -620,18 +585,17 @@ BlockAllocator<T>::total_size() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 void
-BlockAllocator<T>::begin_indices(int64_t* descriptor_index, int64_t* slot_index) const
+BlockAllocator<T>::begin_indices(int64_t* descriptor_index,
+                                 int64_t* slot_index) const
 {
   size_t i = 0;
 
-  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr, ++i)
-  {
+  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr, ++i) {
     const FreeListDescriptor& descriptor = *itr;
 
-    if (descriptor.current_index > descriptor.start_index)
-    {
+    if (descriptor.current_index > descriptor.start_index) {
       *descriptor_index = static_cast<int64_t>(i);
       *slot_index = 0;
       break;
@@ -641,7 +605,7 @@ BlockAllocator<T>::begin_indices(int64_t* descriptor_index, int64_t* slot_index)
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 typename BlockAllocator<T>::iterator
 BlockAllocator<T>::begin()
 {
@@ -654,7 +618,7 @@ BlockAllocator<T>::begin()
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 typename BlockAllocator<T>::iterator
 BlockAllocator<T>::end()
 {
@@ -663,7 +627,7 @@ BlockAllocator<T>::end()
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 typename BlockAllocator<T>::const_iterator
 BlockAllocator<T>::cbegin() const
 {
@@ -677,7 +641,7 @@ BlockAllocator<T>::cbegin() const
 
 // -----------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 typename BlockAllocator<T>::const_iterator
 BlockAllocator<T>::cend() const
 {
@@ -689,6 +653,5 @@ BlockAllocator<T>::cend() const
 
 } /* end namespace memory */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_BLOCK_ALLOCATOR_H_ */

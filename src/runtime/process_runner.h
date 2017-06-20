@@ -30,21 +30,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sys/time.h>
 
-
 namespace corevm {
 namespace runtime {
 
 /** Forward declaration of `corevm::runtime::Process` */
 class Process;
 
-
-class ProcessRunner
-{
+class ProcessRunner {
 public:
   explicit ProcessRunner(Process& process);
 
-  ProcessRunner(Process& process,
-    uint32_t interval_millisec = COREVM_DEFAULT_GC_INTERVAL_MILLISECOND);
+  ProcessRunner(Process& process, uint32_t interval_millisec =
+                                    COREVM_DEFAULT_GC_INTERVAL_MILLISECOND);
 
   ~ProcessRunner();
 
@@ -67,6 +64,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_PROCESS_RUNNER_H_ */

@@ -24,14 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_DYOBJ_COMMON_H_
 
 #if defined(__clang__) and __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
 #endif
-
 
 #include <climits>
 #include <cstdint>
-
 
 namespace corevm {
 namespace dyobj {
@@ -59,7 +57,8 @@ const uint64_t DYOBJ_LIMIT = ULLONG_MAX;
 
 // -----------------------------------------------------------------------------
 
-inline void* obj_id_to_ptr(dyobj_id_t id)
+inline void*
+obj_id_to_ptr(dyobj_id_t id)
 {
   return reinterpret_cast<void*>(id);
 }
@@ -69,10 +68,8 @@ inline void* obj_id_to_ptr(dyobj_id_t id)
 } /* end namespace dyobj */
 } /* end namespace corevm */
 
-
 #if defined(__clang__) and __clang__
-  #pragma clang diagnostic pop
+#pragma clang diagnostic pop
 #endif
-
 
 #endif /* COREVM_DYOBJ_COMMON_H_ */

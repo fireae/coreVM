@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <boost/functional/hash.hpp>
 
-
 namespace corevm {
 namespace runtime {
 
@@ -55,8 +54,7 @@ void
 FrameCache::erase_parent_frame(FramePtr parent_frame)
 {
   auto itr = m_reverse_cache.find(parent_frame);
-  if (itr != m_reverse_cache.end())
-  {
+  if (itr != m_reverse_cache.end()) {
     m_reverse_cache.erase(itr);
     m_cache.erase(itr->second);
   }
@@ -70,8 +68,7 @@ FrameCache::parent_frame_of(const ClosureCtx& ctx)
   FramePtr parent = NULL;
 
   auto itr = m_cache.find(ctx);
-  if (itr != m_cache.end())
-  {
+  if (itr != m_cache.end()) {
     parent = itr->second;
   }
 

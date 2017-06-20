@@ -22,7 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "analysis_pass.h"
 
-
 namespace corevm {
 namespace jit {
 
@@ -38,7 +37,8 @@ AnalysisPass::get_analysis_result() const
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool AnalysisPass::run(const IRModule&, const AnalysisResult*)
+bool
+AnalysisPass::run(const IRModule&, const AnalysisResult*)
 {
   return true;
 }
@@ -46,7 +46,8 @@ bool AnalysisPass::run(const IRModule&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool AnalysisPass::run(const IRTypeDecl&, const AnalysisResult*)
+bool
+AnalysisPass::run(const IRTypeDecl&, const AnalysisResult*)
 {
   return true;
 }
@@ -54,7 +55,8 @@ bool AnalysisPass::run(const IRTypeDecl&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool AnalysisPass::run(const IRClosure&, const AnalysisResult*)
+bool
+AnalysisPass::run(const IRClosure&, const AnalysisResult*)
 {
   return true;
 }
@@ -62,7 +64,8 @@ bool AnalysisPass::run(const IRClosure&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool AnalysisPass::run(const IRBasicBlock&, const AnalysisResult*)
+bool
+AnalysisPass::run(const IRBasicBlock&, const AnalysisResult*)
 {
   return true;
 }
@@ -70,7 +73,8 @@ bool AnalysisPass::run(const IRBasicBlock&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool AnalysisPass::run(const IRInstruction&, const AnalysisResult*)
+bool
+AnalysisPass::run(const IRInstruction&, const AnalysisResult*)
 {
   return true;
 }

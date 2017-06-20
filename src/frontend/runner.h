@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 
-
 namespace corevm {
 
 namespace api {
@@ -36,8 +35,7 @@ class Configuration;
 
 namespace frontend {
 
-class Runner
-{
+class Runner {
 public:
   Runner(const std::string&, const api::core::Configuration&);
 
@@ -50,6 +48,5 @@ private:
 
 } /* end namespace frontend */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_RUNNER_H_ */

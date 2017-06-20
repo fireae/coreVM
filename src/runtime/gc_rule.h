@@ -28,7 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <memory>
 
-
 namespace corevm {
 namespace runtime {
 
@@ -55,11 +54,9 @@ typedef bool (*GCRule)(const Process&);
 
 // -----------------------------------------------------------------------------
 
-class GCRuleMeta
-{
+class GCRuleMeta {
 public:
-  enum GCBitfields : uint8_t
-  {
+  enum GCBitfields : uint8_t {
     GC_ALWAYS,
     GC_BY_HEAP_SIZE,
     GC_BY_NTV_POOLSIZE,
@@ -75,6 +72,5 @@ public:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_GC_RULE_H_ */

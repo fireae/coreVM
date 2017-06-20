@@ -23,21 +23,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_VARIANT_STATIC_VISITOR_H_
 #define COREVM_VARIANT_STATIC_VISITOR_H_
 
-
 namespace corevm {
 namespace common {
 namespace variant {
 
 // -----------------------------------------------------------------------------
 
-template <typename R = void>
-struct static_visitor
-{
+template <typename R = void> struct static_visitor {
   using result_type = R;
 
 protected:
-  static_visitor() {}
-  ~static_visitor() {}
+  static_visitor()
+  {
+  }
+  ~static_visitor()
+  {
+  }
 };
 
 // -----------------------------------------------------------------------------
@@ -45,6 +46,5 @@ protected:
 } /* end namespace variant */
 } /* end namespace common */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_VARIANT_STATIC_VISITOR_H_ */

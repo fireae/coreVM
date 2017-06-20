@@ -28,7 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 
-
 namespace corevm {
 namespace runtime {
 
@@ -36,7 +35,7 @@ namespace runtime {
 
 dyobj::attr_key_t
 get_attr_key(Compartment* compartment, encoding_key_t str_key,
-  std::string* attr_str)
+             std::string* attr_str)
 {
   compartment->get_string_literal(str_key, attr_str);
 

@@ -37,7 +37,6 @@ namespace corevm {
 struct IRModule;
 } /* end namespace corevm */
 
-
 namespace corevm {
 namespace ir {
 
@@ -53,17 +52,12 @@ struct IRBuilderImpl;
 /**
  * Type deonoting the reference type of an IR value.
  */
-enum ValueRefType
-{
-  ValueRefTypeByValue = 0x01,
-  ValueRefTypeByReference
-};
+enum ValueRefType { ValueRefTypeByValue = 0x01, ValueRefTypeByReference };
 
 /**
  * Type denoting the value type of an IR value.
  */
-enum ValueType
-{
+enum ValueType {
   ValueTypeVoid = 0x01,
   ValueTypeBoolean,
   ValueTypeInt8,
@@ -83,17 +77,12 @@ enum ValueType
 /**
  * Type denoting the options for the `alloca` IR instruction.
  */
-enum AllocaType
-{
-  AllocaTypeStatic = 0x00,
-  AllocaTypeAuto
-};
+enum AllocaType { AllocaTypeStatic = 0x00, AllocaTypeAuto };
 
 /**
  * Type denoting the IR instruction opcodes.
  */
-enum InstrOpcode
-{
+enum InstrOpcode {
   InstrOpcodeALLOCA = 0x01,
   InstrOpcodeLOAD,
   InstrOpcodeSTORE,
@@ -138,8 +127,7 @@ enum InstrOpcode
  * Abstraction for representing function parameters used in
  * IR construction.
  */
-struct FuncParam
-{
+struct FuncParam {
   FuncParamType value;
 
   FuncParam(FuncParamType);
@@ -148,8 +136,7 @@ struct FuncParam
 /**
  * Abstraction for representing a SSA variable in a basic block.
  */
-struct SSAVariable
-{
+struct SSAVariable {
   SSAVariableImpl value;
 
   SSAVariable(SSAVariableImpl);
@@ -159,22 +146,9 @@ struct SSAVariable
  * Abstraction of an IR operand value.
  */
 typedef corevm::common::variant::variant<
-  bool,
-  uint8_t,
-  int8_t,
-  uint16_t,
-  int16_t,
-  uint32_t,
-  int32_t,
-  uint64_t,
-  int64_t,
-  float,
-  double,
-  std::string,
-  FuncParam,
-  SSAVariable
-> OperandValue;
-
+  bool, uint8_t, int8_t, uint16_t, int16_t, uint32_t, int32_t, uint64_t,
+  int64_t, float, double, std::string, FuncParam, SSAVariable>
+  OperandValue;
 
 /**
  * Class encapsulating a set of interfaces for facilitating programmatic
@@ -205,8 +179,7 @@ typedef corevm::common::variant::variant<
  * handle potential errors accordingly. Whether or not the use of exceptions
  * merits other error reporting mechanisms is left for future debates.
  */
-class IRBuilder
-{
+class IRBuilder {
 public:
   /**
    * Default constructor.
@@ -308,7 +281,7 @@ public:
    * NOTE: currently function definitions with the same name are not allowed.
    */
   FuncDefn create_func_defn(const std::string&, TypeDecl, ValueRefType,
-    const char* parent = NULL);
+                            const char* parent = NULL);
 
   /**
    * Create a function definition with the specified name, return type,
@@ -317,7 +290,7 @@ public:
    * NOTE: currently function definitions with the same name are not allowed.
    */
   FuncDefn create_func_defn(const std::string&, ValueType, ValueRefType,
-    const char* parent = NULL);
+                            const char* parent = NULL);
 
   /**
    * Create a function definition with the specified name, return type,
@@ -326,7 +299,7 @@ public:
    * NOTE: currently function definitions with the same name are not allowed.
    */
   FuncDefn create_func_defn(const std::string&, ArrayType, ValueRefType,
-    const char* parent = NULL);
+                            const char* parent = NULL);
 
   /**
    * Add a function parameter with the specified parameter name, type and value
@@ -335,7 +308,7 @@ public:
    * Returns a reference to the added parameter.
    */
   FuncParam add_func_parameter(FuncDefn, const std::string&, TypeDecl,
-    ValueRefType);
+                               ValueRefType);
 
   /**
    * Add a function parameter with the specified parameter name, type and value
@@ -344,7 +317,7 @@ public:
    * Returns a reference to the added parameter.
    */
   FuncParam add_func_parameter(FuncDefn, const std::string&, ValueType,
-    ValueRefType);
+                               ValueRefType);
 
   /**
    * Add a function parameter with the specified parameter name, type and value
@@ -353,7 +326,7 @@ public:
    * Returns a reference to the added parameter.
    */
   FuncParam add_func_parameter(FuncDefn, const std::string&, ArrayType,
-    ValueRefType);
+                               ValueRefType);
 
   /**
    * Add a function positional argument parameter with the specified parameter
@@ -377,106 +350,106 @@ public:
    * initialization of a value type.
    */
   SSAVariable add_alloca(FuncDefn, BasicBlock, AllocaType, ValueType,
-    ValueRefType);
+                         ValueRefType);
 
   /**
    * Insert variable initialization instruction, a.k.a. 'alloca', for
    * initialization of an array type.
    */
   SSAVariable add_alloca(FuncDefn, BasicBlock, AllocaType, ArrayType,
-    ValueRefType);
+                         ValueRefType);
 
   /**
    * Insert variable initialization instruction, a.k.a. 'alloca', for
    * initialization of an aggregate type.
    */
   SSAVariable add_alloca(FuncDefn, BasicBlock, AllocaType, TypeDecl,
-    ValueRefType);
+                         ValueRefType);
 
   /**
    * Insert variable initialization instruction, a.k.a. 'alloca', for
    * initialization of an aggregate type.
    */
-  SSAVariable add_alloca(FuncDefn, BasicBlock, AllocaType,
-    const std::string&, ValueRefType);
+  SSAVariable add_alloca(FuncDefn, BasicBlock, AllocaType, const std::string&,
+                         ValueRefType);
 
   /**
    * Insert 'load' instruction.
    */
   SSAVariable add_load(FuncDefn, BasicBlock, ValueType, ValueRefType,
-    OperandValue);
+                       OperandValue);
 
   /**
    * Insert 'load' instruction.
    */
   SSAVariable add_load(FuncDefn, BasicBlock, ArrayType, ValueRefType,
-    OperandValue);
+                       OperandValue);
 
   /**
    * Insert 'load' instruction.
    */
   SSAVariable add_load(FuncDefn, BasicBlock, TypeDecl, ValueRefType,
-    OperandValue);
+                       OperandValue);
 
   /**
    * Insert 'store' instruction.
    */
   void add_store(FuncDefn, BasicBlock, ValueType, ValueRefType, OperandValue,
-    OperandValue);
+                 OperandValue);
 
   /**
    * Insert 'store' instruction.
    */
   void add_store(FuncDefn, BasicBlock, ArrayType, ValueRefType, OperandValue,
-    OperandValue);
+                 OperandValue);
 
   /**
    * Insert 'store' instruction.
    */
   void add_store(FuncDefn, BasicBlock, TypeDecl, ValueRefType, OperandValue,
-    OperandValue);
+                 OperandValue);
 
   /**
    * Insert "attribute getting" instruction, a.k.a. 'getattr'.
    */
   SSAVariable add_get_attribute(FuncDefn, BasicBlock, OperandValue,
-    const std::string&);
+                                const std::string&);
 
   /**
    * Insert "attribute setting" instruction, a.k.a. 'setattr'.
    */
   void add_set_attribute(FuncDefn, BasicBlock, OperandValue, OperandValue,
-    const std::string&);
+                         const std::string&);
 
   /**
    * Insert "attribute deletion" instruction, a.k.a. 'delattr'.
    */
   void add_delete_attribute(FuncDefn, BasicBlock, OperandValue,
-    const std::string&);
+                            const std::string&);
 
   /**
    * Insert "get element" instruction, a.k.a. 'getelement'.
    */
   SSAVariable add_get_element(FuncDefn, BasicBlock, ValueType, ValueRefType,
-    OperandValue, OperandValue);
+                              OperandValue, OperandValue);
 
   /**
    * Insert "get element" instruction, a.k.a. 'getelement'.
    */
   SSAVariable add_get_element(FuncDefn, BasicBlock, ArrayType, ValueRefType,
-    OperandValue, OperandValue);
+                              OperandValue, OperandValue);
 
   /**
    * Insert "get element" instruction, a.k.a. 'getelement'.
    */
   SSAVariable add_get_element(FuncDefn, BasicBlock, TypeDecl, ValueRefType,
-    OperandValue, OperandValue);
+                              OperandValue, OperandValue);
 
   /**
    * Insert 'putelement' instruction.
    */
   void add_put_element(FuncDefn, BasicBlock, OperandValue, OperandValue,
-    OperandValue);
+                       OperandValue);
 
   /**
    * Insert 'len' instruction.
@@ -487,61 +460,61 @@ public:
    * Insert 'ret' instruction.
    */
   SSAVariable add_ret(FuncDefn, BasicBlock, ValueType, ValueRefType,
-    OperandValue);
+                      OperandValue);
 
   /**
    * Insert 'ret' instruction.
    */
   SSAVariable add_ret(FuncDefn, BasicBlock, ArrayType, ValueRefType,
-    OperandValue);
+                      OperandValue);
 
   /**
    * Insert 'ret' instruction.
    */
   SSAVariable add_ret(FuncDefn, BasicBlock, TypeDecl, ValueRefType,
-    OperandValue);
+                      OperandValue);
 
   /**
    * Insert an instruction for unary expressions.
    */
-  SSAVariable add_unary_instr(FuncDefn, BasicBlock, InstrOpcode,
-    ValueType, OperandValue);
+  SSAVariable add_unary_instr(FuncDefn, BasicBlock, InstrOpcode, ValueType,
+                              OperandValue);
 
   /**
    * Insert an instruction for binary expressions.
    */
-  SSAVariable add_binary_instr(FuncDefn, BasicBlock, InstrOpcode,
-    ValueType, OperandValue, OperandValue);
+  SSAVariable add_binary_instr(FuncDefn, BasicBlock, InstrOpcode, ValueType,
+                               OperandValue, OperandValue);
 
   /**
    * Insert unary bitwise instruction.
    */
   SSAVariable add_unary_bitwise_instr(FuncDefn, BasicBlock, InstrOpcode,
-    OperandValue);
+                                      OperandValue);
 
   /**
    * Insert binary bitwise instruction.
    */
   SSAVariable add_binary_bitwise_instr(FuncDefn, BasicBlock, InstrOpcode,
-    OperandValue, OperandValue);
+                                       OperandValue, OperandValue);
 
   /**
    * Insert unary logical instruction.
    */
   SSAVariable add_unary_logical_instr(FuncDefn, BasicBlock, InstrOpcode,
-    OperandValue);
+                                      OperandValue);
 
   /**
    * Insert binary logical instruction.
    */
   SSAVariable add_binary_logical_instr(FuncDefn, BasicBlock, InstrOpcode,
-    OperandValue, OperandValue);
+                                       OperandValue, OperandValue);
 
   /**
    * Insert an instruction for equality comparison expression.
    */
   SSAVariable add_equality_instr(FuncDefn, BasicBlock, InstrOpcode,
-    OperandValue, OperandValue);
+                                 OperandValue, OperandValue);
 
   /**
    * Insert equality comparison instruction 'cmp', for
@@ -553,13 +526,13 @@ public:
    * Insert 'call' instruction.
    */
   SSAVariable add_call(FuncDefn, BasicBlock, ValueType, ValueRefType,
-    const std::string&, const std::vector<OperandValue>&);
+                       const std::string&, const std::vector<OperandValue>&);
 
   /**
    * Add a conditional statement inside the current basic block.
    */
   void add_conditional_branch(FuncDefn, BasicBlock, OperandValue, BasicBlock,
-    BasicBlock);
+                              BasicBlock);
 
   /**
    * Add a unconditional branch statement inside the current basic block.
@@ -572,8 +545,8 @@ public:
    * Note that the number of cases and target blocks must equal.
    */
   void add_switch(FuncDefn, BasicBlock, OperandValue predicate,
-    const std::vector<OperandValue>& cases,
-    const std::vector<BasicBlock>& target_blocks);
+                  const std::vector<OperandValue>& cases,
+                  const std::vector<BasicBlock>& target_blocks);
 
   /**
    * Finalizes module construction.
@@ -583,7 +556,7 @@ public:
    * verification, and updates the caller the reason of failure through the
    * specified string.
    */
-  bool finalize(std::unique_ptr<IRModule>&, std::string&, bool verify=true);
+  bool finalize(std::unique_ptr<IRModule>&, std::string&, bool verify = true);
 
 private:
   std::shared_ptr<IRBuilderImpl> m_impl;

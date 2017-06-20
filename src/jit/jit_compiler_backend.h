@@ -29,21 +29,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 #include <vector>
 
-
 namespace corevm {
 namespace jit {
 
 /**
  * Abstract representation of a JIT compilation backend.
  */
-class JITCompilerBackend
-{
+class JITCompilerBackend {
 public:
   /**
    * Default constructor.
    */
   JITCompilerBackend();
-  
+
   /**
    * Default destructor.
    */
@@ -69,8 +67,9 @@ public:
    * Returns a boolean value indicating whether the evaluation is successful.
    */
   virtual bool eval_func(const std::vector<RuntimeValue>& args,
-    const std::vector<RuntimeValueType>& arg_types,
-    const RuntimeValueType& result_type, RuntimeValue& result_value) = 0;
+                         const std::vector<RuntimeValueType>& arg_types,
+                         const RuntimeValueType& result_type,
+                         RuntimeValue& result_value) = 0;
 
   /**
    * Performs the necessary clean-up work after compilation.

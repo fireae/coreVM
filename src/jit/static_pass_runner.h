@@ -29,7 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 #include <type_traits>
 
-
 namespace corevm {
 namespace jit {
 
@@ -37,8 +36,7 @@ namespace jit {
  * A pass runner responsible for managing the operations of a set of
  * statically defined "pass"es in serial order.
  */
-class StaticPassRunner
-{
+class StaticPassRunner {
 public:
   /**
    * Default constructor.
@@ -55,19 +53,18 @@ public:
    *
    * If a previous pass failed, then no further passes shall be run.
    */
-  template<typename T>
-  StaticPassRunner& run_pass(IRModule& module)
+  template <typename T>
+  StaticPassRunner&
+  run_pass(IRModule& module)
   {
-    if (has_failed())
-    {
+    if (has_failed()) {
       return *this;
     }
 
     T pass;
     pass.init(module);
     const bool res = pass.run(module, m_run_result.analysis_result.get());
-    if (!res)
-    {
+    if (!res) {
       m_run_result.success = false;
       m_run_result.msg.assign(T::Name);
       return *this;
@@ -94,28 +91,28 @@ public:
   const std::string& msg() const;
 
 private:
-  template<class T>
-  void handle_pass(
-    typename std::enable_if<std::is_base_of<AnalysisPass, T>::value, T>::type& pass)
+  template <class T>
+  void
+  handle_pass(typename std::enable_if<std::is_base_of<AnalysisPass, T>::value,
+                                      T>::type& pass)
   {
-    if (auto analysis_result = pass.get_analysis_result())
-    {
+    if (auto analysis_result = pass.get_analysis_result()) {
       m_run_result.analysis_result = analysis_result;
     }
   }
 
-  template<class T>
-  void handle_pass(T&)
+  template <class T>
+  void
+  handle_pass(T&)
   {
   }
 
   bool has_failed() const;
 
-  struct RunResult
-  {
+  struct RunResult {
     std::string msg;
     bool success;
-    std::shared_ptr<const AnalysisResult> analysis_result; 
+    std::shared_ptr<const AnalysisResult> analysis_result;
   };
 
   RunResult m_run_result;

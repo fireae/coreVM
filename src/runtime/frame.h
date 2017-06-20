@@ -26,16 +26,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "closure.h"
 #include "closure_ctx.h"
 #include "common.h"
+#include "corevm/llvm_smallvector.h"
+#include "corevm/macros.h"
+#include "dyobj/common.h"
 #include "errors.h"
 #include "fwd.h"
 #include "instr_fwd.h"
-#include "runtime_types.h"
-#include "dyobj/common.h"
-#include "types/fwd.h"
-#include "corevm/macros.h"
-#include "corevm/llvm_smallvector.h"
-#include "types/native_type_value.h"
 #include "linear_map.h"
+#include "runtime_types.h"
+#include "types/fwd.h"
+#include "types/native_type_value.h"
 
 #include <cstdint>
 #include <vector>
@@ -62,13 +62,12 @@ namespace runtime {
  * - A pointer to the holding exception object, if one exists.
  * - A pointer to the parent frame, if one exists.
  */
-class Frame
-{
+class Frame {
 public:
   typedef RuntimeTypes::dyobj_ptr_type dyobj_ptr;
 
   Frame(const ClosureCtx&, Compartment*, Closure*,
-    instr_addr_t=NONESET_INSTR_ADDR);
+        instr_addr_t = NONESET_INSTR_ADDR);
 
   ~Frame();
 
@@ -158,9 +157,10 @@ public:
   void clear_exc_obj();
 
 protected:
-
   typedef LinearMap<variable_key_t, dyobj_ptr,
-    llvm::SmallVector<std::pair<variable_key_t, dyobj_ptr>, DEFAULT_VAR_TABLE_CAPACITY>> VariableTable;
+                    llvm::SmallVector<std::pair<variable_key_t, dyobj_ptr>,
+                                      DEFAULT_VAR_TABLE_CAPACITY>>
+    VariableTable;
 
   instr_addr_t m_pc;
   const runtime::ClosureCtx m_closure_ctx;
@@ -170,12 +170,12 @@ protected:
   instr_addr_t m_return_addr;
   VariableTable m_visible_vars;
   VariableTable m_invisible_vars;
-  llvm::SmallVector<types::NativeTypeValue, DEFAULT_EVAL_STACK_CAPACITY> m_eval_stack;
+  llvm::SmallVector<types::NativeTypeValue, DEFAULT_EVAL_STACK_CAPACITY>
+    m_eval_stack;
   dyobj_ptr m_exc_obj;
 };
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_FRAME_H_ */

@@ -26,18 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <iosfwd>
 
-
 namespace corevm {
 namespace runtime {
 
-class DbgMemPrinter
-{
+class DbgMemPrinter {
 public:
-  enum Opts : uint32_t
-  {
-    OPTS_UNIT_BYTES = 0,
-    OPTS_SHOW_PEAK = 1
-  };
+  enum Opts : uint32_t { OPTS_UNIT_BYTES = 0, OPTS_SHOW_PEAK = 1 };
 
   DbgMemPrinter(uint32_t opts);
 
@@ -49,6 +43,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_DBGMEM_PRINTER_H_ */

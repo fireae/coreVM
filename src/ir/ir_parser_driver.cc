@@ -24,20 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ir_parser.tab.hh"
 #include "lex.yy.hh"
 
+#include <fstream>
 #include <iostream>
 #include <iterator>
-#include <fstream>
-
 
 namespace corevm {
 namespace ir {
 
 // -----------------------------------------------------------------------------
 
-IRParserDriver::IRParserDriver()
-  :
-  m_trace_parsing(false),
-  m_input_file()
+IRParserDriver::IRParserDriver() : m_trace_parsing(false), m_input_file()
 {
 }
 
@@ -71,13 +67,14 @@ IRParserDriver::parse_from_file(const std::string& filepath)
   m_input_file = filepath;
   std::ifstream infile(filepath.c_str());
   std::string file_contents((std::istreambuf_iterator<char>(infile)),
-    std::istreambuf_iterator<char>());
+                            std::istreambuf_iterator<char>());
   return parse_from_string(file_contents.c_str());
 }
 
 // -----------------------------------------------------------------------------
 
-int IRParserDriver::parse_from_string(const char* input)
+int
+IRParserDriver::parse_from_string(const char* input)
 {
   yyscan_t scanner;
   YY_BUFFER_STATE buf;

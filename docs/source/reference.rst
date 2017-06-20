@@ -170,6 +170,9 @@ Development 3
 **Doxygen:**
 `1.8.13`
 
+**clang-format:**
+`clang-format version 5.0.0 (tags/google/stable/2017-03-17)`
+
 ----
 
 Continuous Integration 1

@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "analysis_pass.h"
 
-
 namespace corevm {
 
 /** Forward declaration. */
@@ -39,17 +38,15 @@ namespace jit {
  * A specialized type of `AnalysisResult` that holds the index of an IR module
  * as the result from running `VerificationPass`.
  */
-struct IRModuleIndexAnalysisResult : public AnalysisResult
-{
-virtual ~IRModuleIndexAnalysisResult();
-mutable std::unique_ptr<ir::IRModuleIndex> module_index;
+struct IRModuleIndexAnalysisResult : public AnalysisResult {
+  virtual ~IRModuleIndexAnalysisResult();
+  mutable std::unique_ptr<ir::IRModuleIndex> module_index;
 };
 
 /**
  * Class encapsulates the logic for running verification on an input IR module.
  */
-class VerificationPass : public AnalysisPass
-{
+class VerificationPass : public AnalysisPass {
 public:
   /**
    * Name of the pass.

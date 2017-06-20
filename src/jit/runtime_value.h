@@ -26,15 +26,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <llvm/ADT/APInt.h>
 #include <vector>
 
-
 namespace corevm {
 namespace jit {
 
 /**
  * Represents a generic runtime value.
  */
-struct RuntimeValue
-{
+struct RuntimeValue {
   union {
     double DoubleVal;
     float FloatVal;

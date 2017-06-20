@@ -28,15 +28,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <iosfwd>
 
-
 namespace corevm {
 namespace runtime {
 
-class DbgvarPrinter
-{
+class DbgvarPrinter {
 public:
   DbgvarPrinter(const Process& process, const Frame& frame,
-    const char* variable_name, RuntimeTypes::dyobj_ptr_type obj);
+                const char* variable_name, RuntimeTypes::dyobj_ptr_type obj);
 
   std::ostream& operator()(std::ostream&) const;
 
@@ -49,6 +47,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_DBGVAR_PRINTER_H_ */

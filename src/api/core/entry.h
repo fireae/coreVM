@@ -23,7 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_API_ENTRY_H_
 #define COREVM_API_ENTRY_H_
 
-
 namespace corevm {
 namespace api {
 namespace core {
@@ -48,6 +47,5 @@ int invoke_from_file(const char* filepath, const Configuration& config);
 } /* end namespace core */
 } /* end namespace api */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_API_ENTRY_H_ */

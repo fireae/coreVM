@@ -26,11 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "closure.h"
 #include "closure_ctx.h"
 #include "common.h"
+#include "corevm/llvm_smallvector.h"
 #include "errors.h"
 #include "linear_map.h"
 #include "runtime_types.h"
-#include "corevm/llvm_smallvector.h"
-
 
 namespace corevm {
 namespace runtime {
@@ -38,17 +37,17 @@ namespace runtime {
 /** Forward declaration of `Compartment` */
 class Compartment;
 
-
-class InvocationCtx
-{
+class InvocationCtx {
 public:
   typedef RuntimeTypes::dynamic_object_type* param_type;
 
 private:
   typedef llvm::SmallVector<param_type, 20> param_list_type;
 
-  typedef LinearMap<variable_key_t, param_type,
-    llvm::SmallVector<std::pair<variable_key_t, param_type>, 20>> param_value_map_type;
+  typedef LinearMap<
+    variable_key_t, param_type,
+    llvm::SmallVector<std::pair<variable_key_t, param_type>, 20>>
+    param_value_map_type;
 
 public:
   InvocationCtx(const ClosureCtx&, Compartment*, Closure*);
@@ -90,6 +89,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_INVOCATION_CTX_H_ */

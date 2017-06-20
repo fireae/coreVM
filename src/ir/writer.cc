@@ -23,15 +23,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "writer.h"
 #include "format.h"
 
-#include <avro/Encoder.hh>
-#include <avro/Decoder.hh>
-#include <avro/ValidSchema.hh>
 #include <avro/Compiler.hh>
 #include <avro/DataFile.hh>
+#include <avro/Decoder.hh>
+#include <avro/Encoder.hh>
+#include <avro/ValidSchema.hh>
 
 #include <cstdio>
 #include <fstream>
-
 
 namespace corevm {
 namespace ir {
@@ -40,35 +39,29 @@ namespace ir {
 
 bool
 write_module_to_file(const IRModule& module, const char* schema_path,
-  const char* output_path, std::string& err)
+                     const char* output_path, std::string& err)
 {
   std::ifstream schema_ifs(schema_path);
 
-  if (! (schema_ifs.good() && schema_ifs.is_open()) )
-  {
+  if (!(schema_ifs.good() && schema_ifs.is_open())) {
     char buf[256] = {0};
     snprintf(buf, sizeof(buf), "Cannot open schema file: %s", output_path);
     err.assign(buf);
     return false;
   }
 
-  try
-  {
+  try {
     avro::ValidSchema schema;
     avro::compileJsonSchema(schema_ifs, schema);
 
     avro::DataFileWriter<corevm::IRModule> writer(output_path, schema);
     writer.write(module);
     writer.close();
-  }
-  catch (const std::exception& ex)
-  {
+  } catch (const std::exception& ex) {
     char buf[256] = {0};
     snprintf(buf, sizeof(buf), "Error: %s", ex.what());
     err.assign(buf);
-  }
-  catch (...)
-  {
+  } catch (...) {
     err.assign("Unknown error during module serialization");
   }
 

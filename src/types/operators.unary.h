@@ -23,27 +23,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_OPERATORS_UNARY_H_
 #define COREVM_OPERATORS_UNARY_H_
 
+#include "corevm/macros.h"
 #include "errors.h"
 #include "operators.base.h"
 #include "types.h"
-#include "corevm/macros.h"
 
 #if defined(__clang__) and __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wconversion"
 #endif
-
 
 namespace corevm {
 namespace types {
 
 // -----------------------------------------------------------------------------
 
-class positive : public op<unary_op_tag>
-{
+class positive : public op<unary_op_tag> {
 public:
-  template<typename T>
-  T operator()(const T& oprd)
+  template <typename T>
+  T
+  operator()(const T& oprd)
   {
     return +oprd;
   }
@@ -51,11 +50,11 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class negation : public op<unary_op_tag>
-{
+class negation : public op<unary_op_tag> {
 public:
-  template<typename T>
-  T operator()(const T& oprd)
+  template <typename T>
+  T
+  operator()(const T& oprd)
   {
     return -oprd;
   }
@@ -63,11 +62,11 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class increment : public op<unary_op_tag>
-{
+class increment : public op<unary_op_tag> {
 public:
-  template<typename T>
-  T operator()(const T& oprd)
+  template <typename T>
+  T
+  operator()(const T& oprd)
   {
     T& oprd_ = const_cast<T&>(oprd);
     return ++oprd_;
@@ -78,9 +77,8 @@ public:
 
 // Special handling of boolean type is required since the increment operator
 // on bool is deprecated.
-template<>
-inline
-boolean
+template <>
+inline boolean
 increment::operator()(const boolean& oprd)
 {
   uint64_t int_val = static_cast<uint64_t>(oprd);
@@ -90,11 +88,11 @@ increment::operator()(const boolean& oprd)
 
 // -----------------------------------------------------------------------------
 
-class decrement : public op<unary_op_tag>
-{
+class decrement : public op<unary_op_tag> {
 public:
-  template<typename T>
-  T operator()(const T& oprd)
+  template <typename T>
+  T
+  operator()(const T& oprd)
   {
     T& oprd_ = const_cast<T&>(oprd);
     --oprd_;
@@ -104,9 +102,8 @@ public:
 
 // -----------------------------------------------------------------------------
 
-template<>
-inline
-boolean
+template <>
+inline boolean
 decrement::operator()(const boolean& /* oprd */)
 {
   THROW(InvalidOperatorError("--", "boolean"));
@@ -114,11 +111,11 @@ decrement::operator()(const boolean& /* oprd */)
 
 // -----------------------------------------------------------------------------
 
-class logical_not : public op<typed_unary_op_tag, boolean>
-{
+class logical_not : public op<typed_unary_op_tag, boolean> {
 public:
-  template<typename T>
-  result_type operator()(const T& oprd)
+  template <typename T>
+  result_type
+  operator()(const T& oprd)
   {
     return boolean(!oprd);
   }
@@ -126,11 +123,11 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class bitwise_not : public op<unary_op_tag>
-{
+class bitwise_not : public op<unary_op_tag> {
 public:
-  template<typename T>
-  T operator()(const T& oprd)
+  template <typename T>
+  T
+  operator()(const T& oprd)
   {
     return ~oprd;
   }
@@ -138,9 +135,8 @@ public:
 
 // -----------------------------------------------------------------------------
 
-template<>
-inline
-decimal
+template <>
+inline decimal
 bitwise_not::operator()(const decimal& /* oprd */)
 {
   THROW(InvalidOperatorError("~", "decimal"));
@@ -148,9 +144,8 @@ bitwise_not::operator()(const decimal& /* oprd */)
 
 // -----------------------------------------------------------------------------
 
-template<>
-inline
-decimal2
+template <>
+inline decimal2
 bitwise_not::operator()(const decimal2& /* oprd */)
 {
   THROW(InvalidOperatorError("~", "decimal2"));
@@ -158,9 +153,8 @@ bitwise_not::operator()(const decimal2& /* oprd */)
 
 // -----------------------------------------------------------------------------
 
-template<>
-inline
-string
+template <>
+inline string
 bitwise_not::operator()(const string& oprd)
 {
   return static_cast<string>(~oprd);
@@ -168,9 +162,8 @@ bitwise_not::operator()(const string& oprd)
 
 // -----------------------------------------------------------------------------
 
-template<>
-inline
-array
+template <>
+inline array
 bitwise_not::operator()(const array& oprd)
 {
   return static_cast<array>(~oprd);
@@ -178,9 +171,8 @@ bitwise_not::operator()(const array& oprd)
 
 // -----------------------------------------------------------------------------
 
-template<>
-inline
-map
+template <>
+inline map
 bitwise_not::operator()(const map& oprd)
 {
   return static_cast<map>(~oprd);
@@ -191,10 +183,8 @@ bitwise_not::operator()(const map& oprd)
 } /* end namespace types */
 } /* end namespace corevm */
 
-
 #if defined(__clang__) and __clang__
-  #pragma clang diagnostic pop
+#pragma clang diagnostic pop
 #endif
-
 
 #endif /* COREVM_OPERATORS_UNARY_H_ */

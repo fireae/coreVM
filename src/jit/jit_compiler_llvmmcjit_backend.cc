@@ -23,11 +23,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "jit_compiler_llvmmcjit_backend.h"
 #include "util.h"
 
-#include <llvm/IR/Module.h>
-#include <llvm/Support/ManagedStatic.h>
 #include <llvm/ExecutionEngine/GenericValue.h>
 #include <llvm/ExecutionEngine/MCJIT.h>
-
+#include <llvm/IR/Module.h>
+#include <llvm/Support/ManagedStatic.h>
 
 namespace corevm {
 namespace jit {
@@ -35,12 +34,13 @@ namespace jit {
 // -----------------------------------------------------------------------------
 
 JITCompilerLLVMMCJITBackend::JITCompilerLLVMMCJITBackend(ModuleType& module)
-  :
-  JITCompilerBackend(),
-  m_module(module),
-  m_func(nullptr),
-  m_engine(llvm::EngineBuilder(&module).setUseMCJIT(true).setEngineKind(
-    llvm::EngineKind::JIT).create())
+  : JITCompilerBackend(),
+    m_module(module),
+    m_func(nullptr),
+    m_engine(llvm::EngineBuilder(&module)
+               .setUseMCJIT(true)
+               .setEngineKind(llvm::EngineKind::JIT)
+               .create())
 {
 }
 
@@ -53,7 +53,8 @@ JITCompilerLLVMMCJITBackend::~JITCompilerLLVMMCJITBackend()
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool JITCompilerLLVMMCJITBackend::init()
+bool
+JITCompilerLLVMMCJITBackend::init()
 {
   return (m_engine.get() != nullptr);
 }
@@ -61,7 +62,8 @@ bool JITCompilerLLVMMCJITBackend::init()
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool JITCompilerLLVMMCJITBackend::run(const std::string& func_name)
+bool
+JITCompilerLLVMMCJITBackend::run(const std::string& func_name)
 {
   m_func = m_engine->FindFunctionNamed(func_name.c_str());
   m_engine->finalizeObject();
@@ -71,7 +73,8 @@ bool JITCompilerLLVMMCJITBackend::run(const std::string& func_name)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool JITCompilerLLVMMCJITBackend::eval_func(
+bool
+JITCompilerLLVMMCJITBackend::eval_func(
   const std::vector<RuntimeValue>& args,
   const std::vector<RuntimeValueType>& arg_types,
   const RuntimeValueType& result_type, RuntimeValue& result_value)
@@ -79,8 +82,7 @@ bool JITCompilerLLVMMCJITBackend::eval_func(
   assert(m_func && "Function should be initialized");
 
   std::vector<llvm::GenericValue> llvm_args(args.size());
-  for (size_t i = 0; i < args.size(); ++i)
-  {
+  for (size_t i = 0; i < args.size(); ++i) {
     llvm_args[i] = convert_to_llvm_generic_value(args[i], arg_types.at(i));
   }
 
@@ -94,7 +96,8 @@ bool JITCompilerLLVMMCJITBackend::eval_func(
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool JITCompilerLLVMMCJITBackend::finalize()
+bool
+JITCompilerLLVMMCJITBackend::finalize()
 {
   // NOTE: This step is important. Without it segfault will occur.
   m_engine->removeModule(&m_module);

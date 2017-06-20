@@ -24,14 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "configuration.h"
 #include "frontend/runner.h"
 
-
 namespace corevm {
 namespace api {
 namespace core {
 
 // -----------------------------------------------------------------------------
 
-int invoke_from_file(const char* filepath, const Configuration& configuration)
+int
+invoke_from_file(const char* filepath, const Configuration& configuration)
 {
   return frontend::Runner(filepath, configuration).run();
 }

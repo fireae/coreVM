@@ -29,14 +29,16 @@ namespace jit {
 // -----------------------------------------------------------------------------
 
 /* virtual */
-void Pass::init(const IRModule&)
+void
+Pass::init(const IRModule&)
 {
 }
 
 // -----------------------------------------------------------------------------
 
 /* virtual */
-void Pass::finalize(const IRModule&)
+void
+Pass::finalize(const IRModule&)
 {
 }
 

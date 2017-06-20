@@ -27,15 +27,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <vector>
 
-
 namespace corevm {
 namespace jit {
 
 /**
  * Represents type of primitive runtime values.
  */
-enum class ValueType : uint8_t
-{
+enum class ValueType : uint8_t {
   ValueTypePtr = 0x01,
   ValueTypeInt8,
   ValueTypeInt16,
@@ -59,8 +57,7 @@ typedef common::variant::variant<ValueType, AggregateType> RuntimeValueType;
 /**
  * Represents type of aggregate runtime values.
  */
-struct AggregateType
-{
+struct AggregateType {
   // TODO: consider using `llvm::SmallVector<>` here.
   std::vector<RuntimeValueType> types;
 };

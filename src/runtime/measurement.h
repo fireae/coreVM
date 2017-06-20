@@ -25,18 +25,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <boost/timer/timer.hpp>
 #include <sneaker/utility/uniform_table.h>
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-struct InstrMeasurement
-{
-  InstrMeasurement()
-    :
-    cumulative_wall_time(0u),
-    invocation_count(0u)
+struct InstrMeasurement {
+  InstrMeasurement() : cumulative_wall_time(0u), invocation_count(0u)
   {
   }
 
@@ -46,13 +41,13 @@ struct InstrMeasurement
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename ContainerType>
-T _sum(const ContainerType& measurements)
+template <typename T, typename ContainerType>
+T
+_sum(const ContainerType& measurements)
 {
   T res = 0;
 
-  for (const auto& measurement : measurements)
-  {
+  for (const auto& measurement : measurements) {
     res += measurement.cumulative_wall_time;
   }
 
@@ -66,8 +61,7 @@ _avg(const InstrMeasurement& measurement)
 {
   const auto invocation_count = measurement.invocation_count;
 
-  if (invocation_count == 0)
-  {
+  if (invocation_count == 0) {
     return 0;
   }
 
@@ -77,58 +71,61 @@ _avg(const InstrMeasurement& measurement)
 
 // -----------------------------------------------------------------------------
 
-template<typename T>
-double _percantage(T n, T total)
+template <typename T>
+double
+_percantage(T n, T total)
 {
   return static_cast<double>(n) / static_cast<double>(total) * 100.0;
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename ContainerType>
-void pretty_print_measurements(const ContainerType& measurements)
+template <typename ContainerType>
+void
+pretty_print_measurements(const ContainerType& measurements)
 {
-  static const char* LINE_SEPARATOR =
-    "--------------------------------------------------------------------------"
-    "-----------------------------";
+  static const char* LINE_SEPARATOR = "----------------------------------------"
+                                      "----------------------------------"
+                                      "-----------------------------";
 
   std::cout << LINE_SEPARATOR << std::endl;
   std::cout << "Instrumental instruction measurements:" << std::endl;
   std::cout << std::endl;
 
-  const auto total_wall_time = _sum<boost::timer::nanosecond_type>(measurements);
-  std::cout << "  Total elapsed CPU wall clock time (ns): " << total_wall_time << std::endl;
+  const auto total_wall_time =
+    _sum<boost::timer::nanosecond_type>(measurements);
+  std::cout << "  Total elapsed CPU wall clock time (ns): " << total_wall_time
+            << std::endl;
   std::cout << std::endl;
 
   static const uint32_t INSTR_NAME_WIDTH = 10u;
   static const uint32_t PERCENTAGE_WIDTH = 12u;
-  static const uint32_t INVOCATION_COUNT_WIDTH  = 11u;
+  static const uint32_t INVOCATION_COUNT_WIDTH = 11u;
   static const uint32_t CUMULATIVE_WALL_TIME_WIDTH = 30u;
   static const uint32_t AVG_CUMULATIVE_WALL_TIME_WIDTH = 24u;
 
   sneaker::utility::uniform_table<
-    INSTR_NAME_WIDTH,
-    PERCENTAGE_WIDTH,
-    INVOCATION_COUNT_WIDTH,
-    CUMULATIVE_WALL_TIME_WIDTH,
-    AVG_CUMULATIVE_WALL_TIME_WIDTH> uniform_table;
+    INSTR_NAME_WIDTH, PERCENTAGE_WIDTH, INVOCATION_COUNT_WIDTH,
+    CUMULATIVE_WALL_TIME_WIDTH, AVG_CUMULATIVE_WALL_TIME_WIDTH>
+    uniform_table;
 
   uniform_table.write("Instr", "%", "Invocations",
-    "Cumulated wall clock time (ns)", "Avg wall clock time (ns)");
+                      "Cumulated wall clock time (ns)",
+                      "Avg wall clock time (ns)");
   uniform_table.write_separator();
 
-  for (size_t i = 0; i < INSTR_CODE_MAX; ++i)
-  {
+  for (size_t i = 0; i < INSTR_CODE_MAX; ++i) {
     const auto& measurement = measurements[i];
 
     const auto cumulative_wall_time = measurement.cumulative_wall_time;
-    const auto cumulative_wall_time_percentage = _percantage(cumulative_wall_time, total_wall_time);
+    const auto cumulative_wall_time_percentage =
+      _percantage(cumulative_wall_time, total_wall_time);
     const auto invocation_count = measurement.invocation_count;
     const auto avg_wall_time = _avg(measurement);
 
     uniform_table.write(InstrSetInfo::instr_infos[i].name,
-      cumulative_wall_time_percentage, invocation_count, cumulative_wall_time,
-      avg_wall_time);
+                        cumulative_wall_time_percentage, invocation_count,
+                        cumulative_wall_time, avg_wall_time);
   }
 
   std::cout << uniform_table.str();

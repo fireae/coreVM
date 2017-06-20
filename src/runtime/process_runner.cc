@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <csignal>
 
-
 namespace corevm {
 namespace runtime {
 
@@ -37,8 +36,7 @@ ProcessRunner* ProcessRunner::registered_instance = nullptr;
 // -----------------------------------------------------------------------------
 
 ProcessRunner::ProcessRunner(Process& process, uint32_t interval_millisec)
-  :
-  m_process(process)
+  : m_process(process)
 {
   init(interval_millisec);
 }
@@ -72,8 +70,7 @@ ProcessRunner::run()
 
   res = signal(SIGALRM, tick_handler) == 0;
 
-  if (!res)
-  {
+  if (!res) {
     return res;
   }
 
@@ -105,10 +102,8 @@ ProcessRunner::set_timer()
 void
 ProcessRunner::tick_handler(int)
 {
-  if (ProcessRunner::registered_instance)
-  {
-    if (registered_instance->process().should_gc())
-    {
+  if (ProcessRunner::registered_instance) {
+    if (registered_instance->process().should_gc()) {
       registered_instance->process().set_do_gc();
     }
   }

@@ -28,20 +28,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iomanip>
 #include <iostream>
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-InstrPrinter::InstrPrinter(
-  const Instr& instr,
-  uint32_t opts)
-  :
-  m_instr(instr),
-  m_opts(opts)
+InstrPrinter::InstrPrinter(const Instr& instr, uint32_t opts)
+  : m_instr(instr), m_opts(opts)
 {
-
 }
 
 // -----------------------------------------------------------------------------
@@ -54,13 +48,10 @@ InstrPrinter::operator()(std::ostream& ost) const
   ost << std::hex << std::showbase;
   ost << std::setiosflags(std::ios::left);
 
-  if (show_canonical_form)
-  {
+  if (show_canonical_form) {
     ost << std::setw(10);
     ost << InstrSetInfo::instr_infos[m_instr.code].name;
-  }
-  else
-  {
+  } else {
     ost << std::setw(6);
     ost << m_instr.code;
   }

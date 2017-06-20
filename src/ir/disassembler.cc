@@ -25,23 +25,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "format_util.h"
 #include <iostream>
 
-
 namespace corevm {
 namespace ir {
 
 // -----------------------------------------------------------------------------
 
-Disassembler::Options::Options()
-  :
-  emit_newlines(true)
+Disassembler::Options::Options() : emit_newlines(true)
 {
 }
 
 // -----------------------------------------------------------------------------
 
-Disassembler::Disassembler(Options opts)
-  :
-  m_opts(opts)
+Disassembler::Disassembler(Options opts) : m_opts(opts)
 {
 }
 
@@ -52,18 +47,15 @@ Disassembler::disassemble(const IRModule& module, std::ostream& stream) const
 {
   disassemble(module.meta, stream);
 
-  for (const auto& val : module.types)
-  {
+  for (const auto& val : module.types) {
     disassemble(val, stream);
   }
 
-  for (const auto& val : module.intrinsic_decls)
-  {
+  for (const auto& val : module.intrinsic_decls) {
     disassemble(val, stream);
   }
 
-  for (const auto& val : module.closures)
-  {
+  for (const auto& val : module.closures) {
     disassemble(val, stream);
   }
 }
@@ -71,41 +63,34 @@ Disassembler::disassemble(const IRModule& module, std::ostream& stream) const
 // -----------------------------------------------------------------------------
 
 void
-Disassembler::disassemble(const IRModuleMeta& meta,
-  std::ostream& stream) const
+Disassembler::disassemble(const IRModuleMeta& meta, std::ostream& stream) const
 {
-  if (!meta.name.empty())
-  {
+  if (!meta.name.empty()) {
     stream << "\"module name\" : \"" << meta.name << '\"';
     emit_newline(stream);
   }
 
-  if (meta.format_version)
-  {
+  if (meta.format_version) {
     stream << "\"format version\" : \"" << meta.format_version << '\"';
     emit_newline(stream);
   }
 
-  if (meta.target_version)
-  {
+  if (meta.target_version) {
     stream << "\"target version\" : \"" << meta.target_version << '\"';
     emit_newline(stream);
   }
 
-  if (!meta.path.empty())
-  {
+  if (!meta.path.empty()) {
     stream << "\"path\" : \"" << meta.path << '\"';
     emit_newline(stream);
   }
 
-  if (!meta.author.empty())
-  {
+  if (!meta.author.empty()) {
     stream << "\"author\" : \"" << meta.author << '\"';
     emit_newline(stream);
   }
 
-  if (meta.timestamp)
-  {
+  if (meta.timestamp) {
     stream << "\"timestamp\" : \"" << meta.timestamp << '\"';
     emit_newline(stream);
   }
@@ -118,15 +103,12 @@ Disassembler::disassemble(const IRModuleMeta& meta,
 void
 Disassembler::disassemble(const IRTypeDecl& decl, std::ostream& stream) const
 {
-  if (!decl.attributes.empty())
-  {
+  if (!decl.attributes.empty()) {
     stream << '[';
 
-    for (size_t i = 0; i < decl.attributes.size(); ++i)
-    {
+    for (size_t i = 0; i < decl.attributes.size(); ++i) {
       disassemble(decl.attributes[i], stream);
-      if (i + 1 < decl.attributes.size())
-      {
+      if (i + 1 < decl.attributes.size()) {
         stream << ", ";
       }
     }
@@ -138,8 +120,7 @@ Disassembler::disassemble(const IRTypeDecl& decl, std::ostream& stream) const
   stream << "type " << decl.name << " {";
   emit_newline(stream);
 
-  for (const auto& field : decl.fields)
-  {
+  for (const auto& field : decl.fields) {
     stream << "    ";
     disassemble(field, stream);
   }
@@ -163,7 +144,7 @@ Disassembler::disassemble(const IRTypeField& field, std::ostream& stream) const
 
 void
 Disassembler::disassemble(const IRTypeAttribute& attribute,
-  std::ostream& stream) const
+                          std::ostream& stream) const
 {
   stream << attribute.name << '=' << attribute.value;
 }
@@ -172,7 +153,7 @@ Disassembler::disassemble(const IRTypeAttribute& attribute,
 
 void
 Disassembler::disassemble(const IRIntrinsicDecl& intrinsic_decl,
-  std::ostream& stream) const
+                          std::ostream& stream) const
 {
   stream << "declare ";
   disassemble(intrinsic_decl.rettype, stream);
@@ -180,11 +161,9 @@ Disassembler::disassemble(const IRIntrinsicDecl& intrinsic_decl,
 
   // Parameters.
   size_t len = intrinsic_decl.parameters.size();
-  for (const auto& parameter : intrinsic_decl.parameters)
-  {
+  for (const auto& parameter : intrinsic_decl.parameters) {
     disassemble(parameter, stream);
-    if (len-- > 1)
-    {
+    if (len-- > 1) {
       stream << ", ";
     }
   }
@@ -206,21 +185,17 @@ Disassembler::disassemble(const IRClosure& closure, std::ostream& stream) const
   bool hasPrevArg = false;
 
   // Parameters.
-  for (const auto& parameter : closure.parameters)
-  {
+  for (const auto& parameter : closure.parameters) {
     disassemble(parameter, stream);
-    if (len-- > 1)
-    {
+    if (len-- > 1) {
       stream << ", ";
     }
     hasPrevArg = true;
   }
 
   // Positional arguments.
-  if (!closure.positional_args.empty())
-  {
-    if (hasPrevArg)
-    {
+  if (!closure.positional_args.empty()) {
+    if (hasPrevArg) {
       stream << ", ";
     }
     stream << '*' << closure.positional_args;
@@ -228,42 +203,33 @@ Disassembler::disassemble(const IRClosure& closure, std::ostream& stream) const
   }
 
   // Keyword arguments.
-  if (!closure.keyword_args.empty())
-  {
-    if (hasPrevArg)
-    {
+  if (!closure.keyword_args.empty()) {
+    if (hasPrevArg) {
       stream << ", ";
     }
     stream << "**" << closure.keyword_args;
   }
   stream << ")";
 
-  if (!closure.parent.empty())
-  {
-    stream <<  " : " << closure.parent;
+  if (!closure.parent.empty()) {
+    stream << " : " << closure.parent;
   }
 
-  if (closure.options)
-  {
+  if (closure.options) {
     std::vector<const char*> options;
 
-    for (size_t i = 0; i < FuncDefnOptionToStrArray.size(); ++i)
-    {
-      if (is_func_defn_option_enabled(closure.options,
-          std::get<0>(FuncDefnOptionToStrArray[i])))
-      {
+    for (size_t i = 0; i < FuncDefnOptionToStrArray.size(); ++i) {
+      if (is_func_defn_option_enabled(
+            closure.options, std::get<0>(FuncDefnOptionToStrArray[i]))) {
         options.push_back(std::get<1>(FuncDefnOptionToStrArray[i]));
       }
-    } 
+    }
 
-    if (!options.empty())
-    {
+    if (!options.empty()) {
       stream << " [";
-      for (size_t i = 0; i < options.size(); ++i)
-      {
+      for (size_t i = 0; i < options.size(); ++i) {
         stream << options[i];
-        if (i + 1 < options.size())
-        {
+        if (i + 1 < options.size()) {
           stream << ' ';
         }
       }
@@ -274,8 +240,7 @@ Disassembler::disassemble(const IRClosure& closure, std::ostream& stream) const
   stream << " {";
   emit_newline(stream);
 
-  for (const auto& block : closure.blocks)
-  {
+  for (const auto& block : closure.blocks) {
     disassemble(block, stream);
   }
   stream << '}';
@@ -288,7 +253,7 @@ Disassembler::disassemble(const IRClosure& closure, std::ostream& stream) const
 
 void
 Disassembler::disassemble(const IRParameter& parameter,
-  std::ostream& stream) const
+                          std::ostream& stream) const
 {
   disassemble(parameter.type, stream);
   stream << " " << parameter.identifier;
@@ -302,8 +267,7 @@ Disassembler::disassemble(const IRBasicBlock& block, std::ostream& stream) const
   stream << block.label << ":";
   emit_newline(stream);
 
-  for (const auto& instr : block.body)
-  {
+  for (const auto& instr : block.body) {
     stream << "    ";
     disassemble(instr, stream);
   }
@@ -313,55 +277,44 @@ Disassembler::disassemble(const IRBasicBlock& block, std::ostream& stream) const
 
 void
 Disassembler::disassemble(const IRInstruction& instr,
-  std::ostream& stream) const
+                          std::ostream& stream) const
 {
-  if (!instr.target.is_null())
-  {
+  if (!instr.target.is_null()) {
     stream << "%" << instr.target.get_string() << " = ";
   }
   stream << IROpcode_to_string(instr.opcode);
 
-  if (!instr.options.empty())
-  {
+  if (!instr.options.empty()) {
     stream << " [ ";
-    for (const auto& option : instr.options)
-    {
+    for (const auto& option : instr.options) {
       stream << option << ' ';
     }
     stream << "]";
   }
 
-  if (!instr.type.is_null())
-  {
+  if (!instr.type.is_null()) {
     stream << " ";
     disassemble(instr.type.get_IRIdentifierType(), stream);
   }
 
-  if (!instr.oprds.empty())
-  {
+  if (!instr.oprds.empty()) {
     stream << " ";
-    for (size_t i = 0; i < instr.oprds.size(); ++i)
-    {
+    for (size_t i = 0; i < instr.oprds.size(); ++i) {
       disassemble(instr.oprds[i], stream);
-      if (i < instr.oprds.size() - 1)
-      {
+      if (i < instr.oprds.size() - 1) {
         stream << " ";
       }
     }
   }
 
-  if (!instr.labels.is_null())
-  {
+  if (!instr.labels.is_null()) {
     const auto& labels = instr.labels.get_array();
-    if (!labels.empty())
-    {
+    if (!labels.empty()) {
       size_t len = labels.size();
       stream << " [ ";
-      for (const auto& label : labels)
-      {
+      for (const auto& label : labels) {
         disassemble(label, stream);
-        if (len-- > 1)
-        {
+        if (len-- > 1) {
           stream << ", ";
         }
       }
@@ -376,10 +329,9 @@ Disassembler::disassemble(const IRInstruction& instr,
 
 void
 Disassembler::disassemble(const IRIdentifierType& identifier_type,
-  std::ostream& stream) const
+                          std::ostream& stream) const
 {
-  switch (identifier_type.type)
-  {
+  switch (identifier_type.type) {
   case IdentifierType_Identifier:
     stream << identifier_type.value.get_string();
     break;
@@ -398,7 +350,7 @@ Disassembler::disassemble(const IRIdentifierType& identifier_type,
 
 void
 Disassembler::disassemble(const IRArrayType& array_type,
-  std::ostream& stream) const
+                          std::ostream& stream) const
 {
   stream << "array ";
   stream << "[ " << array_type.len << " * ";
@@ -413,8 +365,7 @@ Disassembler::disassemble(const IRValue& val, std::ostream& stream) const
 {
   stream << IRValueType_to_string(val.type) << " ";
 
-  switch (val.value.idx())
-  {
+  switch (val.value.idx()) {
   case 0:
     // do nothing.
     stream << val.value.get_bool();
@@ -445,12 +396,9 @@ Disassembler::disassemble(const IRValue& val, std::ostream& stream) const
 void
 Disassembler::disassemble(const IROperand& oprd, std::ostream& stream) const
 {
-  if (oprd.type == IROperandType::constant)
-  {
+  if (oprd.type == IROperandType::constant) {
     disassemble(oprd.value.get_IRValue(), stream);
-  }
-  else
-  {
+  } else {
     stream << "%" << oprd.value.get_string();
   }
 }
@@ -465,10 +413,10 @@ Disassembler::disassemble(const IRLabel& label, std::ostream& stream) const
 
 // -----------------------------------------------------------------------------
 
-void Disassembler::emit_newline(std::ostream& stream) const
+void
+Disassembler::emit_newline(std::ostream& stream) const
 {
-  if (m_opts.emit_newlines)
-  {
+  if (m_opts.emit_newlines) {
     stream << std::endl;
   }
 }

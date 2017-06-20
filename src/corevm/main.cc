@@ -22,8 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "program.h"
 
-
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
   corevm::Program program;
   return program.run(argc, argv);

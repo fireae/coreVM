@@ -23,10 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_OPERATORS_H_
 #define COREVM_OPERATORS_H_
 
-
-#include "operators.unary.h"
 #include "operators.binary.h"
 #include "operators.complex.h"
-
+#include "operators.unary.h"
 
 #endif /* COREVM_OPERATORS_H_ */

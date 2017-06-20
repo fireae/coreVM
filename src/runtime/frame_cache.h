@@ -27,14 +27,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <unordered_map>
 
-
 namespace corevm {
 namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-struct ClosureCtxHash
-{
+struct ClosureCtxHash {
   size_t operator()(const ClosureCtx& closure_ctx) const;
 };
 
@@ -45,8 +43,7 @@ typedef Frame* FramePtr;
 
 // -----------------------------------------------------------------------------
 
-class FrameCache
-{
+class FrameCache {
 public:
   void insert_parent_frame(const ClosureCtx& ctx, FramePtr parent_frame);
 
@@ -63,6 +60,5 @@ private:
 
 } /* end namespace runtime */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_FRAME_CACHE_H_ */

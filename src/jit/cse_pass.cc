@@ -22,7 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "cse_pass.h"
 
-
 namespace corevm {
 namespace jit {
 
@@ -37,7 +36,8 @@ const Pass::PassType CSEPass::Type = PassType_Function;
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool CSEPass::run(IRModule&, const AnalysisResult*)
+bool
+CSEPass::run(IRModule&, const AnalysisResult*)
 {
   // TODO: [COREVM-582] Implement IR strength reduction passes
   return true;
@@ -46,7 +46,8 @@ bool CSEPass::run(IRModule&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool CSEPass::run(IRTypeDecl&, const AnalysisResult*)
+bool
+CSEPass::run(IRTypeDecl&, const AnalysisResult*)
 {
   // TODO: [COREVM-582] Implement IR strength reduction passes
   return true;
@@ -55,7 +56,8 @@ bool CSEPass::run(IRTypeDecl&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool CSEPass::run(IRClosure&, const AnalysisResult*)
+bool
+CSEPass::run(IRClosure&, const AnalysisResult*)
 {
   // TODO: [COREVM-582] Implement IR strength reduction passes
   return true;
@@ -64,7 +66,8 @@ bool CSEPass::run(IRClosure&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool CSEPass::run(IRBasicBlock&, const AnalysisResult*)
+bool
+CSEPass::run(IRBasicBlock&, const AnalysisResult*)
 {
   // TODO: [COREVM-582] Implement IR strength reduction passes
   return true;
@@ -73,7 +76,8 @@ bool CSEPass::run(IRBasicBlock&, const AnalysisResult*)
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool CSEPass::run(IRInstruction&, const AnalysisResult*)
+bool
+CSEPass::run(IRInstruction&, const AnalysisResult*)
 {
   // TODO: [COREVM-582] Implement IR strength reduction passes
   return true;

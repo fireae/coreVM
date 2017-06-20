@@ -29,12 +29,11 @@ namespace jit {
 /**
  * Abstraction represents the result from the operation of an `AnalysisPass`.
  */
-struct AnalysisResult
-{
-/**
- * Default destructor.
- */
-virtual ~AnalysisResult();
+struct AnalysisResult {
+  /**
+   * Default destructor.
+   */
+  virtual ~AnalysisResult();
 };
 
 } /* end namespace jit */

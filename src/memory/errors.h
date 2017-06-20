@@ -29,23 +29,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 
-
 namespace corevm {
 namespace memory {
 
-class InvalidAddressError : public RuntimeError
-{
+class InvalidAddressError : public RuntimeError {
 public:
   explicit InvalidAddressError(const uint64_t addr)
-    :
-    corevm::RuntimeError(
-      str(boost::format("Invalid object address %lu encountered") % addr))
+    : corevm::RuntimeError(
+        str(boost::format("Invalid object address %lu encountered") % addr))
   {
   }
 };
 
 } /* end namespace memory */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_MEMORY_ERRORS_H_ */

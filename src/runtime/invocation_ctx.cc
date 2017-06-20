@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "compartment.h"
 #include "corevm/macros.h"
 
-
 namespace corevm {
 namespace runtime {
 
@@ -37,15 +36,13 @@ const size_t DEFAULT_PARAMS_LIST_CAPACITY = 8;
 // -----------------------------------------------------------------------------
 
 InvocationCtx::InvocationCtx(const runtime::ClosureCtx& ctx,
-  Compartment* compartment,
-  Closure* closure)
-  :
-  m_closure_ctx(ctx),
-  m_compartment(compartment),
-  m_closure(closure),
-  m_params_list(),
-  m_param_value_map(),
-  m_params_list_pop_index(0)
+                             Compartment* compartment, Closure* closure)
+  : m_closure_ctx(ctx),
+    m_compartment(compartment),
+    m_closure(closure),
+    m_params_list(),
+    m_param_value_map(),
+    m_params_list_pop_index(0)
 {
   m_params_list.reserve(DEFAULT_PARAMS_LIST_CAPACITY);
 }
@@ -111,8 +108,7 @@ InvocationCtx::put_param(param_type param)
 InvocationCtx::param_type
 InvocationCtx::pop_param()
 {
-  if (m_params_list_pop_index >= m_params_list.size())
-  {
+  if (m_params_list_pop_index >= m_params_list.size()) {
     THROW(MissingParameterError());
   }
 
@@ -150,8 +146,7 @@ InvocationCtx::pop_param_value_pair(variable_key_t key)
 {
   auto itr = m_param_value_map.find(key);
 
-  if (itr == m_param_value_map.end())
-  {
+  if (itr == m_param_value_map.end()) {
     THROW(MissingParameterError());
   }
 
@@ -170,8 +165,8 @@ InvocationCtx::param_value_pair_keys() const
   std::vector<variable_key_t> keys;
   keys.reserve(m_param_value_map.size());
 
-  for (auto itr = m_param_value_map.begin(); itr != m_param_value_map.end(); ++itr)
-  {
+  for (auto itr = m_param_value_map.begin(); itr != m_param_value_map.end();
+       ++itr) {
     variable_key_t key = itr->first;
     keys.push_back(key);
   }

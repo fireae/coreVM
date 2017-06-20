@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <vector>
 
-
 namespace corevm {
 namespace dyobj {
 
@@ -35,8 +34,7 @@ namespace dyobj {
  * These flag bits are defined so that the default value of 0 would be the
  * appropriate value for most objects.
  */
-enum DynamicObjectFlagBits : uint32_t
-{
+enum DynamicObjectFlagBits : uint32_t {
 
   /* ------------ Bits that pertain to the lifespan of objects -------------- */
 
@@ -62,18 +60,14 @@ bool is_valid_flag_bit(char);
 
 // -----------------------------------------------------------------------------
 
-const std::vector<const char*>
-DYOBJ_FLAG_VALUES_ARRAY {
-  "DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE",
-  "DYOBJ_IS_INDELIBLE",
-  "DYOBJ_IS_NON_CALLABLE",
-  "DYOBJ_IS_IMMUTABLE",
+const std::vector<const char*> DYOBJ_FLAG_VALUES_ARRAY{
+  "DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE", "DYOBJ_IS_INDELIBLE",
+  "DYOBJ_IS_NON_CALLABLE", "DYOBJ_IS_IMMUTABLE",
 };
 
 // -----------------------------------------------------------------------------
 
 } /* end namespace dyobj */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_DYOBJ_FLAGS_H_ */

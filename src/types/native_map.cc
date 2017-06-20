@@ -22,54 +22,45 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "native_map.h"
 
-#include "errors.h"
 #include "corevm/macros.h"
+#include "errors.h"
 
 #include <cstdint>
 #include <stdexcept>
 #include <utility>
-
 
 namespace corevm {
 namespace types {
 
 // -----------------------------------------------------------------------------
 
-native_map::native_map()
-  :
-  native_map_base()
+native_map::native_map() : native_map_base()
 {
 }
 
 // -----------------------------------------------------------------------------
 
-native_map::native_map(const native_map_base& other)
-  :
-  native_map_base(other)
+native_map::native_map(const native_map_base& other) : native_map_base(other)
 {
 }
 
 // -----------------------------------------------------------------------------
 
 native_map::native_map(native_map_base&& other)
-  :
-  native_map_base(std::forward<native_map_base>(other))
+  : native_map_base(std::forward<native_map_base>(other))
 {
 }
 
 // -----------------------------------------------------------------------------
 
 native_map::native_map(std::initializer_list<value_type> il)
-  :
-  native_map_base(il)
+  : native_map_base(il)
 {
 }
 
 // -----------------------------------------------------------------------------
 
-native_map::native_map(int8_t)
-  :
-  native_map_base()
+native_map::native_map(int8_t) : native_map_base()
 {
   THROW(ConversionError("int8", "map"));
 }
@@ -99,32 +90,28 @@ native_map::operator-() const
 
 // -----------------------------------------------------------------------------
 
-native_map&
-native_map::operator++() const
+native_map& native_map::operator++() const
 {
   THROW(InvalidOperatorError("++", "map"));
 }
 
 // -----------------------------------------------------------------------------
 
-native_map&
-native_map::operator--() const
+native_map& native_map::operator--() const
 {
   THROW(InvalidOperatorError("--", "map"));
 }
 
 // -----------------------------------------------------------------------------
 
-native_map&
-native_map::operator!() const
+native_map& native_map::operator!() const
 {
   THROW(InvalidOperatorError("!", "map"));
 }
 
 // -----------------------------------------------------------------------------
 
-native_map&
-native_map::operator~() const
+native_map& native_map::operator~() const
 {
   THROW(InvalidOperatorError("~", "map"));
 }
@@ -147,8 +134,7 @@ native_map::operator-(const native_map&) const
 
 // -----------------------------------------------------------------------------
 
-native_map&
-native_map::operator*(const native_map&) const
+native_map& native_map::operator*(const native_map&)const
 {
   THROW(InvalidOperatorError("*", "map"));
 }
@@ -187,8 +173,7 @@ native_map::operator||(const native_map&) const
 
 // -----------------------------------------------------------------------------
 
-native_map&
-native_map::operator&(const native_map&) const
+native_map& native_map::operator&(const native_map&)const
 {
   THROW(InvalidOperatorError("&", "map"));
 }
@@ -262,8 +247,7 @@ native_map::operator>=(const native_map&) const
 native_map::mapped_type&
 native_map::at(const key_type& k)
 {
-  return const_cast<mapped_type&>(
-    static_cast<const native_map&>(*this).at(k));
+  return const_cast<mapped_type&>(static_cast<const native_map&>(*this).at(k));
 }
 
 // -----------------------------------------------------------------------------
@@ -273,8 +257,7 @@ native_map::at(const key_type& k) const
 {
   auto itr = find(k);
 
-  if (itr == end())
-  {
+  if (itr == end()) {
     THROW(OutOfRangeError("Map key out of range"));
   }
 

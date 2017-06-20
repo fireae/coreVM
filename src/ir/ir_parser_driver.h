@@ -27,16 +27,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 // Tell Flex the lexer's prototype ...
-#define YY_DECL yy::ir_parser::symbol_type yylex (corevm::ir::IRParserDriver& driver, void* yyscanner)
+#define YY_DECL                                                                \
+  yy::ir_parser::symbol_type yylex(corevm::ir::IRParserDriver& driver,         \
+                                   void* yyscanner)
 // ... and declare it for the parser's sake.
 YY_DECL;
-
 
 namespace corevm {
 namespace ir {
 
-class IRParserDriver
-{
+class IRParserDriver {
 public:
   IRParserDriver();
   virtual ~IRParserDriver();
@@ -64,6 +64,7 @@ public:
   void set_module(corevm::IRModule&&);
 
   const corevm::IRModule& module() const;
+
 private:
   // Whether parser traces should be generated.
   bool m_trace_parsing;

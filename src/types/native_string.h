@@ -28,15 +28,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <string>
 
-
 namespace corevm {
 namespace types {
 
 typedef std::string native_string_base;
 
-
-class native_string : public native_string_base
-{
+class native_string : public native_string_base {
 public:
   native_string();
 
@@ -48,13 +45,12 @@ public:
 
   native_string(size_t n, char c);
 
-  [[ noreturn ]] /** Avoid compiler warning [-Wmissing-noreturn]. */
-  native_string(int8_t);
+  [[noreturn]] /** Avoid compiler warning [-Wmissing-noreturn]. */
+    native_string(int8_t);
 
   template <class InputIterator>
   native_string(InputIterator first, InputIterator last)
-    :
-    native_string_base(first, last)
+    : native_string_base(first, last)
   {
   }
 
@@ -76,7 +72,7 @@ public:
 
   native_string& operator-(const native_string&) const;
 
-  native_string& operator*(const native_string&) const;
+  native_string& operator*(const native_string&)const;
 
   native_string& operator/(const native_string&) const;
 
@@ -86,7 +82,7 @@ public:
 
   native_string& operator||(const native_string&) const;
 
-  native_string& operator&(const native_string&) const;
+  native_string& operator&(const native_string&)const;
 
   native_string& operator|(const native_string&) const;
 
@@ -108,11 +104,11 @@ public:
 
   native_string& erase(size_type pos, size_type len);
 
-  native_string& replace(size_type pos, size_type len, const native_string& str);
+  native_string& replace(size_type pos, size_type len,
+                         const native_string& str);
 };
 
 } /* end namespace types */
 } /* end namespace corevm */
-
 
 #endif /* COREVM_NATIVE_STRING_H_ */
