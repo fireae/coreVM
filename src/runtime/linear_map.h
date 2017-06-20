@@ -25,13 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <vector>
 
-#define CACHE_CONSCIOUS 1
-
 
 namespace corevm {
 namespace runtime {
 
-template<typename K, typename V, typename CoreType=std::vector<std::pair<K, V>>>
+template<typename K, typename V, typename CoreType=std::vector<std::pair<K, V>>, bool cache_conscious=false>
 class LinearMap
 {
 public:
@@ -69,6 +67,30 @@ public:
   size_t size() const { return m_vec.size(); }
 
   bool empty() const { return m_vec.empty(); }
+
+  iterator at_index(size_t i)
+  {
+    if (i >= size())
+    {
+      return end();
+    }
+
+    auto itr = begin();
+    std::advance(itr, i);
+    return itr;
+  }
+
+  const_iterator at_index(size_t i) const
+  {
+    if (i >= size())
+    {
+      return end();
+    }
+
+    auto itr = begin();
+    std::advance(itr, i);
+    return itr;
+  }
 
   iterator find(K k)
   {
@@ -109,12 +131,15 @@ public:
 
     if (itr != end())
     {
-#if CACHE_CONSCIOUS
-      std::swap(m_vec.front(), *itr);
-      return m_vec.front().second;
-#else
-      return itr->second;
-#endif
+      if (cache_conscious)
+      {
+        std::swap(m_vec.front(), *itr);
+        return m_vec.front().second;
+      }
+      else
+      {
+        return itr->second;
+      }
     }
 
     m_vec.push_back(std::make_pair(k, V()));

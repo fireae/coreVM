@@ -67,6 +67,7 @@ InstrHandlerMeta::instr_handlers[INSTR_CODE_MAX] {
 
   /* NEW       */    instr_handler_new       ,
   /* LDOBJ     */    instr_handler_ldobj     ,
+  /* LDOBJX    */    instr_handler_ldobjx    ,
   /* STOBJ     */    instr_handler_stobj     ,
   /* STOBJN    */    instr_handler_stobjn    ,
   /* GETATTR   */    instr_handler_getattr   ,
@@ -78,6 +79,7 @@ InstrHandlerMeta::instr_handlers[INSTR_CODE_MAX] {
   /* DELATTR2  */    instr_handler_delattr2  ,
   /* POP       */    instr_handler_pop       ,
   /* LDOBJ2    */    instr_handler_ldobj2    ,
+  /* LDOBJ2X   */    instr_handler_ldobj2x   ,
   /* STOBJ2    */    instr_handler_stobj2    ,
   /* DELOBJ    */    instr_handler_delobj    ,
   /* DELOBJ2   */    instr_handler_delobj2   ,
@@ -560,6 +562,27 @@ instr_handler_ldobj(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
+instr_handler_ldobjx(const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
+{
+  Frame* frame = *frame_ptr;
+  size_t idx = static_cast<variable_key_t>(instr.oprd1);
+
+  Process::dyobj_ptr obj = frame->get_visible_var_with_index(idx);
+
+  if (obj)
+  {
+    process.push_stack(obj);
+  }
+  else
+  {
+    THROW(NameNotFoundError(""));
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
 instr_handler_stobj(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
@@ -775,6 +798,27 @@ instr_handler_ldobj2(const Instr& instr, Process& process,
     const char* name = NULL;
     frame->compartment()->get_string_literal(encoding_key, &name);
     THROW(NameNotFoundError(name));
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+instr_handler_ldobj2x(const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
+{
+  Frame* frame = *frame_ptr;
+  size_t idx = static_cast<variable_key_t>(instr.oprd1);
+
+  Process::dyobj_ptr obj = frame->get_invisible_var_with_index(idx);
+
+  if (obj)
+  {
+    process.push_stack(obj);
+  }
+  else
+  {
+    THROW(NameNotFoundError(""));
   }
 }
 

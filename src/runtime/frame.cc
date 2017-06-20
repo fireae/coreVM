@@ -39,27 +39,6 @@ namespace runtime {
 
 Frame::Frame(const runtime::ClosureCtx& closure_ctx,
   Compartment* compartment,
-  Closure* closure)
-  :
-  m_pc(corevm::runtime::NONESET_INSTR_ADDR),
-  m_closure_ctx(closure_ctx),
-  m_compartment(compartment),
-  m_closure(closure),
-  m_parent(nullptr),
-  m_return_addr(NONESET_INSTR_ADDR),
-  m_visible_vars(),
-  m_invisible_vars(),
-  m_eval_stack(),
-  m_exc_obj(NULL)
-{
-  // Do nothing here.
-  m_eval_stack.reserve(100);
-}
-
-// -----------------------------------------------------------------------------
-
-Frame::Frame(const runtime::ClosureCtx& closure_ctx,
-  Compartment* compartment,
   Closure* closure,
   instr_addr_t return_addr)
   :
@@ -75,7 +54,6 @@ Frame::Frame(const runtime::ClosureCtx& closure_ctx,
   m_exc_obj(NULL)
 {
   // Do nothing here.
-  m_eval_stack.reserve(100);
 }
 
 // -----------------------------------------------------------------------------
@@ -228,14 +206,6 @@ Frame::swap_eval_stack()
 
 // -----------------------------------------------------------------------------
 
-const std::vector<types::NativeTypeValue>&
-Frame::eval_stack() const
-{
-  return m_eval_stack;
-}
-
-// -----------------------------------------------------------------------------
-
 types::NativeTypeValue&
 Frame::eval_stack_element(size_t i)
 {
@@ -248,6 +218,20 @@ size_t
 Frame::visible_var_count() const
 {
   return m_visible_vars.size();
+}
+
+// -----------------------------------------------------------------------------
+
+Frame::dyobj_ptr
+Frame::get_visible_var_with_index(size_t idx) const
+{
+  auto itr = m_visible_vars.at_index(idx);
+  if (itr == m_visible_vars.end())
+  {
+    return nullptr;
+  }
+
+  return itr->second;
 }
 
 // -----------------------------------------------------------------------------
@@ -340,6 +324,20 @@ size_t
 Frame::invisible_var_count() const
 {
   return m_invisible_vars.size();
+}
+
+// -----------------------------------------------------------------------------
+
+Frame::dyobj_ptr
+Frame::get_invisible_var_with_index(size_t idx) const
+{
+  auto itr = m_invisible_vars.at_index(idx);
+  if (itr == m_invisible_vars.end())
+  {
+    return nullptr;
+  }
+
+  return itr->second;
 }
 
 // -----------------------------------------------------------------------------

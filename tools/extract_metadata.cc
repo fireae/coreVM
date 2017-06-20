@@ -32,6 +32,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 #include <string>
 
+// TODO: this class needs some serious renamings...
+// TODO: this class needs some serious cleanup...
+// TODO: this class needs some <3
 
 /**
  * Command-line tool that extracts the metadata of coreVM runtime into
@@ -57,6 +60,7 @@ protected:
   virtual bool check_parameters() const;
 
 private:
+  const std::string extract_instrs() const;
   const std::string extract_instr_info() const;
   const std::string extract_flags_info() const;
 
@@ -68,6 +72,7 @@ private:
 
 const std::string INDENTATION = "    ";
 const std::string DOUBLE_QUOTE= "\"";
+const std::string INSTRS = "INSTRS";
 const std::string INSTR_STR_TO_CODE_MAP = "INSTR_STR_TO_CODE_MAP";
 const std::string DYOBJ_FLAG_STR_TO_VALUE_MAP = "DYOBJ_FLAG_STR_TO_VALUE_MAP";
 
@@ -114,6 +119,9 @@ ExtractMetadata::do_run()
 
   ss << "{" << std::endl;
 
+  ss << INDENTATION << DOUBLE_QUOTE << INSTRS
+    << DOUBLE_QUOTE << ": " << extract_instrs() << "," << std::endl;
+
   ss << INDENTATION << DOUBLE_QUOTE << INSTR_STR_TO_CODE_MAP
     << DOUBLE_QUOTE << ": " << extract_instr_info() << "," << std::endl;
 
@@ -127,6 +135,36 @@ ExtractMetadata::do_run()
   fd.close();
 
   return 0;
+}
+
+// -----------------------------------------------------------------------------
+
+const std::string
+ExtractMetadata::extract_instrs() const
+{
+  std::stringstream ss;
+
+  ss << "[" << std::endl;
+
+  for (size_t i = 0; i < corevm::runtime::InstrEnum::INSTR_CODE_MAX; ++i)
+  {
+    const auto code = static_cast<corevm::runtime::instr_code_t>(i);
+    const auto& info = corevm::runtime::InstrSetInfo::instr_infos[code];
+
+    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.name
+      << DOUBLE_QUOTE;
+
+    if (i + 1 != corevm::runtime::InstrEnum::INSTR_CODE_MAX)
+    {
+      ss << ",";
+    }
+
+    ss << std::endl;
+  }
+
+  ss << INDENTATION << "]";
+
+  return ss.str();
 }
 
 // -----------------------------------------------------------------------------

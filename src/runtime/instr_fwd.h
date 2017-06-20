@@ -57,6 +57,15 @@ enum InstrEnum : uint32_t
   LDOBJ,
 
   /**
+   * <ldobjx, idx, _>
+   * Load an object by its index in the current frame's visible variable table
+   * onto the stack.
+   *
+   * Unlike `ldobj`, this does not trigger closure hierarchy traversal.
+   */
+  LDOBJX,
+
+  /**
    * <stobj, key, _>
    * Pops the object on top of the stack and stores it with a key into
    * the frame.
@@ -136,6 +145,15 @@ enum InstrEnum : uint32_t
    * Load an invisible object by a key and push it onto the stack.
    */
   LDOBJ2,
+
+  /**
+   * <ldobj2x, idx, _>
+   * Load an object by its index in the current frame's invisible variable table
+   * onto the stack.
+   *
+   * Unlike `ldobj2`, this does not trigger closure hierarchy traversal.
+   */
+  LDOBJ2X,
 
   /**
    * <stobj2, key, _>

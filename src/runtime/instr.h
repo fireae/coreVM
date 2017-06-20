@@ -51,6 +51,10 @@ void instr_handler_ldobj(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 
+void instr_handler_ldobjx(const Instr&, Process&, Frame**, InvocationCtx**);
+
+// -----------------------------------------------------------------------------
+
 void instr_handler_stobj(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
@@ -92,6 +96,10 @@ void instr_handler_pop(const Instr&, Process&, Frame**, InvocationCtx**);
 // -----------------------------------------------------------------------------
 
 void instr_handler_ldobj2(const Instr&, Process&, Frame**, InvocationCtx**);
+
+// -----------------------------------------------------------------------------
+
+void instr_handler_ldobj2x(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 

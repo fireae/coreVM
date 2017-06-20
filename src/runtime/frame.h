@@ -33,40 +33,42 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/common.h"
 #include "types/fwd.h"
 #include "corevm/macros.h"
+#include "corevm/llvm_smallvector.h"
+#include "types/native_type_value.h"
+#include "linear_map.h"
 
 #include <cstdint>
 #include <vector>
 
-#if COREVM_USE_LINEAR_VARIABLE_TABLE
-  #include "linear_map.h"
-  #include "corevm/llvm_smallvector.h"
-#else
-  #include <unordered_map>
-#endif // COREVM_USE_LINEAR_VARIABLE_TABLE
-
+#define DEFAULT_EVAL_STACK_CAPACITY 8
+#define DEFAULT_VAR_TABLE_CAPACITY 32
 
 namespace corevm {
 namespace runtime {
 
 /**
- * Each frame is consisted of:
+ * Abstraction of a stack frame.
  *
+ * Each stack frame is consisted of:
+ *
+ * - Program counter.
  * - Return address.
+ * - Evaluation stack.
  * - Visible local variables.
  * - Invisible local variables.
- * - Evaluation stack.
  * - Closure context.
  * - A pointer to the associated compartment.
  * - A pointer to the associated closure object.
+ * - A pointer to the holding exception object, if one exists.
+ * - A pointer to the parent frame, if one exists.
  */
 class Frame
 {
 public:
   typedef RuntimeTypes::dyobj_ptr_type dyobj_ptr;
 
-  Frame(const ClosureCtx&, Compartment*, Closure*);
-
-  Frame(const ClosureCtx&, Compartment*, Closure*, instr_addr_t);
+  Frame(const ClosureCtx&, Compartment*, Closure*,
+    instr_addr_t=NONESET_INSTR_ADDR);
 
   ~Frame();
 
@@ -98,11 +100,11 @@ public:
 
   void swap_eval_stack();
 
-  const std::vector<types::NativeTypeValue>& eval_stack() const;
-
   types::NativeTypeValue& eval_stack_element(size_t i);
 
   size_t visible_var_count() const;
+
+  dyobj_ptr get_visible_var_with_index(size_t) const;
 
   dyobj_ptr get_visible_var(variable_key_t) const;
 
@@ -115,6 +117,8 @@ public:
   void set_visible_var(variable_key_t, dyobj_ptr);
 
   size_t invisible_var_count() const;
+
+  dyobj_ptr get_invisible_var_with_index(size_t) const;
 
   dyobj_ptr get_invisible_var(variable_key_t) const;
 
@@ -155,12 +159,8 @@ public:
 
 protected:
 
-#if COREVM_USE_LINEAR_VARIABLE_TABLE
   typedef LinearMap<variable_key_t, dyobj_ptr,
-    llvm::SmallVector<std::pair<variable_key_t, dyobj_ptr>, 20>> VariableTable;
-#else
-  typedef std::unordered_map<variable_key_t, dyobj_ptr> VariableTable;
-#endif
+    llvm::SmallVector<std::pair<variable_key_t, dyobj_ptr>, DEFAULT_VAR_TABLE_CAPACITY>> VariableTable;
 
   instr_addr_t m_pc;
   const runtime::ClosureCtx m_closure_ctx;
@@ -170,7 +170,7 @@ protected:
   instr_addr_t m_return_addr;
   VariableTable m_visible_vars;
   VariableTable m_invisible_vars;
-  std::vector<types::NativeTypeValue> m_eval_stack;
+  llvm::SmallVector<types::NativeTypeValue, DEFAULT_EVAL_STACK_CAPACITY> m_eval_stack;
   dyobj_ptr m_exc_obj;
 };
 

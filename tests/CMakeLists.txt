@@ -24,6 +24,7 @@
 
 # Build executable `run_tests`.
 add_executable(run_tests
+    common/static_buffer_unittest.cc
     common/variant_unittest.cc
     ir/format_util_unittest.cc
     ir/ir_parser_driver_unittest.cc

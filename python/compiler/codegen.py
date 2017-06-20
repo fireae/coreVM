@@ -174,6 +174,9 @@ class Closure(object):
         self.locs.append(loc)
 
     def to_json(self):
+        # TODO(yanzhengli): test this extensively and make it work.
+        # self.optimize_load_and_store_instrs()
+
         return {
             'name': self.original_name,
             'id': self.closure_id,
@@ -182,6 +185,22 @@ class Closure(object):
             'locs': [loc.to_json() for loc in self.locs],
             'catch_sites': [catch_site.to_json() for catch_site in self.catch_sites]
         }
+
+    def optimize_load_and_store_instrs(self):
+        # TODO(yanzhengli): test this extensively and make it work.
+        visible_vars = []
+        invisible_vars = []
+        for instr in self.vector:
+            if instr.code == 3: # store
+                if instr.oprd1 not in visible_vars:
+                    visible_vars.append(instr.oprd1)
+            elif instr.code == 1: # load
+                try:
+                    idx = visible_vars.index(instr.oprd1)
+                    instr.code = 2 # ldobjx
+                    instr.oprd1 = idx
+                except:
+                    pass
 
 ## -----------------------------------------------------------------------------
 

@@ -39,6 +39,7 @@ const InstrInfo InstrSetInfo::instr_infos[INSTR_CODE_MAX] {
 
   /* NEW       */    { .name="new"       },
   /* LDOBJ     */    { .name="ldobj"     },
+  /* LDOBJX     */   { .name="ldobjx"    },
   /* STOBJ     */    { .name="stobj"     },
   /* STOBJN    */    { .name="stobjn"    },
   /* GETATTR   */    { .name="getattr"   },
@@ -50,6 +51,7 @@ const InstrInfo InstrSetInfo::instr_infos[INSTR_CODE_MAX] {
   /* DELATTR2  */    { .name="delattr2"  },
   /* POP       */    { .name="pop"       },
   /* LDOBJ2    */    { .name="ldobj2"    },
+  /* LDOBJ2X   */    { .name="ldobj2x"   },
   /* STOBJ2    */    { .name="stobj2"    },
   /* DELOBJ    */    { .name="delobj"    },
   /* DELOBJ2   */    { .name="delobj2"   },

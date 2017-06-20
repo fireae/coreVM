@@ -94,8 +94,4 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-#define COREVM_USE_LINEAR_VARIABLE_TABLE 1
-
-// -----------------------------------------------------------------------------
-
 #endif /* COREVM_MACROS_H_ */
