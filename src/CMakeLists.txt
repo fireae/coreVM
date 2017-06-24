@@ -53,6 +53,9 @@ set(sources
     jit/lowering_pass_target_llvm_ir.cc
     memory/allocation_scheme.cc
     memory/sequential_allocation_scheme.cc
+    memory/zone/segment_allocator.cc
+    memory/zone/segment.cc
+    memory/zone/zone.cc
     dyobj/dynamic_object_manager.cc
     dyobj/flags.cc
     dyobj/util.cc

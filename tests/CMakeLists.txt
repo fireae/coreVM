@@ -40,6 +40,7 @@ add_executable(run_tests
     memory/allocation_policy_unittest.cc
     memory/allocator_unittest.cc
     memory/block_allocator_unittest.cc
+    memory/zone_allocator_unittest.cc
     memory/object_container_unittest.cc
     dyobj/dynamic_object_heap_unittest.cc
     dyobj/dynamic_object_unittest.cc
