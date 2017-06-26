@@ -26,22 +26,22 @@ process. Although there are candidates of generic runtimes for high-level
 languages that are available, many of them lack the robustness, efficiency and
 versatility that can meet the language requirements.
 
-coreVM is a language-agnostic runtime framework. Its design strives to achieve
-extremely versatile interfaces and modern runtime functionalities, which
-unfetters language developers from the burden of developing their own. Instead
-of re-inventing the wheel, developers can focus on the design and development of
-language features. coreVM strives to provide versatile capabilities that can
-meet the demands of most high-level programming languages through the following:
+coreVM is a language-agnostic programming language runtime framework, designed
+with versatile interfaces and modern runtime functionalities to unfetter
+language developers from the burden of creating their own. Instead of
+re-inventing the wheel, developers can focus better on the design and
+implementation of core language features. coreVM strives to meet the demands
+of programming languages of diverse types through the following:
 
 * An [instruction set](http://corevm.readthedocs.io/en/latest/reference.html#instruction-set) that can broadly cover fundamental language functionalities.
 * An [abstract language representation](http://corevm.readthedocs.io/en/latest/ir_reference.html) that can capture high-level language constructs.
 * A [set of APIs](http://corevm.readthedocs.io/en/latest/reference.html#apis) for extensions, customizations, and optimizations.
 * A well thought and extensible [architecture](http://corevm.readthedocs.io/en/latest/design.html).
 
-The points above together illustrate the core philosophy of the project that
-coreVM can be a powerful platform for developers to devise modern high-level
-programming languages. Hopefully, as the project evolves, it will help guide
-language developers devise novel language designs and implementations that can
+The points above together illustrate the project's core vision that it strives
+to be a powerful platform that can envision and enpower developers devise
+modern programming languages. Hopefully, as the project evolves, it will help
+guide language developers devise novel language designs and features that can
 shape the next generation of computing.
 
 
@@ -78,8 +78,7 @@ Here is a list of recommended steps to get started on the project:
 ## Moonshots
 While the ultimate goal of this project is to facilitate the design and
 development of modern programming languages for language developers, I
-personally have two use cases of the project that I have envisioned for the
-foreseeable future.
+personally have two use cases of the project that I had envisioned.
 
 ### Support the HEX programming language
 One is to use coreVM as the underlying runtime for the
@@ -87,21 +86,11 @@ One is to use coreVM as the underlying runtime for the
 worked on a while ago. This was actually one of the main motivations of the
 project before its inception.
 
-### Python variant based on coreVM
-The second idea is to have a port of Python that runs on coreVM, as I've always
-wanted to join the Python family that is comprised of many flavors of the
-language. Currently the effort is codenamed _[Project Pyta](https://github.com/yanzhengli/coreVM/wiki/Current-State-and-Roadmap#project-pyta)_,
-but hopefully I will come up with a good name of my variant by then.
-
-As of now, _Pyta_ implements a tiny subset of the core Python language. The
-implementation of the language lives under [python/src](python/src), and the
-corresponding test suite are under [python/tests](python/tests). There is a
-Python compiler that lives under [python/compiler](python/compiler), which
-compiles Python source code into coreVM bytecode. In addition, there is a
-command-line program [python/pyta.py](python/pyta.py) that can directly execute
-a given Python program by invoking the compiler to generate coreVM bytecode,
-and feeds the output to coreVM. Click [here](python/README.md) to view the
-project summary page.
+### Python language implementation based on coreVM
+The second idea is to have an implementation of the Python programming language
+implemented using the coreVM framework, named
+[Pyegasus](https://github.com/yanzhengli/Pyegasus) (formerly named
+_Project Pyta_, read about the blog post [here](https://medium.com/corevm-official-blog/python-corevm-pyegasus-73eab7c695f7)).
 
 The development of the runtime framework and the language complements each other
 well, as the language serves to validate, test and benchmark the functionalities
@@ -110,6 +99,16 @@ to facilitate the growth of the language as it evolves. The parallel
 developments of the two forms a positive feedback loop that accelerates the
 growth of both.
 
+As of now, _Pyegasus_ implements a tiny subset of the Python language features.
+The source is mirrored in this repo under [python/src](python/src), and the
+corresponding test suite are under [python/tests](python/tests). There is a
+Python compiler that lives under [python/compiler](python/compiler), which
+compiles Python source code into coreVM bytecode. In addition, there is a
+command-line program [python/pyta.py](python/pyta.py) that can directly execute
+a given Python program by invoking the compiler to generate coreVM bytecode,
+and feeds the output to coreVM. Click [here](python/README.md) to view the
+project summary page.
+
 To run the entire Python test suite after compilation, run:
 > `python python/bootstrap_tests.py`
 
@@ -117,9 +116,9 @@ To run an individual Python program, such as [python/tests/int.py](python/tests/
 run:
 > `python python/pyta.py python/tests/int.py`
 
-Over time, it will be interesting to compare _Pyta_'s stability, performance,
-and many other aspects with the major flavors of the language, such as
-[CPython](https://www.python.org/), [PyPy](http://pypy.org/),
+Over time, it will be interesting to compare _Pyegasus_'s stability,
+performance, and many other aspects with the major flavors of the language,
+such as [CPython](https://www.python.org/), [PyPy](http://pypy.org/),
 [Jython](http://www.jython.org/), [IronPython](http://ironpython.net/), and
 [Pyston](https://github.com/dropbox/pyston).
 

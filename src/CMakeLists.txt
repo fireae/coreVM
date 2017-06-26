@@ -53,6 +53,7 @@ set(sources
     jit/lowering_pass_target_llvm_ir.cc
     memory/allocation_scheme.cc
     memory/sequential_allocation_scheme.cc
+    memory/freelist_desc.cc
     memory/zone/segment_allocator.cc
     memory/zone/segment.cc
     memory/zone/zone.cc

@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_BLOCK_ALLOCATOR_H_
 #define COREVM_BLOCK_ALLOCATOR_H_
 
+#include "freelist_desc.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -34,75 +35,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace corevm {
 namespace memory {
-
-// -----------------------------------------------------------------------------
-
-namespace {
-
-#if defined(__clang__) and __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunneeded-member-function"
-#endif
-
-typedef struct FreeListDescriptor {
-  FreeListDescriptor(uint32_t start_index_, uint32_t end_index_,
-                     uint32_t current_index_)
-    : start_index(start_index_),
-      end_index(end_index_),
-      current_index(current_index_)
-  {
-  }
-
-  uint32_t start_index;
-  uint32_t end_index;
-  uint32_t current_index; // index points to the first free block in the list.
-} FreeListDescriptor;
-
-#if defined(__clang__) and __clang__
-#pragma clang diagnostic pop
-#endif
-
-// -----------------------------------------------------------------------------
-
-/**
- * Determines if the given freelist is large enough to hold
- * `n` blocks.
- *
- * `n` has to be greater than 0.
- */
-inline bool
-is_free_list_available(const FreeListDescriptor& descriptor, size_t n)
-{
-  return descriptor.current_index + (n - 1) <= descriptor.end_index;
-}
-
-// -----------------------------------------------------------------------------
-
-/**
- * Determines if the given index has been allocated in the freelist provided.
- */
-inline bool
-is_allocated_in_free_list(const FreeListDescriptor& descriptor, uint32_t index)
-{
-  return index >= descriptor.start_index && index < descriptor.current_index;
-}
-
-// -----------------------------------------------------------------------------
-
-/**
- * Determines if the given freelist is empty.
- */
-inline bool
-is_empty_free_list(const FreeListDescriptor& descriptor)
-{
-  return descriptor.current_index == descriptor.start_index;
-}
-
-// -----------------------------------------------------------------------------
-
-} /* end anonymous namespace */
-
-// -----------------------------------------------------------------------------
 
 template <class T> class BlockAllocator {
 public:

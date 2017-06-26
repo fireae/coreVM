@@ -71,34 +71,34 @@ public:
   bool operator==(const DynamicObject<DynamicObjectManager>&);
   bool operator!=(const DynamicObject<DynamicObjectManager>&);
 
-  iterator begin() noexcept;
-  const_iterator cbegin() const noexcept;
+  iterator begin();
+  const_iterator cbegin() const;
 
-  iterator end() noexcept;
-  const_iterator cend() const noexcept;
+  iterator end();
+  const_iterator cend() const;
 
-  dyobj_id_t id() const noexcept;
+  dyobj_id_t id() const;
 
-  flag_t flags() const noexcept;
+  flag_t flags() const;
 
-  DynamicObjectManager& manager() noexcept;
+  DynamicObjectManager& manager();
 
-  const types::NativeTypeValue& type_value() const noexcept;
-  void set_type_value(types::NativeTypeValue*) noexcept;
-  void clear_type_value() noexcept;
-  bool has_type_value() const noexcept;
+  const types::NativeTypeValue& type_value() const;
+  void set_type_value(types::NativeTypeValue*);
+  void clear_type_value();
+  bool has_type_value() const;
 
   bool get_flag(char) const;
   void set_flag(char);
   void clear_flag(char);
 
-  bool is_garbage_collectible() const noexcept;
+  bool is_garbage_collectible() const;
 
   size_t attr_count() const;
 
-  bool hasattr(attr_key_type) const noexcept;
+  bool hasattr(attr_key_type) const;
 
-  void putattr(attr_key_type, dyobj_ptr) noexcept;
+  void putattr(attr_key_type, dyobj_ptr);
 
   void delattr(attr_key_type);
 
@@ -110,10 +110,11 @@ public:
 
   void set_closure_ctx(const runtime::ClosureCtx&);
 
-  bool has_ref(dyobj_ptr) const noexcept;
+  bool has_ref(dyobj_ptr) const;
 
-  template <typename Function> void iterate(Function) noexcept;
+  template <typename Function> void iterate(Function);
 
+  /** Explicit copy. */
   void copy_from(const DynamicObject<DynamicObjectManager>&);
 
 private:
@@ -210,7 +211,7 @@ operator!=(const DynamicObject<DynamicObjectManager>& rhs)
 
 template <class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::iterator
-DynamicObject<DynamicObjectManager>::begin() noexcept
+DynamicObject<DynamicObjectManager>::begin()
 {
   return m_attrs.begin();
 }
@@ -219,7 +220,7 @@ DynamicObject<DynamicObjectManager>::begin() noexcept
 
 template <class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::iterator
-DynamicObject<DynamicObjectManager>::end() noexcept
+DynamicObject<DynamicObjectManager>::end()
 {
   return m_attrs.end();
 }
@@ -228,7 +229,7 @@ DynamicObject<DynamicObjectManager>::end() noexcept
 
 template <class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::const_iterator
-DynamicObject<DynamicObjectManager>::cbegin() const noexcept
+DynamicObject<DynamicObjectManager>::cbegin() const
 {
   return m_attrs.begin();
 }
@@ -237,7 +238,7 @@ DynamicObject<DynamicObjectManager>::cbegin() const noexcept
 
 template <class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::const_iterator
-DynamicObject<DynamicObjectManager>::cend() const noexcept
+DynamicObject<DynamicObjectManager>::cend() const
 {
   return m_attrs.end();
 }
@@ -246,7 +247,7 @@ DynamicObject<DynamicObjectManager>::cend() const noexcept
 
 template <class DynamicObjectManager>
 dyobj_id_t
-DynamicObject<DynamicObjectManager>::id() const noexcept
+DynamicObject<DynamicObjectManager>::id() const
 {
   return static_cast<dyobj_id_t>(reinterpret_cast<const uint8_t*>(this) -
                                  reinterpret_cast<uint8_t*>(0));
@@ -256,7 +257,7 @@ DynamicObject<DynamicObjectManager>::id() const noexcept
 
 template <class DynamicObjectManager>
 flag_t
-DynamicObject<DynamicObjectManager>::flags() const noexcept
+DynamicObject<DynamicObjectManager>::flags() const
 {
   return m_flags;
 }
@@ -265,7 +266,7 @@ DynamicObject<DynamicObjectManager>::flags() const noexcept
 
 template <class DynamicObjectManager>
 DynamicObjectManager&
-DynamicObject<DynamicObjectManager>::manager() noexcept
+DynamicObject<DynamicObjectManager>::manager()
 {
   return m_manager;
 }
@@ -274,7 +275,7 @@ DynamicObject<DynamicObjectManager>::manager() noexcept
 
 template <class DynamicObjectManager>
 const types::NativeTypeValue&
-DynamicObject<DynamicObjectManager>::type_value() const noexcept
+DynamicObject<DynamicObjectManager>::type_value() const
 {
 #if __DEBUG__
   ASSERT(m_type_value_ptr);
@@ -287,7 +288,7 @@ DynamicObject<DynamicObjectManager>::type_value() const noexcept
 template <class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::set_type_value(
-  types::NativeTypeValue* type_value) noexcept
+  types::NativeTypeValue* type_value)
 {
   m_type_value_ptr = type_value;
 }
@@ -296,7 +297,7 @@ DynamicObject<DynamicObjectManager>::set_type_value(
 
 template <class DynamicObjectManager>
 void
-DynamicObject<DynamicObjectManager>::clear_type_value() noexcept
+DynamicObject<DynamicObjectManager>::clear_type_value()
 {
   m_type_value_ptr = NULL;
 }
@@ -305,7 +306,7 @@ DynamicObject<DynamicObjectManager>::clear_type_value() noexcept
 
 template <class DynamicObjectManager>
 bool
-DynamicObject<DynamicObjectManager>::has_type_value() const noexcept
+DynamicObject<DynamicObjectManager>::has_type_value() const
 {
   return m_type_value_ptr != NULL;
 }
@@ -355,7 +356,7 @@ DynamicObject<DynamicObjectManager>::clear_flag(char bit)
 
 template <class DynamicObjectManager>
 bool
-DynamicObject<DynamicObjectManager>::is_garbage_collectible() const noexcept
+DynamicObject<DynamicObjectManager>::is_garbage_collectible() const
 {
   return (get_flag(DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE) ==
             false &&
@@ -376,7 +377,7 @@ DynamicObject<DynamicObjectManager>::attr_count() const
 template <class DynamicObjectManager>
 bool
 DynamicObject<DynamicObjectManager>::hasattr(
-  DynamicObject<DynamicObjectManager>::attr_key_type attr_key) const noexcept
+  DynamicObject<DynamicObjectManager>::attr_key_type attr_key) const
 {
   auto itr =
     std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
@@ -441,7 +442,7 @@ template <class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::putattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key,
-  DynamicObject<DynamicObjectManager>::dyobj_ptr obj_ptr) noexcept
+  DynamicObject<DynamicObjectManager>::dyobj_ptr obj_ptr)
 {
   auto itr =
     std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
@@ -476,7 +477,7 @@ DynamicObject<DynamicObjectManager>::set_closure_ctx(
 
 template <class DynamicObjectManager>
 bool
-DynamicObject<DynamicObjectManager>::has_ref(dyobj_ptr ref_ptr) const noexcept
+DynamicObject<DynamicObjectManager>::has_ref(dyobj_ptr ref_ptr) const
 {
   return std::find_if(cbegin(), cend(), AttributeValuePred(ref_ptr)) != cend();
 }
@@ -486,7 +487,7 @@ DynamicObject<DynamicObjectManager>::has_ref(dyobj_ptr ref_ptr) const noexcept
 template <class DynamicObjectManager>
 template <typename Function>
 void
-DynamicObject<DynamicObjectManager>::iterate(Function func) noexcept
+DynamicObject<DynamicObjectManager>::iterate(Function func)
 {
   std::for_each(
     begin(), end(),

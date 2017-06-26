@@ -29,30 +29,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <fstream>
 #include <ostream>
 #include <ios>
-#include <sstream>
 #include <string>
 
-// TODO: this class needs some serious renamings...
-// TODO: this class needs some serious cleanup...
-// TODO: this class needs some <3
-
 /**
- * Command-line tool that extracts the metadata of coreVM runtime into
- * a file. Runtime metadata may include the opcode values of the coreVM
+ * Command-line tool that extracts the coreVM runtime specification.
+ * Runtime specification may include the opcode values of the coreVM
  * instruction set, and the flag values for managing dynamic objects.
  */
-class ExtractMetadata : public sneaker::utility::cmdline_program
+class ExtractSpecs : public sneaker::utility::cmdline_program
 {
 public:
   /**
    * Default constructor.
    */
-  ExtractMetadata();
+  ExtractSpecs();
 
   /**
    * Default destructor.
    */
-  virtual ~ExtractMetadata();
+  virtual ~ExtractSpecs();
 
 protected:
   virtual int do_run();
@@ -60,9 +55,9 @@ protected:
   virtual bool check_parameters() const;
 
 private:
-  const std::string extract_instrs() const;
-  const std::string extract_instr_info() const;
-  const std::string extract_flags_info() const;
+  void extract_instrs(std::ostream&) const;
+  void extract_instr_info(std::ostream&) const;
+  void extract_flags_info(std::ostream&) const;
 
   std::string m_output;
 };
@@ -70,17 +65,17 @@ private:
 
 // -----------------------------------------------------------------------------
 
-const std::string INDENTATION = "    ";
-const std::string DOUBLE_QUOTE= "\"";
-const std::string INSTRS = "INSTRS";
-const std::string INSTR_STR_TO_CODE_MAP = "INSTR_STR_TO_CODE_MAP";
-const std::string DYOBJ_FLAG_STR_TO_VALUE_MAP = "DYOBJ_FLAG_STR_TO_VALUE_MAP";
+static const char* INDENTATION = "    ";
+static const char* DOUBLE_QUOTE= "\"";
+static const char* INSTRS = "INSTRS";
+static const char* INSTR_STR_TO_CODE_MAP = "INSTR_STR_TO_CODE_MAP";
+static const char* DYOBJ_FLAG_STR_TO_VALUE_MAP = "DYOBJ_FLAG_STR_TO_VALUE_MAP";
 
 // -----------------------------------------------------------------------------
 
-ExtractMetadata::ExtractMetadata()
+ExtractSpecs::ExtractSpecs()
   :
-  sneaker::utility::cmdline_program("Extract coreVM info"),
+  sneaker::utility::cmdline_program("Extract coreVM runtime specification"),
   m_output()
 {
   add_positional_parameter("output", 1);
@@ -90,7 +85,7 @@ ExtractMetadata::ExtractMetadata()
 // -----------------------------------------------------------------------------
 
 /* virtual */
-ExtractMetadata::~ExtractMetadata()
+ExtractSpecs::~ExtractSpecs()
 {
   // Do nothing here.
 }
@@ -98,7 +93,7 @@ ExtractMetadata::~ExtractMetadata()
 // -----------------------------------------------------------------------------
 
 bool
-ExtractMetadata::check_parameters() const
+ExtractSpecs::check_parameters() const
 {
   return true;
 }
@@ -106,31 +101,40 @@ ExtractMetadata::check_parameters() const
 // -----------------------------------------------------------------------------
 
 int
-ExtractMetadata::do_run()
+ExtractSpecs::do_run()
 {
+  std::streambuf* buf = nullptr;
   std::ofstream fd(m_output.c_str(), std::ios::out);
 
-  if (!fd.is_open())
+  if (fd.is_open())
   {
-    return -1;
+    buf = fd.rdbuf();
+  }
+  else
+  {
+    buf = std::cout.rdbuf();
   }
 
-  std::stringstream ss;
+  std::ostream stream(buf);
 
-  ss << "{" << std::endl;
+  stream << "{" << std::endl;
 
-  ss << INDENTATION << DOUBLE_QUOTE << INSTRS
-    << DOUBLE_QUOTE << ": " << extract_instrs() << "," << std::endl;
+  stream << INDENTATION << DOUBLE_QUOTE << INSTRS
+    << DOUBLE_QUOTE << ": ";
+  extract_instrs(stream);
+  stream << "," << std::endl;
 
-  ss << INDENTATION << DOUBLE_QUOTE << INSTR_STR_TO_CODE_MAP
-    << DOUBLE_QUOTE << ": " << extract_instr_info() << "," << std::endl;
+  stream << INDENTATION << DOUBLE_QUOTE << INSTR_STR_TO_CODE_MAP
+    << DOUBLE_QUOTE << ": ";
+  extract_instr_info(stream);
+  stream << "," << std::endl;
 
-  ss << INDENTATION << DOUBLE_QUOTE << DYOBJ_FLAG_STR_TO_VALUE_MAP
-    << DOUBLE_QUOTE << ": " << extract_flags_info() << std::endl;
+  stream << INDENTATION << DOUBLE_QUOTE << DYOBJ_FLAG_STR_TO_VALUE_MAP
+    << DOUBLE_QUOTE << ": ";
+  extract_flags_info(stream);
+  stream << std::endl;
 
-  ss << "}" << std::endl;
-
-  fd << ss.str();
+  stream << "}" << std::endl;
 
   fd.close();
 
@@ -139,102 +143,89 @@ ExtractMetadata::do_run()
 
 // -----------------------------------------------------------------------------
 
-const std::string
-ExtractMetadata::extract_instrs() const
+void
+ExtractSpecs::extract_instrs(std::ostream& stream) const
 {
-  std::stringstream ss;
-
-  ss << "[" << std::endl;
+  stream << "[" << std::endl;
 
   for (size_t i = 0; i < corevm::runtime::InstrEnum::INSTR_CODE_MAX; ++i)
   {
     const auto code = static_cast<corevm::runtime::instr_code_t>(i);
     const auto& info = corevm::runtime::InstrSetInfo::instr_infos[code];
 
-    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.name
+    stream << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.name
       << DOUBLE_QUOTE;
 
     if (i + 1 != corevm::runtime::InstrEnum::INSTR_CODE_MAX)
     {
-      ss << ",";
+      stream << ",";
     }
 
-    ss << std::endl;
+    stream << std::endl;
   }
 
-  ss << INDENTATION << "]";
-
-  return ss.str();
+  stream << INDENTATION << "]";
 }
 
 // -----------------------------------------------------------------------------
 
-const std::string
-ExtractMetadata::extract_instr_info() const
+void
+ExtractSpecs::extract_instr_info(std::ostream& stream) const
 {
-  std::stringstream ss;
-
-  ss << "{" << std::endl;
+  stream << "{" << std::endl;
 
   for (size_t i = 0; i < corevm::runtime::InstrEnum::INSTR_CODE_MAX; ++i)
   {
     const auto code = static_cast<corevm::runtime::instr_code_t>(i);
     const auto& info = corevm::runtime::InstrSetInfo::instr_infos[code];
 
-    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.name
+    stream << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.name
       << DOUBLE_QUOTE << ": " << code;
 
     if (i + 1 != corevm::runtime::InstrEnum::INSTR_CODE_MAX)
     {
-      ss << ",";
+      stream << ",";
     }
 
-    ss << std::endl;
+    stream << std::endl;
   }
 
-  ss << INDENTATION << "}";
-
-  return ss.str();
+  stream << INDENTATION << "}";
 }
-
 
 // -----------------------------------------------------------------------------
 
-const std::string
-ExtractMetadata::extract_flags_info() const
+void
+ExtractSpecs::extract_flags_info(std::ostream& stream) const
 {
-  std::stringstream ss;
-
   auto array_size = corevm::dyobj::DYOBJ_FLAG_VALUES_ARRAY.size();
 
-  ss << "{" << std::endl;
+  stream << "{" << std::endl;
 
   for (size_t i = 0; i < array_size; ++i)
   {
     size_t flag_value = i;
     const char* flag_str = corevm::dyobj::DYOBJ_FLAG_VALUES_ARRAY[i];
 
-    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << std::string(flag_str)
+    stream << INDENTATION << INDENTATION << DOUBLE_QUOTE << std::string(flag_str)
       << DOUBLE_QUOTE << ": " << flag_value;
 
     if (i + 1 != array_size)
     {
-      ss << ",";
+      stream << ",";
     }
 
-    ss << std::endl;
+    stream << std::endl;
   }
 
-  ss << INDENTATION << "}";
-
-  return ss.str();
+  stream << INDENTATION << "}";
 }
 
 // -----------------------------------------------------------------------------
 
 int main(int argc, char** argv)
 {
-  ExtractMetadata program;
+  ExtractSpecs program;
   return program.run(argc, argv);
 }
 

@@ -48,7 +48,7 @@ class Compiler(object):
     PYTHON = 'python'
     CODEGEN = './python/compiler/codegen.py'
     CODE_TRANSFORMER = './python/compiler/code_transformer.py'
-    METADATA_FILE = './build/artifacts/corevm_metadata.json'
+    METADATA_FILE = './build/artifacts/corevm_specs.json'
     INTERMEDIATE_EXTENSION = '.tmp.py'
     BYTECODE_EXTENSION = '.core'
 

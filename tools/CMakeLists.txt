@@ -22,16 +22,16 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Build executable `extract_metadata`.
-add_executable(extract_metadata
-    extract_metadata.cc
+# Build executable `extract_specs`.
+add_executable(extract_specs
+    extract_specs.cc
     )
 
 
-set_target_properties(extract_metadata PROPERTIES COMPILE_FLAGS "-O3")
+set_target_properties(extract_specs PROPERTIES COMPILE_FLAGS "-O3")
 
 
-target_link_libraries(extract_metadata
+target_link_libraries(extract_specs
     libcorevm
     ${DEPENDENCY_LINK_LIBRARIES}
     )
@@ -106,7 +106,7 @@ add_custom_target(ir_validation_target ALL DEPENDS ir_validation_output)
 
 # Generate artifacts.
 set(ARTIFACTS_DIR "${PROJECT_SOURCE_DIR}/build/artifacts")
-add_custom_command(TARGET extract_metadata POST_BUILD COMMAND
+add_custom_command(TARGET extract_specs POST_BUILD COMMAND
     mkdir -p ${ARTIFACTS_DIR}/build/artifacts)
-add_custom_command(TARGET extract_metadata POST_BUILD COMMAND
-    $<TARGET_FILE:extract_metadata> ${ARTIFACTS_DIR}/corevm_metadata.json)
+add_custom_command(TARGET extract_specs POST_BUILD COMMAND
+    $<TARGET_FILE:extract_specs> ${ARTIFACTS_DIR}/corevm_specs.json)

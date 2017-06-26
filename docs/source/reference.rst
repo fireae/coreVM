@@ -1112,21 +1112,21 @@ Usage:
       -m COMPARISON_METRIC, --metric=COMPARISON_METRIC
                             Comparion metric=<real_time|cpu_time>
 
-extract_metadata
-================
+extract_specs
+=============
 
-Prints out the coreVM instruction set data and the dynamic object flags data
-in JSON format. This is useful for compilers or other programs that need to
-generate coreVM bytecode.
+Command-line tool that extracts the coreVM runtime specification.
+Runtime specification may include the opcode values of the coreVM
+instruction set, and the flag values for managing dynamic objects.
 
 Usage:
 
   .. code::
 
-    ./build/tools/extract_metadata --help
+    ./build/tools/extract_specs --help
   
-    Extract coreVM info
-    Usage: ./build/tools/extract_metadata [options]
+    Extract coreVM runtime specification
+    Usage: ./build/tools/extract_specs [options]
     Options:
       --help                Print a help message and exit
       --output arg          Output file
@@ -1135,7 +1135,7 @@ Example:
 
   .. code::
 
-    ./build/tools/extract_metadata --output out.txt
+    ./build/tools/extract_specs --output out.txt
 
 ir_gen
 ======
