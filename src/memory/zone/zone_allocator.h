@@ -83,13 +83,7 @@ public:
   }
 
   T*
-  allocate(const void* hint = 0)
-  {
-    return allocate_n(1, hint);
-  }
-
-  T*
-  allocate_n(size_t n, const void* /* hint */ = 0)
+  allocate(size_t n, const void* /* hint */ = 0)
   {
     return static_cast<T*>(m_zone->allocate_n<T>(static_cast<int>(n)));
   }

@@ -65,7 +65,7 @@ public:
 #if __DEBUG__
     ASSERT(n < std::numeric_limits<size_t>::max() / sizeof(T));
 #endif
-    return static_cast<T*>(malloc(n * sizeof(T)));
+    return static_cast<T*>(this->allocate(n * sizeof(T)));
   }
 
   /**
