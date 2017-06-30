@@ -36,7 +36,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace memory {
 
-template <class T> class BlockAllocator {
+template <class T>
+class BlockAllocator {
 public:
   explicit BlockAllocator(uint64_t total_size);
 
@@ -250,7 +251,8 @@ BlockAllocator<T>::BlockAllocator(uint64_t total_size)
 
 // -----------------------------------------------------------------------------
 
-template <class T> BlockAllocator<T>::~BlockAllocator()
+template <class T>
+BlockAllocator<T>::~BlockAllocator()
 {
   if (m_heap) {
     free(m_heap);

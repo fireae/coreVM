@@ -700,7 +700,8 @@ inline _corevm_ir_schema_json_Union__5__::_corevm_ir_schema_json_Union__5__()
 }
 } // namespace corevm
 namespace avro {
-template <> struct codec_traits<corevm::IRModuleMeta> {
+template <>
+struct codec_traits<corevm::IRModuleMeta> {
   static void
   encode(Encoder& e, const corevm::IRModuleMeta& v)
   {
@@ -753,7 +754,8 @@ template <> struct codec_traits<corevm::IRModuleMeta> {
   }
 };
 
-template <> struct codec_traits<corevm::IRTypeAttribute> {
+template <>
+struct codec_traits<corevm::IRTypeAttribute> {
   static void
   encode(Encoder& e, const corevm::IRTypeAttribute& v)
   {
@@ -786,7 +788,8 @@ template <> struct codec_traits<corevm::IRTypeAttribute> {
   }
 };
 
-template <> struct codec_traits<corevm::IRIdentifierTypeType> {
+template <>
+struct codec_traits<corevm::IRIdentifierTypeType> {
   static void
   encode(Encoder& e, corevm::IRIdentifierTypeType v)
   {
@@ -816,7 +819,8 @@ template <> struct codec_traits<corevm::IRIdentifierTypeType> {
   }
 };
 
-template <> struct codec_traits<corevm::IRValueRefType> {
+template <>
+struct codec_traits<corevm::IRValueRefType> {
   static void
   encode(Encoder& e, corevm::IRValueRefType v)
   {
@@ -844,7 +848,8 @@ template <> struct codec_traits<corevm::IRValueRefType> {
   }
 };
 
-template <> struct codec_traits<corevm::IRArrayType> {
+template <>
+struct codec_traits<corevm::IRArrayType> {
   static void
   encode(Encoder& e, const corevm::IRArrayType& v)
   {
@@ -877,7 +882,8 @@ template <> struct codec_traits<corevm::IRArrayType> {
   }
 };
 
-template <> struct codec_traits<corevm::IRValueType> {
+template <>
+struct codec_traits<corevm::IRValueType> {
   static void
   encode(Encoder& e, corevm::IRValueType v)
   {
@@ -903,7 +909,8 @@ template <> struct codec_traits<corevm::IRValueType> {
   }
 };
 
-template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__0__> {
+template <>
+struct codec_traits<corevm::_corevm_ir_schema_json_Union__0__> {
   static void
   encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__0__ v)
   {
@@ -947,7 +954,8 @@ template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__0__> {
   }
 };
 
-template <> struct codec_traits<corevm::IRIdentifierType> {
+template <>
+struct codec_traits<corevm::IRIdentifierType> {
   static void
   encode(Encoder& e, const corevm::IRIdentifierType& v)
   {
@@ -985,7 +993,8 @@ template <> struct codec_traits<corevm::IRIdentifierType> {
   }
 };
 
-template <> struct codec_traits<corevm::IRTypeField> {
+template <>
+struct codec_traits<corevm::IRTypeField> {
   static void
   encode(Encoder& e, const corevm::IRTypeField& v)
   {
@@ -1018,7 +1027,8 @@ template <> struct codec_traits<corevm::IRTypeField> {
   }
 };
 
-template <> struct codec_traits<corevm::IRTypeDecl> {
+template <>
+struct codec_traits<corevm::IRTypeDecl> {
   static void
   encode(Encoder& e, const corevm::IRTypeDecl& v)
   {
@@ -1056,7 +1066,8 @@ template <> struct codec_traits<corevm::IRTypeDecl> {
   }
 };
 
-template <> struct codec_traits<corevm::IRParameter> {
+template <>
+struct codec_traits<corevm::IRParameter> {
   static void
   encode(Encoder& e, const corevm::IRParameter& v)
   {
@@ -1089,7 +1100,8 @@ template <> struct codec_traits<corevm::IRParameter> {
   }
 };
 
-template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__1__> {
+template <>
+struct codec_traits<corevm::_corevm_ir_schema_json_Union__1__> {
   static void
   encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__1__ v)
   {
@@ -1124,7 +1136,8 @@ template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__1__> {
   }
 };
 
-template <> struct codec_traits<corevm::IROpcode> {
+template <>
+struct codec_traits<corevm::IROpcode> {
   static void
   encode(Encoder& e, corevm::IROpcode v)
   {
@@ -1150,7 +1163,8 @@ template <> struct codec_traits<corevm::IROpcode> {
   }
 };
 
-template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__2__> {
+template <>
+struct codec_traits<corevm::_corevm_ir_schema_json_Union__2__> {
   static void
   encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__2__ v)
   {
@@ -1185,7 +1199,8 @@ template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__2__> {
   }
 };
 
-template <> struct codec_traits<corevm::IROperandType> {
+template <>
+struct codec_traits<corevm::IROperandType> {
   static void
   encode(Encoder& e, corevm::IROperandType v)
   {
@@ -1213,7 +1228,8 @@ template <> struct codec_traits<corevm::IROperandType> {
   }
 };
 
-template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__3__> {
+template <>
+struct codec_traits<corevm::_corevm_ir_schema_json_Union__3__> {
   static void
   encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__3__ v)
   {
@@ -1288,7 +1304,8 @@ template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__3__> {
   }
 };
 
-template <> struct codec_traits<corevm::IRValue> {
+template <>
+struct codec_traits<corevm::IRValue> {
   static void
   encode(Encoder& e, const corevm::IRValue& v)
   {
@@ -1321,7 +1338,8 @@ template <> struct codec_traits<corevm::IRValue> {
   }
 };
 
-template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__4__> {
+template <>
+struct codec_traits<corevm::_corevm_ir_schema_json_Union__4__> {
   static void
   encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__4__ v)
   {
@@ -1357,7 +1375,8 @@ template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__4__> {
   }
 };
 
-template <> struct codec_traits<corevm::IROperand> {
+template <>
+struct codec_traits<corevm::IROperand> {
   static void
   encode(Encoder& e, const corevm::IROperand& v)
   {
@@ -1390,7 +1409,8 @@ template <> struct codec_traits<corevm::IROperand> {
   }
 };
 
-template <> struct codec_traits<corevm::IRLabel> {
+template <>
+struct codec_traits<corevm::IRLabel> {
   static void
   encode(Encoder& e, const corevm::IRLabel& v)
   {
@@ -1418,7 +1438,8 @@ template <> struct codec_traits<corevm::IRLabel> {
   }
 };
 
-template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__5__> {
+template <>
+struct codec_traits<corevm::_corevm_ir_schema_json_Union__5__> {
   static void
   encode(Encoder& e, corevm::_corevm_ir_schema_json_Union__5__ v)
   {
@@ -1453,7 +1474,8 @@ template <> struct codec_traits<corevm::_corevm_ir_schema_json_Union__5__> {
   }
 };
 
-template <> struct codec_traits<corevm::IRInstruction> {
+template <>
+struct codec_traits<corevm::IRInstruction> {
   static void
   encode(Encoder& e, const corevm::IRInstruction& v)
   {
@@ -1506,7 +1528,8 @@ template <> struct codec_traits<corevm::IRInstruction> {
   }
 };
 
-template <> struct codec_traits<corevm::IRBasicBlock> {
+template <>
+struct codec_traits<corevm::IRBasicBlock> {
   static void
   encode(Encoder& e, const corevm::IRBasicBlock& v)
   {
@@ -1539,7 +1562,8 @@ template <> struct codec_traits<corevm::IRBasicBlock> {
   }
 };
 
-template <> struct codec_traits<corevm::IRClosure> {
+template <>
+struct codec_traits<corevm::IRClosure> {
   static void
   encode(Encoder& e, const corevm::IRClosure& v)
   {
@@ -1602,7 +1626,8 @@ template <> struct codec_traits<corevm::IRClosure> {
   }
 };
 
-template <> struct codec_traits<corevm::IRIntrinsicDecl> {
+template <>
+struct codec_traits<corevm::IRIntrinsicDecl> {
   static void
   encode(Encoder& e, const corevm::IRIntrinsicDecl& v)
   {
@@ -1640,7 +1665,8 @@ template <> struct codec_traits<corevm::IRIntrinsicDecl> {
   }
 };
 
-template <> struct codec_traits<corevm::IRModule> {
+template <>
+struct codec_traits<corevm::IRModule> {
   static void
   encode(Encoder& e, const corevm::IRModule& v)
   {

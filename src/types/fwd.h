@@ -30,7 +30,8 @@ namespace corevm {
 namespace common {
 namespace variant {
 
-template <typename... Types> class variant;
+template <typename... Types>
+class variant;
 
 } /* end namespace variant */
 } /* end namespace common */

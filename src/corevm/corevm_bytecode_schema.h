@@ -130,7 +130,8 @@ struct StructuredBytecode {
 
 } // namespace corevm
 namespace avro {
-template <> struct codec_traits<corevm::instr> {
+template <>
+struct codec_traits<corevm::instr> {
   static void
   encode(Encoder& e, const corevm::instr& v)
   {
@@ -168,7 +169,8 @@ template <> struct codec_traits<corevm::instr> {
   }
 };
 
-template <> struct codec_traits<corevm::loc> {
+template <>
+struct codec_traits<corevm::loc> {
   static void
   encode(Encoder& e, const corevm::loc& v)
   {
@@ -206,7 +208,8 @@ template <> struct codec_traits<corevm::loc> {
   }
 };
 
-template <> struct codec_traits<corevm::catch_site> {
+template <>
+struct codec_traits<corevm::catch_site> {
   static void
   encode(Encoder& e, const corevm::catch_site& v)
   {
@@ -244,7 +247,8 @@ template <> struct codec_traits<corevm::catch_site> {
   }
 };
 
-template <> struct codec_traits<corevm::closure> {
+template <>
+struct codec_traits<corevm::closure> {
   static void
   encode(Encoder& e, const corevm::closure& v)
   {
@@ -297,7 +301,8 @@ template <> struct codec_traits<corevm::closure> {
   }
 };
 
-template <> struct codec_traits<corevm::StructuredBytecode> {
+template <>
+struct codec_traits<corevm::StructuredBytecode> {
   static void
   encode(Encoder& e, const corevm::StructuredBytecode& v)
   {

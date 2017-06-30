@@ -41,7 +41,8 @@ namespace memory {
  * In addition, it provides a set of iterator interfaces for the outside world
  * to iterate through all the contained objects.
  */
-template <typename T, typename AllocatorType> class ObjectContainer {
+template <typename T, typename AllocatorType>
+class ObjectContainer {
 public:
   typedef typename AllocatorType::value_type value_type;
   typedef typename AllocatorType::pointer pointer;

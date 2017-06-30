@@ -39,7 +39,8 @@ namespace variant {
 
 // -----------------------------------------------------------------------------
 
-template <typename... Types> class variant {
+template <typename... Types>
+class variant {
 private:
   static const std::size_t data_size =
     impl::static_max<sizeof(Types)...>::value;

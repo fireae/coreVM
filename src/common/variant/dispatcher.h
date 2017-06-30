@@ -67,7 +67,8 @@ struct dispatcher<F, V, R, T, Types...> {
 
 // -----------------------------------------------------------------------------
 
-template <typename F, typename V, typename R> struct dispatcher<F, V, R> {
+template <typename F, typename V, typename R>
+struct dispatcher<F, V, R> {
   using result_type = R;
 
   static result_type

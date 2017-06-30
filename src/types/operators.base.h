@@ -28,7 +28,8 @@ namespace types {
 
 // -----------------------------------------------------------------------------
 
-template <class Category, class ResultType = void> struct op {
+template <class Category, class ResultType = void>
+struct op {
 public:
   typedef Category operator_category;
   typedef ResultType result_type;

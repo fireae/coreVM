@@ -37,9 +37,11 @@ namespace memory {
  * The free list management is purposely very simple and works best for data
  * structures which regularly allocate and free blocks of similar sized memory.
  */
-template <typename T> class RecyclingZoneAllocator : public ZoneAllocator<T> {
+template <typename T>
+class RecyclingZoneAllocator : public ZoneAllocator<T> {
 public:
-  template <class O> struct rebind {
+  template <class O>
+  struct rebind {
     typedef RecyclingZoneAllocator<O> other;
   };
 
@@ -94,7 +96,8 @@ public:
   }
 
 private:
-  template <typename U> friend class RecyclingZoneAllocator;
+  template <typename U>
+  friend class RecyclingZoneAllocator;
 
   struct _freeblock_t {
     _freeblock_t* next;

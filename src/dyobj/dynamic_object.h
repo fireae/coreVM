@@ -44,7 +44,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace dyobj {
 
-template <class DynamicObjectManager> class DynamicObject {
+template <class DynamicObjectManager>
+class DynamicObject {
 public:
   typedef attr_key_t attr_key_type;
   typedef DynamicObject<DynamicObjectManager>* dyobj_ptr;
@@ -112,7 +113,8 @@ public:
 
   bool has_ref(dyobj_ptr) const;
 
-  template <typename Function> void iterate(Function);
+  template <typename Function>
+  void iterate(Function);
 
   /** Explicit copy. */
   void copy_from(const DynamicObject<DynamicObjectManager>&);

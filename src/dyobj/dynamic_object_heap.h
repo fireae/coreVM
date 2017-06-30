@@ -43,7 +43,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace dyobj {
 
-template <class DynamicObjectManager> class DynamicObjectHeap {
+template <class DynamicObjectManager>
+class DynamicObjectHeap {
 public:
   typedef dyobj_id_t dynamic_object_id_type;
   using dynamic_object_type =
@@ -96,7 +97,8 @@ public:
   iterator end() noexcept;
   const_iterator cend() const noexcept;
 
-  template <typename Function> void iterate(Function) noexcept;
+  template <typename Function>
+  void iterate(Function) noexcept;
 
   dynamic_object_type& at(const dynamic_object_id_type);
 

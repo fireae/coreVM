@@ -37,7 +37,8 @@ static constexpr std::size_t invalid_type_index = std::size_t(-1);
 
 // -----------------------------------------------------------------------------
 
-template <typename T, typename... Types> struct direct_type;
+template <typename T, typename... Types>
+struct direct_type;
 
 // -----------------------------------------------------------------------------
 
@@ -50,13 +51,15 @@ struct direct_type<T, First, Types...> {
 
 // -----------------------------------------------------------------------------
 
-template <typename T> struct direct_type<T> {
+template <typename T>
+struct direct_type<T> {
   static constexpr std::size_t index = invalid_type_index;
 };
 
 // -----------------------------------------------------------------------------
 
-template <typename T, typename... Types> struct convertible_type;
+template <typename T, typename... Types>
+struct convertible_type;
 
 // -----------------------------------------------------------------------------
 
@@ -69,13 +72,15 @@ struct convertible_type<T, First, Types...> {
 
 // -----------------------------------------------------------------------------
 
-template <typename T> struct convertible_type<T> {
+template <typename T>
+struct convertible_type<T> {
   static constexpr std::size_t index = invalid_type_index;
 };
 
 // -----------------------------------------------------------------------------
 
-template <typename T, typename... Types> struct value_traits {
+template <typename T, typename... Types>
+struct value_traits {
   static constexpr std::size_t direct_index = direct_type<T, Types...>::index;
   static constexpr std::size_t index = (direct_index == invalid_type_index)
                                          ? convertible_type<T, Types...>::index
@@ -84,7 +89,8 @@ template <typename T, typename... Types> struct value_traits {
 
 // -----------------------------------------------------------------------------
 
-template <typename T, typename... Types> struct is_valid_type;
+template <typename T, typename... Types>
+struct is_valid_type;
 
 // -----------------------------------------------------------------------------
 
@@ -96,12 +102,14 @@ struct is_valid_type<T, First, Types...> {
 
 // -----------------------------------------------------------------------------
 
-template <typename T> struct is_valid_type<T> : std::false_type {
+template <typename T>
+struct is_valid_type<T> : std::false_type {
 };
 
 // -----------------------------------------------------------------------------
 
-template <std::size_t N, typename... Types> struct select_type {
+template <std::size_t N, typename... Types>
+struct select_type {
   static_assert(N < sizeof...(Types), "index out of bounds");
 };
 
@@ -114,13 +122,15 @@ struct select_type<N, T, Types...> {
 
 // -----------------------------------------------------------------------------
 
-template <typename T, typename... Types> struct select_type<0, T, Types...> {
+template <typename T, typename... Types>
+struct select_type<0, T, Types...> {
   using type = T;
 };
 
 // -----------------------------------------------------------------------------
 
-template <typename T, typename R = void> struct enable_if_type {
+template <typename T, typename R = void>
+struct enable_if_type {
   using type = R;
 };
 
@@ -156,11 +166,13 @@ struct result_of_binary_visit<
 
 // -----------------------------------------------------------------------------
 
-template <std::size_t arg1, std::size_t... others> struct static_max;
+template <std::size_t arg1, std::size_t... others>
+struct static_max;
 
 // -----------------------------------------------------------------------------
 
-template <std::size_t arg> struct static_max<arg> {
+template <std::size_t arg>
+struct static_max<arg> {
   static const std::size_t value = arg;
 };
 
@@ -175,11 +187,13 @@ struct static_max<arg1, arg2, others...> {
 
 // -----------------------------------------------------------------------------
 
-template <typename... Types> struct variant_helper;
+template <typename... Types>
+struct variant_helper;
 
 // -----------------------------------------------------------------------------
 
-template <typename T, typename... Types> struct variant_helper<T, Types...> {
+template <typename T, typename... Types>
+struct variant_helper<T, Types...> {
   static void
   destroy(const std::size_t id, void* m_data)
   {
@@ -213,7 +227,8 @@ template <typename T, typename... Types> struct variant_helper<T, Types...> {
 
 // -----------------------------------------------------------------------------
 
-template <> struct variant_helper<> {
+template <>
+struct variant_helper<> {
   static void
   destroy(const std::size_t, void*)
   {
@@ -252,7 +267,8 @@ struct less_than {
 
 // -----------------------------------------------------------------------------
 
-template <typename Variant, typename Comp> class comparer {
+template <typename Variant, typename Comp>
+class comparer {
 public:
   explicit comparer(Variant const& lhs) noexcept : m_lhs(lhs)
   {

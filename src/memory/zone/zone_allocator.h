@@ -40,7 +40,8 @@ namespace memory {
  * NOTE: This class is currently NOT thread-safe. In order to make it thread
  * safe, all of its substituient components need to be made thread-safe.
  */
-template <class T> class ZoneAllocator {
+template <class T>
+class ZoneAllocator {
 public:
   typedef T* pointer;
   typedef const T* const_pointer;
@@ -50,7 +51,8 @@ public:
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
 
-  template <class U> struct rebind {
+  template <class U>
+  struct rebind {
     typedef ZoneAllocator<U> other;
   };
 
@@ -68,7 +70,8 @@ public:
   {
   }
 
-  template <typename U> friend class ZoneAllocator;
+  template <typename U>
+  friend class ZoneAllocator;
 
   T*
   address(T& v) const

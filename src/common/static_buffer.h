@@ -30,7 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace common {
 
-template <typename T, size_t capacity> class static_buffer {
+template <typename T, size_t capacity>
+class static_buffer {
 public:
   explicit static_buffer(void* ptr) : m_ptr(ptr), m_size(0)
   {

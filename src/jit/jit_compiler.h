@@ -46,7 +46,8 @@ namespace jit {
  * lowering passes on the input module. All passes need to succeed before
  * compilation can begin.
  */
-template <typename JITScheme> class JITCompiler {
+template <typename JITScheme>
+class JITCompiler {
 public:
   /**
    * Default constructor.

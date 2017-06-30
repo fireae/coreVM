@@ -36,7 +36,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace memory {
 
-template <class AllocationScheme> class Allocator {
+template <class AllocationScheme>
+class Allocator {
 public:
   explicit Allocator(uint64_t);
 
@@ -89,7 +90,8 @@ Allocator<AllocationScheme>::Allocator(uint64_t total_size)
 
 // -----------------------------------------------------------------------------
 
-template <class AllocationScheme> Allocator<AllocationScheme>::~Allocator()
+template <class AllocationScheme>
+Allocator<AllocationScheme>::~Allocator()
 {
   if (m_heap) {
     free(m_heap);
