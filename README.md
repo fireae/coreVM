@@ -3,7 +3,7 @@
 Language runtime framework designed to empower developers devise modern and
 novel programming language features.
 
-[![Build status](https://travis-ci.org/yanzhengli/coreVM.svg?branch=dev)](https://travis-ci.org/yanzhengli/coreVM)
+[![Build status](https://travis-ci.org/libvxx/coreVM.svg?branch=dev)](https://travis-ci.org/libcxx/coreVM)
 [![Docs build status](https://readthedocs.org/projects/corevm/badge/?version=latest)](http://corevm.readthedocs.io/en/latest/)
 
 * [Overview](#overview)
@@ -11,7 +11,6 @@ novel programming language features.
 * [Moonshots](#moonshots)
 * [Contribute](#contribute)
 * [License](#license)
-* [Updates](#updates)
 * [Inquiries](#inquiries)
 
 ## Overview
@@ -51,8 +50,8 @@ Here is a list of recommended steps to get started on the project:
 
 1. Get familiar with the project by checking out these useful links:
   * [Project Documentation](http://corevm.readthedocs.io/en/latest/)
-  * [Design and Architecture](https://github.com/yanzhengli/coreVM/wiki/Design-and-Architecture)
-  * [Dependencies and Build Environments](https://github.com/yanzhengli/coreVM/wiki/Dependencies-and-Build-Environments)
+  * [Design and Architecture](https://github.com/libcxx/coreVM/wiki/Design-and-Architecture)
+  * [Dependencies and Build Environments](https://github.com/libcxx/coreVM/wiki/Dependencies-and-Build-Environments)
   * [Annotated Source Code](http://www.corevm.org/docs/html/index.html)
 
 2. Build from source and have fun:
@@ -70,9 +69,9 @@ Here is a list of recommended steps to get started on the project:
   > `python python/pyta.py python/tests/int.py`
 
 3. Checkout more wiki pages if you are interested:
-  * [Just-in-Time Compilation](https://github.com/yanzhengli/coreVM/wiki/Just-in-Time-Compilation)
-  * [Current State and Roadmap](https://github.com/yanzhengli/coreVM/wiki/Current-State-and-Roadmap)
-  * [Focus Areas](https://github.com/yanzhengli/coreVM/wiki/Focus-Areas)
+  * [Just-in-Time Compilation](https://github.com/libcxx/coreVM/wiki/Just-in-Time-Compilation)
+  * [Current State and Roadmap](https://github.com/libcxx/coreVM/wiki/Current-State-and-Roadmap)
+  * [Focus Areas](https://github.com/libcxx/coreVM/wiki/Focus-Areas)
 
 
 ## Moonshots
@@ -82,15 +81,15 @@ personally have two use cases of the project that I had envisioned.
 
 ### Support the HEX programming language
 One is to use coreVM as the underlying runtime for the
-[HEX programming language](http://www.github.com/yanzhengli/hex) that I
+[HEX programming language](http://www.github.com/libcxx/hex) that I
 worked on a while ago. This was actually one of the main motivations of the
 project before its inception.
 
 ### Python language implementation based on coreVM
 The second idea is to have an implementation of the Python programming language
 implemented using the coreVM framework, named
-[Pyegasus](https://github.com/yanzhengli/Pyegasus) (formerly named
-_Project Pyta_, read about the blog post [here](https://medium.com/corevm-official-blog/python-corevm-pyegasus-73eab7c695f7)).
+[Pyegasus](https://github.com/libcxx/Pyegasus) (formerly named
+_Project Pyta_).
 
 The development of the runtime framework and the language complements each other
 well, as the language serves to validate, test and benchmark the functionalities
@@ -126,19 +125,14 @@ such as [CPython](https://www.python.org/), [PyPy](http://pypy.org/),
 ## Contribute
 Please read the following wiki pages if you'd like to contribute to the project:
 
-* [Styles and Guidelines](https://github.com/yanzhengli/coreVM/wiki/Styles-and-Guidelines)
-* [Development and Release Workflow](https://github.com/yanzhengli/coreVM/wiki/Development-and-Release-Workflow)
+* [Styles and Guidelines](https://github.com/libcxx/coreVM/wiki/Styles-and-Guidelines)
+* [Development and Release Workflow](https://github.com/libcxx/coreVM/wiki/Development-and-Release-Workflow)
 
 
 ## License
 coreVM is licensed under [The MIT License](http://opensource.org/licenses/MIT).
 
 
-## Updates
-Follow the latest news and updates on the project's [official site](http://www.corevm.org/)
-and the [coreVM Official Blog](https://medium.com/corevm-official-blog).
-
-
 ## Inquiries
-For technical issues and bugs, please file issues [here](https://github.com/yanzhengli/coreVM/issues/new).
-For all other inquiries, please e-mail <a href="mailto:yli@corevm.org">yli@corevm.org</a>.
+For technical issues and other inquiries, please file issues
+[here](https://github.com/libcxx/coreVM/issues/new).
